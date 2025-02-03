@@ -11,6 +11,7 @@ AuthType = typing.Union[
         "api_key",
         "native_functionality",
         "config_class",
+        "none",
     ],
     typing.Any,
 ]

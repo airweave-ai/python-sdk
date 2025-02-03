@@ -2,9 +2,9 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 from .integration_type import IntegrationType
+import typing
 from .connection_status import ConnectionStatus
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
-import typing
 import pydantic
 
 
@@ -15,7 +15,7 @@ class Connection(UniversalBaseModel):
 
     name: str
     integration_type: IntegrationType
-    integration_credential_id: str
+    integration_credential_id: typing.Optional[str] = None
     status: ConnectionStatus
     short_name: str
     id: str
