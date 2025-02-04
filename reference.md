@@ -3159,6 +3159,70 @@ client.white_labels.list_white_label_syncs(
 </details>
 
 ## Chat
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">openai_key_set</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Check if the OpenAI API key is set for the current user.
+
+Returns:
+    bool: True if the OpenAI API key is set, False otherwise.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+    base_url="https://yourhost.com/path/to/api",
+)
+client.chat.openai_key_set()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.chat.<a href="src/airweave/chat/client.py">list_chats</a>(...)</code></summary>
 <dl>
 <dd>
