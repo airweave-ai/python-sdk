@@ -36,7 +36,6 @@ class HealthClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.health.health_check()
         """
@@ -89,7 +88,6 @@ class AsyncHealthClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

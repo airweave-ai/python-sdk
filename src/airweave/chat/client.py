@@ -44,7 +44,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.openai_key_set()
         """
@@ -107,7 +106,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.list_chats()
         """
@@ -186,7 +184,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.create_chat(
             name="name",
@@ -256,7 +253,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.get_chat(
             chat_id="chat_id",
@@ -330,7 +326,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.update_chat(
             chat_id="chat_id",
@@ -396,7 +391,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.delete_chat(
             chat_id="chat_id",
@@ -458,7 +452,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.send_message(
             chat_id="chat_id",
@@ -523,7 +516,6 @@ class ChatClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.chat.stream_chat_response(
             chat_id="chat_id",
@@ -582,7 +574,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -653,7 +644,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -740,7 +730,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -818,7 +807,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -900,7 +888,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -974,7 +961,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1044,7 +1030,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1119,7 +1104,6 @@ class AsyncChatClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

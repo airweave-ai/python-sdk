@@ -55,7 +55,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.list_syncs()
         """
@@ -147,7 +146,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.create_sync(
             name="name",
@@ -221,7 +219,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.get_sync(
             sync_id="sync_id",
@@ -286,7 +283,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.delete_sync(
             sync_id="sync_id",
@@ -346,7 +342,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.run_sync(
             sync_id="sync_id",
@@ -405,7 +400,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.list_sync_jobs(
             sync_id="sync_id",
@@ -466,7 +460,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.get_sync_job(
             job_id="job_id",
@@ -529,7 +522,6 @@ class SyncClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.sync.subscribe_sync_job(
             job_id="job_id",
@@ -604,7 +596,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -704,7 +695,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -786,7 +776,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -859,7 +848,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -927,7 +915,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -994,7 +981,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1063,7 +1049,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1134,7 +1119,6 @@ class AsyncSyncClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

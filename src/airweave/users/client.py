@@ -44,7 +44,6 @@ class UsersClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.users.read_user()
         """
@@ -112,7 +111,6 @@ class AsyncUsersClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

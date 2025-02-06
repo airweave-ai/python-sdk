@@ -63,7 +63,6 @@ class ApiKeysClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.api_keys.read_api_keys()
         """
@@ -140,7 +139,6 @@ class ApiKeysClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.api_keys.create_api_key()
         """
@@ -216,7 +214,6 @@ class ApiKeysClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.api_keys.delete_api_key(
             id="id",
@@ -290,7 +287,6 @@ class ApiKeysClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.api_keys.read_api_key(
             id="id",
@@ -373,7 +369,6 @@ class AsyncApiKeysClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -458,7 +453,6 @@ class AsyncApiKeysClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -542,7 +536,6 @@ class AsyncApiKeysClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -624,7 +617,6 @@ class AsyncApiKeysClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

@@ -52,7 +52,6 @@ class EmbeddingModelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.embedding_models.read_embedding_model(
             short_name="short_name",
@@ -118,7 +117,6 @@ class EmbeddingModelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.embedding_models.read_embedding_models()
         """
@@ -192,7 +190,6 @@ class AsyncEmbeddingModelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -266,7 +263,6 @@ class AsyncEmbeddingModelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

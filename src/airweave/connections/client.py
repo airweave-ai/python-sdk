@@ -45,7 +45,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.get_connection(
             connection_id="connection_id",
@@ -102,7 +101,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.list_all_connected_integrations()
         """
@@ -167,7 +165,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.list_connected_integrations(
             integration_type="source",
@@ -246,7 +243,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.connect_integration(
             integration_type="source",
@@ -323,7 +319,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.get_connection_credentials(
             connection_id="connection_id",
@@ -393,7 +388,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.delete_connection(
             connection_id="connection_id",
@@ -459,7 +453,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.disconnect_source_connection(
             connection_id="connection_id",
@@ -526,7 +519,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.disconnect_destination_connection(
             connection_id="connection_id",
@@ -583,7 +575,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.get_oauth_2_auth_url(
             short_name="short_name",
@@ -652,7 +643,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.send_oauth_2_code(
             short_name="short_name",
@@ -722,7 +712,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.send_oauth_2_white_label_code(
             white_label_id="white_label_id",
@@ -784,7 +773,6 @@ class ConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.connections.get_oauth_2_white_label_auth_url(
             white_label_id="white_label_id",
@@ -850,7 +838,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -915,7 +902,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -988,7 +974,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1075,7 +1060,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1160,7 +1144,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1238,7 +1221,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1312,7 +1294,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1387,7 +1368,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1454,7 +1434,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1531,7 +1510,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1609,7 +1587,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -1679,7 +1656,6 @@ class AsyncConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

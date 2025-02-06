@@ -38,7 +38,6 @@ class DestinationsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.destinations.list_destinations()
         """
@@ -95,7 +94,6 @@ class DestinationsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
         client.destinations.read_destination(
             short_name="short_name",
@@ -159,7 +157,6 @@ class AsyncDestinationsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 
@@ -224,7 +221,6 @@ class AsyncDestinationsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            base_url="https://yourhost.com/path/to/api",
         )
 
 

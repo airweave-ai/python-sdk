@@ -24,7 +24,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.api_keys.create_api_key()
 ```
@@ -40,7 +39,6 @@ from airweave import AsyncAirweaveSDK
 
 client = AsyncAirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 
 

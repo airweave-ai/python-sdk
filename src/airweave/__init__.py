@@ -30,11 +30,13 @@ from .types import (
 from .errors import UnprocessableEntityError
 from . import api_keys, chat, connections, destinations, embedding_models, health, sources, sync, users, white_labels
 from .client import AirweaveSDK, AsyncAirweaveSDK
+from .environment import AirweaveSDKEnvironment
 from .sync import ListSyncsSyncGetResponse
 from .version import __version__
 
 __all__ = [
     "AirweaveSDK",
+    "AirweaveSDKEnvironment",
     "ApiKey",
     "ApiKeyWithPlainKey",
     "AsyncAirweaveSDK",

@@ -34,7 +34,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.health.health_check()
 
@@ -107,7 +106,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.api_keys.read_api_keys()
 
@@ -197,7 +195,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.api_keys.create_api_key()
 
@@ -280,7 +277,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.api_keys.delete_api_key(
     id="id",
@@ -365,7 +361,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.api_keys.read_api_key(
     id="id",
@@ -445,7 +440,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.users.read_user()
 
@@ -517,7 +511,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sources.read_source(
     short_name="short_name",
@@ -592,7 +585,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sources.read_sources()
 
@@ -654,7 +646,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.destinations.list_destinations()
 
@@ -715,7 +706,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.destinations.read_destination(
     short_name="short_name",
@@ -797,7 +787,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.embedding_models.read_embedding_model(
     short_name="short_name",
@@ -877,7 +866,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.embedding_models.read_embedding_models()
 
@@ -939,7 +927,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.get_connection(
     connection_id="connection_id",
@@ -1010,7 +997,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.list_all_connected_integrations()
 
@@ -1079,7 +1065,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.list_connected_integrations(
     integration_type="source",
@@ -1158,7 +1143,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.connect_integration(
     integration_type="source",
@@ -1263,7 +1247,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.get_connection_credentials(
     connection_id="connection_id",
@@ -1345,7 +1328,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.delete_connection(
     connection_id="connection_id",
@@ -1423,7 +1405,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.disconnect_source_connection(
     connection_id="connection_id",
@@ -1502,7 +1483,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.disconnect_destination_connection(
     connection_id="connection_id",
@@ -1573,7 +1553,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.get_oauth_2_auth_url(
     short_name="short_name",
@@ -1649,7 +1628,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.send_oauth_2_code(
     short_name="short_name",
@@ -1729,7 +1707,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.send_oauth_2_white_label_code(
     white_label_id="white_label_id",
@@ -1809,7 +1786,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.connections.get_oauth_2_white_label_auth_url(
     white_label_id="white_label_id",
@@ -1881,7 +1857,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.list_syncs()
 
@@ -1966,7 +1941,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.create_sync(
     name="name",
@@ -2110,7 +2084,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.get_sync(
     sync_id="sync_id",
@@ -2181,7 +2154,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.delete_sync(
     sync_id="sync_id",
@@ -2260,7 +2232,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.run_sync(
     sync_id="sync_id",
@@ -2331,7 +2302,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.list_sync_jobs(
     sync_id="sync_id",
@@ -2402,7 +2372,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.get_sync_job(
     job_id="job_id",
@@ -2482,7 +2451,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.sync.subscribe_sync_job(
     job_id="job_id",
@@ -2554,7 +2522,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.list_white_labels()
 
@@ -2615,7 +2582,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.create_white_label(
     name="name",
@@ -2722,7 +2688,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.get_white_label(
     white_label_id="white_label_id",
@@ -2793,7 +2758,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.update_white_label(
     white_label_id="white_label_id",
@@ -2896,7 +2860,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.delete_white_label(
     white_label_id="white_label_id",
@@ -2967,7 +2930,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.get_white_label_oauth_2_auth_url(
     white_label_id="white_label_id",
@@ -3038,7 +3000,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.exchange_white_label_oauth_2_code(
     white_label_id="white_label_id",
@@ -3118,7 +3079,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.white_labels.list_white_label_syncs(
     white_label_id="white_label_id",
@@ -3193,7 +3153,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.openai_key_set()
 
@@ -3254,7 +3213,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.list_chats()
 
@@ -3331,7 +3289,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.create_chat(
     name="name",
@@ -3443,7 +3400,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.get_chat(
     chat_id="chat_id",
@@ -3514,7 +3470,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.update_chat(
     chat_id="chat_id",
@@ -3617,7 +3572,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.delete_chat(
     chat_id="chat_id",
@@ -3688,7 +3642,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.send_message(
     chat_id="chat_id",
@@ -3776,7 +3729,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    base_url="https://yourhost.com/path/to/api",
 )
 client.chat.stream_chat_response(
     chat_id="chat_id",
