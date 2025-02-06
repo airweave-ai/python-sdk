@@ -2,10 +2,14 @@
 
 from .types import (
     ApiKey,
+    ApiKeyCreate,
     ApiKeyWithPlainKey,
     AuthType,
     Chat,
+    ChatCreate,
     ChatMessage,
+    ChatMessageCreate,
+    ChatUpdate,
     ConfigField,
     Connection,
     ConnectionStatus,
@@ -28,7 +32,7 @@ from .types import (
     WhiteLabel,
 )
 from .errors import UnprocessableEntityError
-from . import api_keys, chat, connections, destinations, embedding_models, health, sources, sync, users, white_labels
+from . import connections, destinations, embedding_models, sources, sync, users, white_labels
 from .client import AirweaveSDK, AsyncAirweaveSDK
 from .environment import AirweaveSDKEnvironment
 from .sync import ListSyncsSyncGetResponse
@@ -38,11 +42,15 @@ __all__ = [
     "AirweaveSDK",
     "AirweaveSDKEnvironment",
     "ApiKey",
+    "ApiKeyCreate",
     "ApiKeyWithPlainKey",
     "AsyncAirweaveSDK",
     "AuthType",
     "Chat",
+    "ChatCreate",
     "ChatMessage",
+    "ChatMessageCreate",
+    "ChatUpdate",
     "ConfigField",
     "Connection",
     "ConnectionStatus",
@@ -66,12 +74,9 @@ __all__ = [
     "ValidationErrorLocItem",
     "WhiteLabel",
     "__version__",
-    "api_keys",
-    "chat",
     "connections",
     "destinations",
     "embedding_models",
-    "health",
     "sources",
     "sync",
     "users",
