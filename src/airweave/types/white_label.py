@@ -13,7 +13,7 @@ class WhiteLabel(UniversalBaseModel):
     """
 
     name: str
-    source_id: str
+    source_short_name: str
     redirect_url: str
     client_id: str
     client_secret: str

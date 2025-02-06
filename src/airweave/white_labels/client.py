@@ -79,7 +79,7 @@ class WhiteLabelsClient:
         self,
         *,
         name: str,
-        source_id: str,
+        source_short_name: str,
         redirect_url: str,
         client_id: str,
         client_secret: str,
@@ -92,7 +92,7 @@ class WhiteLabelsClient:
         ----------
         name : str
 
-        source_id : str
+        source_short_name : str
 
         redirect_url : str
 
@@ -118,7 +118,7 @@ class WhiteLabelsClient:
         )
         client.white_labels.create_white_label(
             name="name",
-            source_id="source_id",
+            source_short_name="source_short_name",
             redirect_url="redirect_url",
             client_id="client_id",
             client_secret="client_secret",
@@ -129,7 +129,7 @@ class WhiteLabelsClient:
             method="POST",
             json={
                 "name": name,
-                "source_id": source_id,
+                "source_short_name": source_short_name,
                 "redirect_url": redirect_url,
                 "client_id": client_id,
                 "client_secret": client_secret,
@@ -620,7 +620,7 @@ class AsyncWhiteLabelsClient:
         self,
         *,
         name: str,
-        source_id: str,
+        source_short_name: str,
         redirect_url: str,
         client_id: str,
         client_secret: str,
@@ -633,7 +633,7 @@ class AsyncWhiteLabelsClient:
         ----------
         name : str
 
-        source_id : str
+        source_short_name : str
 
         redirect_url : str
 
@@ -664,7 +664,7 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.create_white_label(
                 name="name",
-                source_id="source_id",
+                source_short_name="source_short_name",
                 redirect_url="redirect_url",
                 client_id="client_id",
                 client_secret="client_secret",
@@ -678,7 +678,7 @@ class AsyncWhiteLabelsClient:
             method="POST",
             json={
                 "name": name,
-                "source_id": source_id,
+                "source_short_name": source_short_name,
                 "redirect_url": redirect_url,
                 "client_id": client_id,
                 "client_secret": client_secret,

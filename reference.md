@@ -2619,7 +2619,7 @@ client = AirweaveSDK(
 )
 client.white_labels.create_white_label(
     name="name",
-    source_id="source_id",
+    source_short_name="source_short_name",
     redirect_url="redirect_url",
     client_id="client_id",
     client_secret="client_secret",
@@ -2647,7 +2647,7 @@ client.white_labels.create_white_label(
 <dl>
 <dd>
 
-**source_id:** `str` 
+**source_short_name:** `str` 
     
 </dd>
 </dl>
