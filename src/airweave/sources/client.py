@@ -3,13 +3,14 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.source import Source
+from ..types.source_with_config_fields import SourceWithConfigFields
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
+from ..types.source import Source
 from ..core.client_wrapper import AsyncClientWrapper
 
 
@@ -17,7 +18,9 @@ class SourcesClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
+    def read_source(
+        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceWithConfigFields:
         """
         Get source by id.
 
@@ -40,7 +43,7 @@ class SourcesClient:
 
         Returns
         -------
-        Source
+        SourceWithConfigFields
             Successful Response
 
         Examples
@@ -62,9 +65,9 @@ class SourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Source,
+                    SourceWithConfigFields,
                     parse_obj_as(
-                        type_=Source,  # type: ignore
+                        type_=SourceWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -144,7 +147,9 @@ class AsyncSourcesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
+    async def read_source(
+        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceWithConfigFields:
         """
         Get source by id.
 
@@ -167,7 +172,7 @@ class AsyncSourcesClient:
 
         Returns
         -------
-        Source
+        SourceWithConfigFields
             Successful Response
 
         Examples
@@ -197,9 +202,9 @@ class AsyncSourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Source,
+                    SourceWithConfigFields,
                     parse_obj_as(
-                        type_=Source,  # type: ignore
+                        type_=SourceWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

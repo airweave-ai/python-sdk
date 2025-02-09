@@ -20,6 +20,7 @@ from .fields import Fields
 from .http_validation_error import HttpValidationError
 from .integration_type import IntegrationType
 from .source import Source
+from .source_with_config_fields import SourceWithConfigFields
 from .sync import Sync
 from .sync_job import SyncJob
 from .sync_job_status import SyncJobStatus
@@ -51,6 +52,7 @@ __all__ = [
     "HttpValidationError",
     "IntegrationType",
     "Source",
+    "SourceWithConfigFields",
     "Sync",
     "SyncJob",
     "SyncJobStatus",
