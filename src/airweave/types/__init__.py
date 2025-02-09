@@ -19,6 +19,8 @@ from .embedding_model_with_config_fields import EmbeddingModelWithConfigFields
 from .fields import Fields
 from .http_validation_error import HttpValidationError
 from .integration_type import IntegrationType
+from .metadata_search_filter import MetadataSearchFilter
+from .search_result import SearchResult
 from .source import Source
 from .source_with_config_fields import SourceWithConfigFields
 from .sync import Sync
@@ -51,6 +53,8 @@ __all__ = [
     "Fields",
     "HttpValidationError",
     "IntegrationType",
+    "MetadataSearchFilter",
+    "SearchResult",
     "Source",
     "SourceWithConfigFields",
     "Sync",
