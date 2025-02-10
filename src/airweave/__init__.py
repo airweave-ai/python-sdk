@@ -20,8 +20,6 @@ from .types import (
     Fields,
     HttpValidationError,
     IntegrationType,
-    MetadataSearchFilter,
-    SearchResult,
     Source,
     SourceWithConfigFields,
     Sync,
@@ -35,7 +33,7 @@ from .types import (
     WhiteLabel,
 )
 from .errors import UnprocessableEntityError
-from . import connections, destinations, embedding_models, search, sources, sync, users, white_labels
+from . import connections, destinations, embedding_models, sources, sync, users, white_labels
 from .client import AirweaveSDK, AsyncAirweaveSDK
 from .environment import AirweaveSDKEnvironment
 from .sync import ListSyncsSyncGetResponse
@@ -65,8 +63,6 @@ __all__ = [
     "HttpValidationError",
     "IntegrationType",
     "ListSyncsSyncGetResponse",
-    "MetadataSearchFilter",
-    "SearchResult",
     "Source",
     "SourceWithConfigFields",
     "Sync",
@@ -83,7 +79,6 @@ __all__ = [
     "connections",
     "destinations",
     "embedding_models",
-    "search",
     "sources",
     "sync",
     "users",
