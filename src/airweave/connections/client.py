@@ -27,6 +27,16 @@ class ConnectionsClient:
         """
         Get a specific connection.
 
+        Args:
+        -----
+            connection_id: The ID of the connection to get.
+            db: The database session.
+            user: The current user.
+
+        Returns:
+        -------
+            schemas.Connection: The connection.
+
         Parameters
         ----------
         connection_id : str
@@ -85,6 +95,15 @@ class ConnectionsClient:
         """
         Get all active connections for the current user across all integration types.
 
+        Args:
+        -----
+            db: The database session.
+            user: The current user.
+
+        Returns:
+        -------
+            list[schemas.Connection]: The list of connections.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -140,11 +159,13 @@ class ConnectionsClient:
         Get all integrations of specified type connected to the current user.
 
         Args:
+        -----
             integration_type (IntegrationType): The type of integration to get connections for.
             db (AsyncSession): The database session.
             user (schemas.User): The current user.
 
         Returns:
+        -------
             list[schemas.Connection]: The list of connections.
 
         Parameters
@@ -218,6 +239,19 @@ class ConnectionsClient:
             ... other config fields specific to the integration type ...
         }
         ```
+
+        Args:
+        -----
+            db: The database session.
+            integration_type: The type of integration to connect to.
+            short_name: The short name of the integration to connect to.
+            name: The name of the connection.
+            config_fields: The config fields for the integration.
+            user: The current user.
+
+        Returns:
+        -------
+            schemas.Connection: The connection.
 
         Parameters
         ----------
@@ -294,12 +328,14 @@ class ConnectionsClient:
         Get the credentials for a connection.
 
         Args:
+        -----
             connection_id (UUID): The ID of the connection to get credentials for
             db (AsyncSession): The database session
             user (schemas.User): The current user
 
         Returns:
-            dict: The credentials for the connection
+        -------
+            decrypted_credentials (dict): The credentials for the connection
 
         Parameters
         ----------
@@ -362,13 +398,14 @@ class ConnectionsClient:
         Deletes the connection and integration credential.
 
         Args:
+        -----
             db (AsyncSession): The database session
             connection_id (UUID): The ID of the connection to delete
-            delete_syncs_and_data (bool): Whether to delete the associated syncs and data
             user (schemas.User): The current user
 
         Returns:
-            schemas.Connection: The deleted connection
+        --------
+            connection (schemas.Connection): The deleted connection
 
         Parameters
         ----------
@@ -429,11 +466,14 @@ class ConnectionsClient:
         Disconnect from a source connection.
 
         Args:
+        -----
             db (AsyncSession): The database session
             connection_id (UUID): The ID of the connection to disconnect
             user (schemas.User): The current user
+
         Returns:
-            schemas.Connection: The disconnected connection
+        --------
+            connection_schema (schemas.Connection): The disconnected connection
 
         Parameters
         ----------
@@ -494,12 +534,14 @@ class ConnectionsClient:
         Disconnect from a destination connection.
 
         Args:
+        -----
             db (AsyncSession): The database session
             connection_id (UUID): The ID of the connection to disconnect
             user (schemas.User): The current user
 
         Returns:
-            schemas.Connection: The disconnected connection
+        --------
+            connection_schema (schemas.Connection): The disconnected connection
 
         Parameters
         ----------
@@ -556,6 +598,12 @@ class ConnectionsClient:
     def get_oauth_2_auth_url(self, *, short_name: str, request_options: typing.Optional[RequestOptions] = None) -> str:
         """
         Get the OAuth2 authorization URL for a source.
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the source
+            user: The current user
 
         Parameters
         ----------
@@ -622,6 +670,17 @@ class ConnectionsClient:
         1. Get the OAuth2 settings for the source
         2. Exchange the authorization code for a token
         3. Create an integration credential with the token
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the source
+            code: The authorization code
+            user: The current user
+
+        Returns:
+        --------
+            connection (schemas.Connection): The created connection
 
         Parameters
         ----------
@@ -692,6 +751,18 @@ class ConnectionsClient:
         """
         Exchange the OAuth2 authorization code for a white label integration.
 
+        Args:
+        -----
+            db: The database session
+            white_label_id: The ID of the white label integration
+            code: The authorization code
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            connection (schemas.Connection): The created connection
+
         Parameters
         ----------
         white_label_id : str
@@ -755,6 +826,16 @@ class ConnectionsClient:
         """
         Get the OAuth2 authorization URL for a white label integration.
 
+        Args:
+        -----
+            db: The database session
+            white_label_id: The ID of the white label integration
+            user: The current user
+
+        Returns:
+        --------
+            str: The OAuth2 authorization URL
+
         Parameters
         ----------
         white_label_id : str
@@ -817,6 +898,16 @@ class AsyncConnectionsClient:
     ) -> Connection:
         """
         Get a specific connection.
+
+        Args:
+        -----
+            connection_id: The ID of the connection to get.
+            db: The database session.
+            user: The current user.
+
+        Returns:
+        -------
+            schemas.Connection: The connection.
 
         Parameters
         ----------
@@ -884,6 +975,15 @@ class AsyncConnectionsClient:
         """
         Get all active connections for the current user across all integration types.
 
+        Args:
+        -----
+            db: The database session.
+            user: The current user.
+
+        Returns:
+        -------
+            list[schemas.Connection]: The list of connections.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -947,11 +1047,13 @@ class AsyncConnectionsClient:
         Get all integrations of specified type connected to the current user.
 
         Args:
+        -----
             integration_type (IntegrationType): The type of integration to get connections for.
             db (AsyncSession): The database session.
             user (schemas.User): The current user.
 
         Returns:
+        -------
             list[schemas.Connection]: The list of connections.
 
         Parameters
@@ -1033,6 +1135,19 @@ class AsyncConnectionsClient:
             ... other config fields specific to the integration type ...
         }
         ```
+
+        Args:
+        -----
+            db: The database session.
+            integration_type: The type of integration to connect to.
+            short_name: The short name of the integration to connect to.
+            name: The name of the connection.
+            config_fields: The config fields for the integration.
+            user: The current user.
+
+        Returns:
+        -------
+            schemas.Connection: The connection.
 
         Parameters
         ----------
@@ -1117,12 +1232,14 @@ class AsyncConnectionsClient:
         Get the credentials for a connection.
 
         Args:
+        -----
             connection_id (UUID): The ID of the connection to get credentials for
             db (AsyncSession): The database session
             user (schemas.User): The current user
 
         Returns:
-            dict: The credentials for the connection
+        -------
+            decrypted_credentials (dict): The credentials for the connection
 
         Parameters
         ----------
@@ -1193,13 +1310,14 @@ class AsyncConnectionsClient:
         Deletes the connection and integration credential.
 
         Args:
+        -----
             db (AsyncSession): The database session
             connection_id (UUID): The ID of the connection to delete
-            delete_syncs_and_data (bool): Whether to delete the associated syncs and data
             user (schemas.User): The current user
 
         Returns:
-            schemas.Connection: The deleted connection
+        --------
+            connection (schemas.Connection): The deleted connection
 
         Parameters
         ----------
@@ -1268,11 +1386,14 @@ class AsyncConnectionsClient:
         Disconnect from a source connection.
 
         Args:
+        -----
             db (AsyncSession): The database session
             connection_id (UUID): The ID of the connection to disconnect
             user (schemas.User): The current user
+
         Returns:
-            schemas.Connection: The disconnected connection
+        --------
+            connection_schema (schemas.Connection): The disconnected connection
 
         Parameters
         ----------
@@ -1341,12 +1462,14 @@ class AsyncConnectionsClient:
         Disconnect from a destination connection.
 
         Args:
+        -----
             db (AsyncSession): The database session
             connection_id (UUID): The ID of the connection to disconnect
             user (schemas.User): The current user
 
         Returns:
-            schemas.Connection: The disconnected connection
+        --------
+            connection_schema (schemas.Connection): The disconnected connection
 
         Parameters
         ----------
@@ -1413,6 +1536,12 @@ class AsyncConnectionsClient:
     ) -> str:
         """
         Get the OAuth2 authorization URL for a source.
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the source
+            user: The current user
 
         Parameters
         ----------
@@ -1487,6 +1616,17 @@ class AsyncConnectionsClient:
         1. Get the OAuth2 settings for the source
         2. Exchange the authorization code for a token
         3. Create an integration credential with the token
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the source
+            code: The authorization code
+            user: The current user
+
+        Returns:
+        --------
+            connection (schemas.Connection): The created connection
 
         Parameters
         ----------
@@ -1565,6 +1705,18 @@ class AsyncConnectionsClient:
         """
         Exchange the OAuth2 authorization code for a white label integration.
 
+        Args:
+        -----
+            db: The database session
+            white_label_id: The ID of the white label integration
+            code: The authorization code
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            connection (schemas.Connection): The created connection
+
         Parameters
         ----------
         white_label_id : str
@@ -1635,6 +1787,16 @@ class AsyncConnectionsClient:
     ) -> str:
         """
         Get the OAuth2 authorization URL for a white label integration.
+
+        Args:
+        -----
+            db: The database session
+            white_label_id: The ID of the white label integration
+            user: The current user
+
+        Returns:
+        --------
+            str: The OAuth2 authorization URL
 
         Parameters
         ----------

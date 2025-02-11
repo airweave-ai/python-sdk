@@ -90,8 +90,13 @@ class SourcesClient:
         """
         Get all sources for the current user.
 
+        Args:
+        -----
+            db: The database session
+            user: The current user
+
         Returns:
-        -------
+        --------
             list[schemas.Source]: The list of sources.
 
         Parameters
@@ -227,8 +232,13 @@ class AsyncSourcesClient:
         """
         Get all sources for the current user.
 
+        Args:
+        -----
+            db: The database session
+            user: The current user
+
         Returns:
-        -------
+        --------
             list[schemas.Source]: The list of sources.
 
         Parameters

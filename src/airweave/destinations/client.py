@@ -22,6 +22,15 @@ class DestinationsClient:
         """
         Get all available destinations.
 
+        Args:
+        -----
+            db: The database session
+            user: The current user
+
+        Returns:
+        --------
+            List[schemas.Destination]: A list of destinations
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -75,6 +84,16 @@ class DestinationsClient:
     ) -> DestinationWithConfigFields:
         """
         Get destination by short name.
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the destination
+            user: The current user
+
+        Returns:
+        --------
+            destination (schemas.Destination): The destination
 
         Parameters
         ----------
@@ -139,6 +158,15 @@ class AsyncDestinationsClient:
         """
         Get all available destinations.
 
+        Args:
+        -----
+            db: The database session
+            user: The current user
+
+        Returns:
+        --------
+            List[schemas.Destination]: A list of destinations
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -200,6 +228,16 @@ class AsyncDestinationsClient:
     ) -> DestinationWithConfigFields:
         """
         Get destination by short name.
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the destination
+            user: The current user
+
+        Returns:
+        --------
+            destination (schemas.Destination): The destination
 
         Parameters
         ----------

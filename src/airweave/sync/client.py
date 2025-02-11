@@ -33,6 +33,18 @@ class SyncClient:
         """
         List all syncs for the current user.
 
+        Args:
+        -----
+            db: The database session
+            skip: The number of syncs to skip
+            limit: The number of syncs to return
+            with_source_connection: Whether to include the source connection in the response
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.Sync] | list[schemas.SyncWithSourceConnection]: A list of syncs
+
         Parameters
         ----------
         skip : typing.Optional[int]
@@ -109,6 +121,17 @@ class SyncClient:
     ) -> Sync:
         """
         Create a new sync configuration.
+
+        Args:
+        -----
+            db: The database session
+            sync_in: The sync to create
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            sync (schemas.Sync): The created sync
 
         Parameters
         ----------
@@ -201,6 +224,16 @@ class SyncClient:
         """
         Get a specific sync by ID.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to get
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The sync
+
         Parameters
         ----------
         sync_id : str
@@ -263,6 +296,17 @@ class SyncClient:
         """
         Delete a sync configuration and optionally its associated data.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to delete
+            delete_data: Whether to delete the data associated with the sync
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The deleted sync
+
         Parameters
         ----------
         sync_id : str
@@ -324,6 +368,17 @@ class SyncClient:
         """
         Trigger a sync run.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to run
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
+
         Parameters
         ----------
         sync_id : str
@@ -382,6 +437,16 @@ class SyncClient:
         """
         List all jobs for a specific sync.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of sync jobs
+
         Parameters
         ----------
         sync_id : str
@@ -439,6 +504,17 @@ class SyncClient:
     ) -> SyncJob:
         """
         Get details of a specific sync job.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            job_id: The ID of the job to get
+            user: The current user
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
 
         Parameters
         ----------
@@ -503,6 +579,15 @@ class SyncClient:
     ) -> typing.Optional[typing.Any]:
         """
         Server-Sent Events (SSE) endpoint to subscribe to a sync job's progress.
+
+        Args:
+        -----
+            job_id: The ID of the job to subscribe to
+            user: The current user
+
+        Returns:
+        --------
+            StreamingResponse: The streaming response
 
         Parameters
         ----------
@@ -571,6 +656,18 @@ class AsyncSyncClient:
     ) -> ListSyncsSyncGetResponse:
         """
         List all syncs for the current user.
+
+        Args:
+        -----
+            db: The database session
+            skip: The number of syncs to skip
+            limit: The number of syncs to return
+            with_source_connection: Whether to include the source connection in the response
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.Sync] | list[schemas.SyncWithSourceConnection]: A list of syncs
 
         Parameters
         ----------
@@ -656,6 +753,17 @@ class AsyncSyncClient:
     ) -> Sync:
         """
         Create a new sync configuration.
+
+        Args:
+        -----
+            db: The database session
+            sync_in: The sync to create
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            sync (schemas.Sync): The created sync
 
         Parameters
         ----------
@@ -756,6 +864,16 @@ class AsyncSyncClient:
         """
         Get a specific sync by ID.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to get
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The sync
+
         Parameters
         ----------
         sync_id : str
@@ -826,6 +944,17 @@ class AsyncSyncClient:
         """
         Delete a sync configuration and optionally its associated data.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to delete
+            delete_data: Whether to delete the data associated with the sync
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The deleted sync
+
         Parameters
         ----------
         sync_id : str
@@ -895,6 +1024,17 @@ class AsyncSyncClient:
         """
         Trigger a sync run.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to run
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
+
         Parameters
         ----------
         sync_id : str
@@ -961,6 +1101,16 @@ class AsyncSyncClient:
         """
         List all jobs for a specific sync.
 
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of sync jobs
+
         Parameters
         ----------
         sync_id : str
@@ -1026,6 +1176,17 @@ class AsyncSyncClient:
     ) -> SyncJob:
         """
         Get details of a specific sync job.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            job_id: The ID of the job to get
+            user: The current user
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
 
         Parameters
         ----------
@@ -1098,6 +1259,15 @@ class AsyncSyncClient:
     ) -> typing.Optional[typing.Any]:
         """
         Server-Sent Events (SSE) endpoint to subscribe to a sync job's progress.
+
+        Args:
+        -----
+            job_id: The ID of the job to subscribe to
+            user: The current user
+
+        Returns:
+        --------
+            StreamingResponse: The streaming response
 
         Parameters
         ----------
