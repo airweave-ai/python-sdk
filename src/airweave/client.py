@@ -11,7 +11,6 @@ from .embedding_models.client import EmbeddingModelsClient
 from .connections.client import ConnectionsClient
 from .sync.client import SyncClient
 from .white_labels.client import WhiteLabelsClient
-from .search.client import SearchClient
 from .core.client_wrapper import AsyncClientWrapper
 from .users.client import AsyncUsersClient
 from .sources.client import AsyncSourcesClient
@@ -20,7 +19,6 @@ from .embedding_models.client import AsyncEmbeddingModelsClient
 from .connections.client import AsyncConnectionsClient
 from .sync.client import AsyncSyncClient
 from .white_labels.client import AsyncWhiteLabelsClient
-from .search.client import AsyncSearchClient
 
 
 class AirweaveSDK:
@@ -88,7 +86,6 @@ class AirweaveSDK:
         self.connections = ConnectionsClient(client_wrapper=self._client_wrapper)
         self.sync = SyncClient(client_wrapper=self._client_wrapper)
         self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
-        self.search = SearchClient(client_wrapper=self._client_wrapper)
 
 
 class AsyncAirweaveSDK:
@@ -156,7 +153,6 @@ class AsyncAirweaveSDK:
         self.connections = AsyncConnectionsClient(client_wrapper=self._client_wrapper)
         self.sync = AsyncSyncClient(client_wrapper=self._client_wrapper)
         self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
-        self.search = AsyncSearchClient(client_wrapper=self._client_wrapper)
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:
