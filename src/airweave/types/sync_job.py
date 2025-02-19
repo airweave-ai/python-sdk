@@ -15,10 +15,10 @@ class SyncJob(UniversalBaseModel):
 
     sync_id: str
     status: typing.Optional[SyncJobStatus] = None
-    chunks_detected: typing.Optional[int] = None
-    chunks_inserted: typing.Optional[int] = None
-    chunks_deleted: typing.Optional[int] = None
-    chunks_skipped: typing.Optional[int] = None
+    entities_detected: typing.Optional[int] = None
+    entities_inserted: typing.Optional[int] = None
+    entities_deleted: typing.Optional[int] = None
+    entities_skipped: typing.Optional[int] = None
     error: typing.Optional[str] = None
     id: str
     organization_id: str
