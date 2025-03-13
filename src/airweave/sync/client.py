@@ -9,9 +9,12 @@ from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
+import datetime as dt
+from ..types.sync_status import SyncStatus
 from ..types.sync import Sync
 from ..core.jsonable_encoder import jsonable_encoder
 from ..types.sync_job import SyncJob
+from ..types.sync_dag import SyncDag
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
@@ -113,9 +116,11 @@ class SyncClient:
         destination_connection_id: typing.Optional[str] = OMIT,
         embedding_model_connection_id: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
         white_label_user_identifier: typing.Optional[str] = OMIT,
         sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
         run_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Sync:
@@ -147,11 +152,15 @@ class SyncClient:
 
         cron_schedule : typing.Optional[str]
 
+        next_scheduled_run : typing.Optional[dt.datetime]
+
         white_label_id : typing.Optional[str]
 
         white_label_user_identifier : typing.Optional[str]
 
         sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
 
         run_immediately : typing.Optional[bool]
 
@@ -185,9 +194,11 @@ class SyncClient:
                 "destination_connection_id": destination_connection_id,
                 "embedding_model_connection_id": embedding_model_connection_id,
                 "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
                 "white_label_id": white_label_id,
                 "white_label_user_identifier": white_label_user_identifier,
                 "sync_metadata": sync_metadata,
+                "status": status,
                 "run_immediately": run_immediately,
             },
             headers={
@@ -339,6 +350,128 @@ class SyncClient:
                 "delete_data": delete_data,
             },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def update_sync(
+        self,
+        sync_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        schedule: typing.Optional[str] = OMIT,
+        source_connection_id: typing.Optional[str] = OMIT,
+        destination_connection_id: typing.Optional[str] = OMIT,
+        embedding_model_connection_id: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
+        white_label_user_identifier: typing.Optional[str] = OMIT,
+        sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
+        """
+        Update a sync configuration.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to update
+            sync_update: The sync update data
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The updated sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        name : typing.Optional[str]
+
+        schedule : typing.Optional[str]
+
+        source_connection_id : typing.Optional[str]
+
+        destination_connection_id : typing.Optional[str]
+
+        embedding_model_connection_id : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        next_scheduled_run : typing.Optional[dt.datetime]
+
+        white_label_id : typing.Optional[str]
+
+        white_label_user_identifier : typing.Optional[str]
+
+        sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.update_sync(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "schedule": schedule,
+                "source_connection_id": source_connection_id,
+                "destination_connection_id": destination_connection_id,
+                "embedding_model_connection_id": embedding_model_connection_id,
+                "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
+                "white_label_id": white_label_id,
+                "white_label_user_identifier": white_label_user_identifier,
+                "sync_metadata": sync_metadata,
+                "status": status,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -641,6 +774,62 @@ class SyncClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
+    def get_sync_dag(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncDag:
+        """
+        Get the DAG for a specific sync.
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncDag
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.get_sync_dag(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/dag",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncDag,
+                    parse_obj_as(
+                        type_=SyncDag,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
 
 class AsyncSyncClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -745,9 +934,11 @@ class AsyncSyncClient:
         destination_connection_id: typing.Optional[str] = OMIT,
         embedding_model_connection_id: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
         white_label_user_identifier: typing.Optional[str] = OMIT,
         sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
         run_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Sync:
@@ -779,11 +970,15 @@ class AsyncSyncClient:
 
         cron_schedule : typing.Optional[str]
 
+        next_scheduled_run : typing.Optional[dt.datetime]
+
         white_label_id : typing.Optional[str]
 
         white_label_user_identifier : typing.Optional[str]
 
         sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
 
         run_immediately : typing.Optional[bool]
 
@@ -825,9 +1020,11 @@ class AsyncSyncClient:
                 "destination_connection_id": destination_connection_id,
                 "embedding_model_connection_id": embedding_model_connection_id,
                 "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
                 "white_label_id": white_label_id,
                 "white_label_user_identifier": white_label_user_identifier,
                 "sync_metadata": sync_metadata,
+                "status": status,
                 "run_immediately": run_immediately,
             },
             headers={
@@ -995,6 +1192,136 @@ class AsyncSyncClient:
                 "delete_data": delete_data,
             },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def update_sync(
+        self,
+        sync_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        schedule: typing.Optional[str] = OMIT,
+        source_connection_id: typing.Optional[str] = OMIT,
+        destination_connection_id: typing.Optional[str] = OMIT,
+        embedding_model_connection_id: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
+        white_label_user_identifier: typing.Optional[str] = OMIT,
+        sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
+        """
+        Update a sync configuration.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to update
+            sync_update: The sync update data
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The updated sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        name : typing.Optional[str]
+
+        schedule : typing.Optional[str]
+
+        source_connection_id : typing.Optional[str]
+
+        destination_connection_id : typing.Optional[str]
+
+        embedding_model_connection_id : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        next_scheduled_run : typing.Optional[dt.datetime]
+
+        white_label_id : typing.Optional[str]
+
+        white_label_user_identifier : typing.Optional[str]
+
+        sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.update_sync(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "schedule": schedule,
+                "source_connection_id": source_connection_id,
+                "destination_connection_id": destination_connection_id,
+                "embedding_model_connection_id": embedding_model_connection_id,
+                "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
+                "white_label_id": white_label_id,
+                "white_label_user_identifier": white_label_user_identifier,
+                "sync_metadata": sync_metadata,
+                "status": status,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -1311,6 +1638,70 @@ class AsyncSyncClient:
                     typing.Optional[typing.Any],
                     parse_obj_as(
                         type_=typing.Optional[typing.Any],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def get_sync_dag(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncDag:
+        """
+        Get the DAG for a specific sync.
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncDag
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.get_sync_dag(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/dag",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncDag,
+                    parse_obj_as(
+                        type_=SyncDag,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

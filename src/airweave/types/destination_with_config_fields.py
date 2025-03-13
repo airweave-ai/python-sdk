@@ -20,6 +20,9 @@ class DestinationWithConfigFields(UniversalBaseModel):
     class_name: str
     auth_type: typing.Optional[AuthType] = None
     auth_config_class: typing.Optional[str] = None
+    input_entity_definition_ids: typing.Optional[typing.List[str]] = None
+    organization_id: typing.Optional[str] = None
+    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime

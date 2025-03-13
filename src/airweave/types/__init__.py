@@ -12,20 +12,31 @@ from .chat_update import ChatUpdate
 from .config_field import ConfigField
 from .connection import Connection
 from .connection_status import ConnectionStatus
+from .dag_edge import DagEdge
+from .dag_edge_create import DagEdgeCreate
+from .dag_node import DagNode
+from .dag_node_create import DagNodeCreate
 from .destination import Destination
 from .destination_with_config_fields import DestinationWithConfigFields
 from .embedding_model import EmbeddingModel
 from .embedding_model_with_config_fields import EmbeddingModelWithConfigFields
+from .entity_definition import EntityDefinition
+from .entity_definition_entity_schema import EntityDefinitionEntitySchema
+from .entity_relation import EntityRelation
+from .entity_type import EntityType
 from .fields import Fields
 from .http_validation_error import HttpValidationError
 from .integration_type import IntegrationType
+from .node_type import NodeType
 from .source import Source
 from .source_with_config_fields import SourceWithConfigFields
 from .sync import Sync
+from .sync_dag import SyncDag
 from .sync_job import SyncJob
 from .sync_job_status import SyncJobStatus
 from .sync_status import SyncStatus
 from .sync_with_source_connection import SyncWithSourceConnection
+from .transformer import Transformer
 from .user import User
 from .validation_error import ValidationError
 from .validation_error_loc_item import ValidationErrorLocItem
@@ -44,20 +55,31 @@ __all__ = [
     "ConfigField",
     "Connection",
     "ConnectionStatus",
+    "DagEdge",
+    "DagEdgeCreate",
+    "DagNode",
+    "DagNodeCreate",
     "Destination",
     "DestinationWithConfigFields",
     "EmbeddingModel",
     "EmbeddingModelWithConfigFields",
+    "EntityDefinition",
+    "EntityDefinitionEntitySchema",
+    "EntityRelation",
+    "EntityType",
     "Fields",
     "HttpValidationError",
     "IntegrationType",
+    "NodeType",
     "Source",
     "SourceWithConfigFields",
     "Sync",
+    "SyncDag",
     "SyncJob",
     "SyncJobStatus",
     "SyncStatus",
     "SyncWithSourceConnection",
+    "Transformer",
     "User",
     "ValidationError",
     "ValidationErrorLocItem",

@@ -20,6 +20,9 @@ class SourceWithConfigFields(UniversalBaseModel):
     auth_config_class: typing.Optional[str] = None
     short_name: str
     class_name: str
+    output_entity_definition_ids: typing.Optional[typing.List[str]] = None
+    organization_id: typing.Optional[str] = None
+    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime

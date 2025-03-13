@@ -20,16 +20,17 @@ class SyncWithSourceConnection(UniversalBaseModel):
     destination_connection_id: typing.Optional[str] = None
     embedding_model_connection_id: typing.Optional[str] = None
     cron_schedule: typing.Optional[str] = None
+    next_scheduled_run: typing.Optional[dt.datetime] = None
     white_label_id: typing.Optional[str] = None
     white_label_user_identifier: typing.Optional[str] = None
     sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    status: SyncStatus
     id: str
     organization_id: str
     created_at: dt.datetime
     modified_at: dt.datetime
     created_by_email: str
     modified_by_email: str
-    status: SyncStatus
     source_connection: typing.Optional[Connection] = None
 
     if IS_PYDANTIC_V2:

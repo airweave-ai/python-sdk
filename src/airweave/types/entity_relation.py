@@ -2,29 +2,23 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
-from .auth_type import AuthType
-import datetime as dt
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class Source(UniversalBaseModel):
+class EntityRelation(UniversalBaseModel):
     """
-    Schema for Source.
+    Schema for an entity relation.
     """
 
     name: str
     description: typing.Optional[str] = None
-    auth_type: typing.Optional[AuthType] = None
-    auth_config_class: typing.Optional[str] = None
-    short_name: str
-    class_name: str
-    output_entity_definition_ids: typing.Optional[typing.List[str]] = None
-    organization_id: typing.Optional[str] = None
-    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    from_entity_id: str
+    to_entity_id: str
     id: str
-    created_at: dt.datetime
-    modified_at: dt.datetime
+    organization_id: str
+    created_by_email: str
+    modified_by_email: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
