@@ -22,6 +22,7 @@ class Destination(UniversalBaseModel):
     input_entity_definition_ids: typing.Optional[typing.List[str]] = None
     organization_id: typing.Optional[str] = None
     config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    labels: typing.Optional[typing.List[str]] = None
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime
