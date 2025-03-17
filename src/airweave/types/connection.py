@@ -19,9 +19,9 @@ class Connection(UniversalBaseModel):
     status: ConnectionStatus
     short_name: str
     id: str
-    organization_id: str
-    created_by_email: str
-    modified_by_email: str
+    organization_id: typing.Optional[str] = None
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

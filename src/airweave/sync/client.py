@@ -112,9 +112,9 @@ class SyncClient:
         *,
         name: str,
         source_connection_id: str,
-        description: typing.Optional[str] = OMIT,
-        destination_connection_id: typing.Optional[str] = OMIT,
+        destination_connection_ids: typing.Sequence[str],
         embedding_model_connection_id: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
@@ -144,11 +144,11 @@ class SyncClient:
 
         source_connection_id : str
 
-        description : typing.Optional[str]
-
-        destination_connection_id : typing.Optional[str]
+        destination_connection_ids : typing.Sequence[str]
 
         embedding_model_connection_id : typing.Optional[str]
+
+        description : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
@@ -182,6 +182,7 @@ class SyncClient:
         client.sync.create_sync(
             name="name",
             source_connection_id="source_connection_id",
+            destination_connection_ids=["destination_connection_ids"],
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -189,10 +190,10 @@ class SyncClient:
             method="POST",
             json={
                 "name": name,
-                "description": description,
                 "source_connection_id": source_connection_id,
-                "destination_connection_id": destination_connection_id,
                 "embedding_model_connection_id": embedding_model_connection_id,
+                "destination_connection_ids": destination_connection_ids,
+                "description": description,
                 "cron_schedule": cron_schedule,
                 "next_scheduled_run": next_scheduled_run,
                 "white_label_id": white_label_id,
@@ -380,10 +381,6 @@ class SyncClient:
         sync_id: str,
         *,
         name: typing.Optional[str] = OMIT,
-        schedule: typing.Optional[str] = OMIT,
-        source_connection_id: typing.Optional[str] = OMIT,
-        destination_connection_id: typing.Optional[str] = OMIT,
-        embedding_model_connection_id: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
@@ -411,14 +408,6 @@ class SyncClient:
         sync_id : str
 
         name : typing.Optional[str]
-
-        schedule : typing.Optional[str]
-
-        source_connection_id : typing.Optional[str]
-
-        destination_connection_id : typing.Optional[str]
-
-        embedding_model_connection_id : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
@@ -456,10 +445,6 @@ class SyncClient:
             method="PATCH",
             json={
                 "name": name,
-                "schedule": schedule,
-                "source_connection_id": source_connection_id,
-                "destination_connection_id": destination_connection_id,
-                "embedding_model_connection_id": embedding_model_connection_id,
                 "cron_schedule": cron_schedule,
                 "next_scheduled_run": next_scheduled_run,
                 "white_label_id": white_label_id,
@@ -930,9 +915,9 @@ class AsyncSyncClient:
         *,
         name: str,
         source_connection_id: str,
-        description: typing.Optional[str] = OMIT,
-        destination_connection_id: typing.Optional[str] = OMIT,
+        destination_connection_ids: typing.Sequence[str],
         embedding_model_connection_id: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
@@ -962,11 +947,11 @@ class AsyncSyncClient:
 
         source_connection_id : str
 
-        description : typing.Optional[str]
-
-        destination_connection_id : typing.Optional[str]
+        destination_connection_ids : typing.Sequence[str]
 
         embedding_model_connection_id : typing.Optional[str]
+
+        description : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
@@ -1005,6 +990,7 @@ class AsyncSyncClient:
             await client.sync.create_sync(
                 name="name",
                 source_connection_id="source_connection_id",
+                destination_connection_ids=["destination_connection_ids"],
             )
 
 
@@ -1015,10 +1001,10 @@ class AsyncSyncClient:
             method="POST",
             json={
                 "name": name,
-                "description": description,
                 "source_connection_id": source_connection_id,
-                "destination_connection_id": destination_connection_id,
                 "embedding_model_connection_id": embedding_model_connection_id,
+                "destination_connection_ids": destination_connection_ids,
+                "description": description,
                 "cron_schedule": cron_schedule,
                 "next_scheduled_run": next_scheduled_run,
                 "white_label_id": white_label_id,
@@ -1222,10 +1208,6 @@ class AsyncSyncClient:
         sync_id: str,
         *,
         name: typing.Optional[str] = OMIT,
-        schedule: typing.Optional[str] = OMIT,
-        source_connection_id: typing.Optional[str] = OMIT,
-        destination_connection_id: typing.Optional[str] = OMIT,
-        embedding_model_connection_id: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
@@ -1253,14 +1235,6 @@ class AsyncSyncClient:
         sync_id : str
 
         name : typing.Optional[str]
-
-        schedule : typing.Optional[str]
-
-        source_connection_id : typing.Optional[str]
-
-        destination_connection_id : typing.Optional[str]
-
-        embedding_model_connection_id : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
@@ -1306,10 +1280,6 @@ class AsyncSyncClient:
             method="PATCH",
             json={
                 "name": name,
-                "schedule": schedule,
-                "source_connection_id": source_connection_id,
-                "destination_connection_id": destination_connection_id,
-                "embedding_model_connection_id": embedding_model_connection_id,
                 "cron_schedule": cron_schedule,
                 "next_scheduled_run": next_scheduled_run,
                 "white_label_id": white_label_id,

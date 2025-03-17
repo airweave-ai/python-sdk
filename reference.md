@@ -1672,6 +1672,7 @@ client = AirweaveSDK(
 client.sync.create_sync(
     name="name",
     source_connection_id="source_connection_id",
+    destination_connection_ids=["destination_connection_ids"],
 )
 
 ```
@@ -1704,15 +1705,7 @@ client.sync.create_sync(
 <dl>
 <dd>
 
-**description:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**destination_connection_id:** `typing.Optional[str]` 
+**destination_connection_ids:** `typing.Sequence[str]` 
     
 </dd>
 </dl>
@@ -1721,6 +1714,14 @@ client.sync.create_sync(
 <dd>
 
 **embedding_model_connection_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
     
 </dd>
 </dl>
@@ -2035,38 +2036,6 @@ client.sync.update_sync(
 <dd>
 
 **name:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**schedule:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**source_connection_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**destination_connection_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**embedding_model_connection_id:** `typing.Optional[str]` 
     
 </dd>
 </dl>

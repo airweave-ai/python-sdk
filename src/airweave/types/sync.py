@@ -14,10 +14,10 @@ class Sync(UniversalBaseModel):
     """
 
     name: str
-    description: typing.Optional[str] = None
     source_connection_id: str
-    destination_connection_id: typing.Optional[str] = None
     embedding_model_connection_id: typing.Optional[str] = None
+    destination_connection_ids: typing.List[str]
+    description: typing.Optional[str] = None
     cron_schedule: typing.Optional[str] = None
     next_scheduled_run: typing.Optional[dt.datetime] = None
     white_label_id: typing.Optional[str] = None
