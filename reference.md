@@ -1797,6 +1797,93 @@ client.sync.create_sync(
 </dl>
 </details>
 
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">list_all_jobs</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all sync jobs across all syncs.
+
+Args:
+-----
+    db: The database session
+    skip: The number of jobs to skip
+    limit: The number of jobs to return
+    user: The current user
+
+Returns:
+--------
+    list[schemas.SyncJob]: A list of all sync jobs
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.list_all_jobs()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**skip:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.sync.<a href="src/airweave/sync/client.py">get_sync</a>(...)</code></summary>
 <dl>
 <dd>
@@ -2308,8 +2395,8 @@ client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
 client.sync.get_sync_job(
-    job_id="job_id",
     sync_id="sync_id",
+    job_id="job_id",
 )
 
 ```
@@ -2326,7 +2413,7 @@ client.sync.get_sync_job(
 <dl>
 <dd>
 
-**job_id:** `str` 
+**sync_id:** `str` 
     
 </dd>
 </dl>
@@ -2334,7 +2421,7 @@ client.sync.get_sync_job(
 <dl>
 <dd>
 
-**sync_id:** `str` 
+**job_id:** `str` 
     
 </dd>
 </dl>
@@ -4223,6 +4310,76 @@ client.entities.get_entity_definitions_by_ids(
 <dd>
 
 **request:** `typing.Sequence[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">get_entity_definitions_by_source_short_name</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get all entity definitions for a given source.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.get_entity_definitions_by_source_short_name(
+    source_short_name="source_short_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**source_short_name:** `str` 
     
 </dd>
 </dl>

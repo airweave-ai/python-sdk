@@ -4,8 +4,8 @@ from ..core.pydantic_utilities import UniversalBaseModel
 import typing
 from .sync_job_status import SyncJobStatus
 import datetime as dt
-from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
+from ..core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class SyncJob(UniversalBaseModel):
@@ -29,6 +29,10 @@ class SyncJob(UniversalBaseModel):
     started_at: typing.Optional[dt.datetime] = None
     completed_at: typing.Optional[dt.datetime] = None
     failed_at: typing.Optional[dt.datetime] = None
+    sync_name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Name of the sync, populated from join query
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

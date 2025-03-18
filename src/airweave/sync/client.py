@@ -12,8 +12,8 @@ from ..core.api_error import ApiError
 import datetime as dt
 from ..types.sync_status import SyncStatus
 from ..types.sync import Sync
-from ..core.jsonable_encoder import jsonable_encoder
 from ..types.sync_job import SyncJob
+from ..core.jsonable_encoder import jsonable_encoder
 from ..types.sync_dag import SyncDag
 from ..core.client_wrapper import AsyncClientWrapper
 
@@ -214,6 +214,83 @@ class SyncClient:
                     Sync,
                     parse_obj_as(
                         type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def list_all_jobs(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[SyncJob]:
+        """
+        List all sync jobs across all syncs.
+
+        Args:
+        -----
+            db: The database session
+            skip: The number of jobs to skip
+            limit: The number of jobs to return
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of all sync jobs
+
+        Parameters
+        ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SyncJob]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.list_all_jobs()
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "sync/jobs",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SyncJob],
+                    parse_obj_as(
+                        type_=typing.List[SyncJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -618,7 +695,7 @@ class SyncClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_sync_job(
-        self, job_id: str, *, sync_id: str, request_options: typing.Optional[RequestOptions] = None
+        self, sync_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SyncJob:
         """
         Get details of a specific sync job.
@@ -636,9 +713,9 @@ class SyncClient:
 
         Parameters
         ----------
-        job_id : str
-
         sync_id : str
+
+        job_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -656,16 +733,13 @@ class SyncClient:
             api_key="YOUR_API_KEY",
         )
         client.sync.get_sync_job(
-            job_id="job_id",
             sync_id="sync_id",
+            job_id="job_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"sync/job/{jsonable_encoder(job_id)}",
+            f"sync/{jsonable_encoder(sync_id)}/job/{jsonable_encoder(job_id)}",
             method="GET",
-            params={
-                "sync_id": sync_id,
-            },
             request_options=request_options,
         )
         try:
@@ -1025,6 +1099,91 @@ class AsyncSyncClient:
                     Sync,
                     parse_obj_as(
                         type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def list_all_jobs(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[SyncJob]:
+        """
+        List all sync jobs across all syncs.
+
+        Args:
+        -----
+            db: The database session
+            skip: The number of jobs to skip
+            limit: The number of jobs to return
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of all sync jobs
+
+        Parameters
+        ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SyncJob]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.list_all_jobs()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "sync/jobs",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SyncJob],
+                    parse_obj_as(
+                        type_=typing.List[SyncJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1469,7 +1628,7 @@ class AsyncSyncClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_sync_job(
-        self, job_id: str, *, sync_id: str, request_options: typing.Optional[RequestOptions] = None
+        self, sync_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SyncJob:
         """
         Get details of a specific sync job.
@@ -1487,9 +1646,9 @@ class AsyncSyncClient:
 
         Parameters
         ----------
-        job_id : str
-
         sync_id : str
+
+        job_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1512,19 +1671,16 @@ class AsyncSyncClient:
 
         async def main() -> None:
             await client.sync.get_sync_job(
-                job_id="job_id",
                 sync_id="sync_id",
+                job_id="job_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"sync/job/{jsonable_encoder(job_id)}",
+            f"sync/{jsonable_encoder(sync_id)}/job/{jsonable_encoder(job_id)}",
             method="GET",
-            params={
-                "sync_id": sync_id,
-            },
             request_options=request_options,
         )
         try:
