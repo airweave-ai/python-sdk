@@ -10,10 +10,12 @@ from .destinations.client import DestinationsClient
 from .embedding_models.client import EmbeddingModelsClient
 from .connections.client import ConnectionsClient
 from .sync.client import SyncClient
+from .search.client import SearchClient
 from .white_labels.client import WhiteLabelsClient
 from .dag.client import DagClient
 from .entities.client import EntitiesClient
 from .transformers.client import TransformersClient
+from .cursor_development.client import CursorDevelopmentClient
 from .core.client_wrapper import AsyncClientWrapper
 from .users.client import AsyncUsersClient
 from .sources.client import AsyncSourcesClient
@@ -21,10 +23,12 @@ from .destinations.client import AsyncDestinationsClient
 from .embedding_models.client import AsyncEmbeddingModelsClient
 from .connections.client import AsyncConnectionsClient
 from .sync.client import AsyncSyncClient
+from .search.client import AsyncSearchClient
 from .white_labels.client import AsyncWhiteLabelsClient
 from .dag.client import AsyncDagClient
 from .entities.client import AsyncEntitiesClient
 from .transformers.client import AsyncTransformersClient
+from .cursor_development.client import AsyncCursorDevelopmentClient
 
 
 class AirweaveSDK:
@@ -91,10 +95,12 @@ class AirweaveSDK:
         self.embedding_models = EmbeddingModelsClient(client_wrapper=self._client_wrapper)
         self.connections = ConnectionsClient(client_wrapper=self._client_wrapper)
         self.sync = SyncClient(client_wrapper=self._client_wrapper)
+        self.search = SearchClient(client_wrapper=self._client_wrapper)
         self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
         self.dag = DagClient(client_wrapper=self._client_wrapper)
         self.entities = EntitiesClient(client_wrapper=self._client_wrapper)
         self.transformers = TransformersClient(client_wrapper=self._client_wrapper)
+        self.cursor_development = CursorDevelopmentClient(client_wrapper=self._client_wrapper)
 
 
 class AsyncAirweaveSDK:
@@ -161,10 +167,12 @@ class AsyncAirweaveSDK:
         self.embedding_models = AsyncEmbeddingModelsClient(client_wrapper=self._client_wrapper)
         self.connections = AsyncConnectionsClient(client_wrapper=self._client_wrapper)
         self.sync = AsyncSyncClient(client_wrapper=self._client_wrapper)
+        self.search = AsyncSearchClient(client_wrapper=self._client_wrapper)
         self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
         self.dag = AsyncDagClient(client_wrapper=self._client_wrapper)
         self.entities = AsyncEntitiesClient(client_wrapper=self._client_wrapper)
         self.transformers = AsyncTransformersClient(client_wrapper=self._client_wrapper)
+        self.cursor_development = AsyncCursorDevelopmentClient(client_wrapper=self._client_wrapper)
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:

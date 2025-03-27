@@ -2590,6 +2590,97 @@ client.sync.get_sync_dag(
 </dl>
 </details>
 
+## Search
+<details><summary><code>client.search.<a href="src/airweave/search/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search for documents within a specific sync.
+
+Args:
+-----
+    db: The database session
+    sync_id: The ID of the sync to search within
+    query: The search query text
+    user: The current user
+
+Returns:
+--------
+    list[dict]: A list of search results
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.search.search(
+    sync_id="sync_id",
+    query="query",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` — The ID of the sync to search within
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — Search query text
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## WhiteLabels
 <details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">list_white_labels</a>()</code></summary>
 <dl>
@@ -4694,6 +4785,172 @@ client.transformers.update_transformer(
 <dd>
 
 **config_schema:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## CursorDevelopment
+<details><summary><code>client.cursor_development.<a href="src/airweave/cursor_development/client.py">check_connection_status</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Check if a source connection exists for the given short_name.
+
+Args:
+-----
+    db: The database session
+    short_name: The short name of the source to check
+    user: The admin user
+
+Returns:
+--------
+    List[schemas.Connection]: List of source connections for the given short_name
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.cursor_development.check_connection_status(
+    short_name="short_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**short_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.cursor_development.<a href="src/airweave/cursor_development/client.py">test_sync</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Run a sync for a specific source by short_name.
+
+This endpoint is used for testing source integrations during development.
+It finds the first available source connection for the given short_name and
+runs a sync on it.
+
+Args:
+-----
+    db: The database session
+    short_name: The short name of the source to sync
+    background_tasks: The background tasks
+    user: The admin user
+
+Returns:
+--------
+    schemas.SyncJob: The created sync job
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.cursor_development.test_sync(
+    short_name="short_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**short_name:** `str` 
     
 </dd>
 </dl>
