@@ -48,7 +48,6 @@ from .types import (
 from .errors import UnprocessableEntityError
 from . import (
     connections,
-    cursor_development,
     destinations,
     embedding_models,
     entities,
@@ -118,7 +117,6 @@ __all__ = [
     "WhiteLabel",
     "__version__",
     "connections",
-    "cursor_development",
     "destinations",
     "embedding_models",
     "entities",

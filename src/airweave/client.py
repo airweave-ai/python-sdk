@@ -14,7 +14,6 @@ from .search.client import SearchClient
 from .white_labels.client import WhiteLabelsClient
 from .entities.client import EntitiesClient
 from .transformers.client import TransformersClient
-from .cursor_development.client import CursorDevelopmentClient
 from .core.client_wrapper import AsyncClientWrapper
 from .users.client import AsyncUsersClient
 from .sources.client import AsyncSourcesClient
@@ -26,7 +25,6 @@ from .search.client import AsyncSearchClient
 from .white_labels.client import AsyncWhiteLabelsClient
 from .entities.client import AsyncEntitiesClient
 from .transformers.client import AsyncTransformersClient
-from .cursor_development.client import AsyncCursorDevelopmentClient
 
 
 class AirweaveSDK:
@@ -97,7 +95,6 @@ class AirweaveSDK:
         self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
         self.entities = EntitiesClient(client_wrapper=self._client_wrapper)
         self.transformers = TransformersClient(client_wrapper=self._client_wrapper)
-        self.cursor_development = CursorDevelopmentClient(client_wrapper=self._client_wrapper)
 
 
 class AsyncAirweaveSDK:
@@ -168,7 +165,6 @@ class AsyncAirweaveSDK:
         self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
         self.entities = AsyncEntitiesClient(client_wrapper=self._client_wrapper)
         self.transformers = AsyncTransformersClient(client_wrapper=self._client_wrapper)
-        self.cursor_development = AsyncCursorDevelopmentClient(client_wrapper=self._client_wrapper)
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:
