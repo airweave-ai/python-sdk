@@ -32,6 +32,8 @@ from .source import Source
 from .source_with_config_fields import SourceWithConfigFields
 from .sync import Sync
 from .sync_dag import SyncDag
+from .sync_dag_create import SyncDagCreate
+from .sync_dag_update import SyncDagUpdate
 from .sync_job import SyncJob
 from .sync_job_status import SyncJobStatus
 from .sync_status import SyncStatus
@@ -75,6 +77,8 @@ __all__ = [
     "SourceWithConfigFields",
     "Sync",
     "SyncDag",
+    "SyncDagCreate",
+    "SyncDagUpdate",
     "SyncJob",
     "SyncJobStatus",
     "SyncStatus",
