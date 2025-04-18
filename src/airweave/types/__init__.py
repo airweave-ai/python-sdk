@@ -4,6 +4,9 @@ from .api_key import ApiKey
 from .api_key_create import ApiKeyCreate
 from .api_key_with_plain_key import ApiKeyWithPlainKey
 from .auth_type import AuthType
+from .body_connect_slack_with_token_connections_direct_token_slack_post import (
+    BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
+)
 from .chat import Chat
 from .chat_create import ChatCreate
 from .chat_message import ChatMessage
@@ -49,6 +52,7 @@ __all__ = [
     "ApiKeyCreate",
     "ApiKeyWithPlainKey",
     "AuthType",
+    "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
     "Chat",
     "ChatCreate",
     "ChatMessage",
