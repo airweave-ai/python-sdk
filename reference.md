@@ -2816,11 +2816,12 @@ Args:
     db: The database session
     sync_id: The ID of the sync to search within
     query: The search query text
+    response_type: Type of response (raw results or AI completion)
     user: The current user
 
 Returns:
 --------
-    list[dict]: A list of search results
+    dict: A dictionary containing search results or AI completion
 </dd>
 </dl>
 </dd>
@@ -2877,6 +2878,14 @@ client.search.search(
 <dd>
 
 **creds:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**response_type:** `typing.Optional[ResponseType]` — Type of response: raw search results or AI completion
     
 </dd>
 </dl>
