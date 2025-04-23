@@ -26,13 +26,15 @@ class EntitiesClient:
         self._client_wrapper = client_wrapper
 
     def list_entity_definitions(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityDefinition]:
         """
         List all entity definitions for the current user's organization.
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -48,11 +50,16 @@ class EntitiesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.entities.list_entity_definitions()
+        client.entities.list_entity_definitions(
+            creds="creds",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
             "entities/definitions/",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -82,6 +89,7 @@ class EntitiesClient:
     def create_entity_definition(
         self,
         *,
+        creds: str,
         name: str,
         type: EntityType,
         entity_schema: EntityDefinitionCreateEntitySchema,
@@ -96,6 +104,8 @@ class EntitiesClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         type : EntityType
@@ -126,9 +136,10 @@ class EntitiesClient:
             api_key="YOUR_API_KEY",
         )
         client.entities.create_entity_definition(
+            creds="creds",
             name="name",
             type="file",
-            entity_schema=["entity_schema"],
+            entity_schema=["entity_schema", "entity_schema"],
             module_name="module_name",
             class_name="class_name",
         )
@@ -136,6 +147,9 @@ class EntitiesClient:
         _response = self._client_wrapper.httpx_client.request(
             "entities/definitions/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -181,6 +195,7 @@ class EntitiesClient:
         self,
         definition_id: str,
         *,
+        creds: str,
         name: str,
         type: EntityType,
         entity_schema: EntityDefinitionUpdateEntitySchema,
@@ -196,6 +211,8 @@ class EntitiesClient:
         Parameters
         ----------
         definition_id : str
+
+        creds : str
 
         name : str
 
@@ -228,9 +245,10 @@ class EntitiesClient:
         )
         client.entities.update_entity_definition(
             definition_id="definition_id",
+            creds="creds",
             name="name",
             type="file",
-            entity_schema=["entity_schema"],
+            entity_schema=["entity_schema", "entity_schema"],
             module_name="module_name",
             class_name="class_name",
         )
@@ -238,6 +256,9 @@ class EntitiesClient:
         _response = self._client_wrapper.httpx_client.request(
             f"entities/definitions/{jsonable_encoder(definition_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -280,13 +301,15 @@ class EntitiesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def list_entity_relations(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityRelation]:
         """
         List all entity relations for the current user's organization.
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -302,11 +325,16 @@ class EntitiesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.entities.list_entity_relations()
+        client.entities.list_entity_relations(
+            creds="creds",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
             "entities/relations/",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -336,6 +364,7 @@ class EntitiesClient:
     def create_entity_relation(
         self,
         *,
+        creds: str,
         name: str,
         from_entity_id: str,
         to_entity_id: str,
@@ -347,6 +376,8 @@ class EntitiesClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         from_entity_id : str
@@ -371,6 +402,7 @@ class EntitiesClient:
             api_key="YOUR_API_KEY",
         )
         client.entities.create_entity_relation(
+            creds="creds",
             name="name",
             from_entity_id="from_entity_id",
             to_entity_id="to_entity_id",
@@ -379,6 +411,9 @@ class EntitiesClient:
         _response = self._client_wrapper.httpx_client.request(
             "entities/relations/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -419,6 +454,7 @@ class EntitiesClient:
         self,
         relation_id: str,
         *,
+        creds: str,
         name: str,
         from_entity_id: str,
         to_entity_id: str,
@@ -431,6 +467,8 @@ class EntitiesClient:
         Parameters
         ----------
         relation_id : str
+
+        creds : str
 
         name : str
 
@@ -457,6 +495,7 @@ class EntitiesClient:
         )
         client.entities.update_entity_relation(
             relation_id="relation_id",
+            creds="creds",
             name="name",
             from_entity_id="from_entity_id",
             to_entity_id="to_entity_id",
@@ -465,6 +504,9 @@ class EntitiesClient:
         _response = self._client_wrapper.httpx_client.request(
             f"entities/relations/{jsonable_encoder(relation_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -502,7 +544,7 @@ class EntitiesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_entity_definitions_by_ids(
-        self, *, request: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityDefinition]:
         """
         Get multiple entity definitions by their IDs.
@@ -517,6 +559,8 @@ class EntitiesClient:
 
         Parameters
         ----------
+        creds : str
+
         request : typing.Sequence[str]
 
         request_options : typing.Optional[RequestOptions]
@@ -535,12 +579,16 @@ class EntitiesClient:
             api_key="YOUR_API_KEY",
         )
         client.entities.get_entity_definitions_by_ids(
-            request=["string"],
+            creds="creds",
+            request=["string", "string"],
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             "entities/definitions/by-ids/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json=request,
             request_options=request_options,
             omit=OMIT,
@@ -570,7 +618,7 @@ class EntitiesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_entity_definitions_by_source_short_name(
-        self, *, source_short_name: str, request_options: typing.Optional[RequestOptions] = None
+        self, *, source_short_name: str, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityDefinition]:
         """
         Get all entity definitions for a given source.
@@ -578,6 +626,8 @@ class EntitiesClient:
         Parameters
         ----------
         source_short_name : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -596,6 +646,7 @@ class EntitiesClient:
         )
         client.entities.get_entity_definitions_by_source_short_name(
             source_short_name="source_short_name",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -603,6 +654,7 @@ class EntitiesClient:
             method="GET",
             params={
                 "source_short_name": source_short_name,
+                "creds": creds,
             },
             request_options=request_options,
         )
@@ -636,13 +688,15 @@ class AsyncEntitiesClient:
         self._client_wrapper = client_wrapper
 
     async def list_entity_definitions(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityDefinition]:
         """
         List all entity definitions for the current user's organization.
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -663,7 +717,9 @@ class AsyncEntitiesClient:
 
 
         async def main() -> None:
-            await client.entities.list_entity_definitions()
+            await client.entities.list_entity_definitions(
+                creds="creds",
+            )
 
 
         asyncio.run(main())
@@ -671,6 +727,9 @@ class AsyncEntitiesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "entities/definitions/",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -700,6 +759,7 @@ class AsyncEntitiesClient:
     async def create_entity_definition(
         self,
         *,
+        creds: str,
         name: str,
         type: EntityType,
         entity_schema: EntityDefinitionCreateEntitySchema,
@@ -714,6 +774,8 @@ class AsyncEntitiesClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         type : EntityType
@@ -749,9 +811,10 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.create_entity_definition(
+                creds="creds",
                 name="name",
                 type="file",
-                entity_schema=["entity_schema"],
+                entity_schema=["entity_schema", "entity_schema"],
                 module_name="module_name",
                 class_name="class_name",
             )
@@ -762,6 +825,9 @@ class AsyncEntitiesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "entities/definitions/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -807,6 +873,7 @@ class AsyncEntitiesClient:
         self,
         definition_id: str,
         *,
+        creds: str,
         name: str,
         type: EntityType,
         entity_schema: EntityDefinitionUpdateEntitySchema,
@@ -822,6 +889,8 @@ class AsyncEntitiesClient:
         Parameters
         ----------
         definition_id : str
+
+        creds : str
 
         name : str
 
@@ -859,9 +928,10 @@ class AsyncEntitiesClient:
         async def main() -> None:
             await client.entities.update_entity_definition(
                 definition_id="definition_id",
+                creds="creds",
                 name="name",
                 type="file",
-                entity_schema=["entity_schema"],
+                entity_schema=["entity_schema", "entity_schema"],
                 module_name="module_name",
                 class_name="class_name",
             )
@@ -872,6 +942,9 @@ class AsyncEntitiesClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"entities/definitions/{jsonable_encoder(definition_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -914,13 +987,15 @@ class AsyncEntitiesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def list_entity_relations(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityRelation]:
         """
         List all entity relations for the current user's organization.
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -941,7 +1016,9 @@ class AsyncEntitiesClient:
 
 
         async def main() -> None:
-            await client.entities.list_entity_relations()
+            await client.entities.list_entity_relations(
+                creds="creds",
+            )
 
 
         asyncio.run(main())
@@ -949,6 +1026,9 @@ class AsyncEntitiesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "entities/relations/",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -978,6 +1058,7 @@ class AsyncEntitiesClient:
     async def create_entity_relation(
         self,
         *,
+        creds: str,
         name: str,
         from_entity_id: str,
         to_entity_id: str,
@@ -989,6 +1070,8 @@ class AsyncEntitiesClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         from_entity_id : str
@@ -1018,6 +1101,7 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.create_entity_relation(
+                creds="creds",
                 name="name",
                 from_entity_id="from_entity_id",
                 to_entity_id="to_entity_id",
@@ -1029,6 +1113,9 @@ class AsyncEntitiesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "entities/relations/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -1069,6 +1156,7 @@ class AsyncEntitiesClient:
         self,
         relation_id: str,
         *,
+        creds: str,
         name: str,
         from_entity_id: str,
         to_entity_id: str,
@@ -1081,6 +1169,8 @@ class AsyncEntitiesClient:
         Parameters
         ----------
         relation_id : str
+
+        creds : str
 
         name : str
 
@@ -1112,6 +1202,7 @@ class AsyncEntitiesClient:
         async def main() -> None:
             await client.entities.update_entity_relation(
                 relation_id="relation_id",
+                creds="creds",
                 name="name",
                 from_entity_id="from_entity_id",
                 to_entity_id="to_entity_id",
@@ -1123,6 +1214,9 @@ class AsyncEntitiesClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"entities/relations/{jsonable_encoder(relation_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -1160,7 +1254,7 @@ class AsyncEntitiesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_entity_definitions_by_ids(
-        self, *, request: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityDefinition]:
         """
         Get multiple entity definitions by their IDs.
@@ -1175,6 +1269,8 @@ class AsyncEntitiesClient:
 
         Parameters
         ----------
+        creds : str
+
         request : typing.Sequence[str]
 
         request_options : typing.Optional[RequestOptions]
@@ -1198,7 +1294,8 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.get_entity_definitions_by_ids(
-                request=["string"],
+                creds="creds",
+                request=["string", "string"],
             )
 
 
@@ -1207,6 +1304,9 @@ class AsyncEntitiesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "entities/definitions/by-ids/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json=request,
             request_options=request_options,
             omit=OMIT,
@@ -1236,7 +1336,7 @@ class AsyncEntitiesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_entity_definitions_by_source_short_name(
-        self, *, source_short_name: str, request_options: typing.Optional[RequestOptions] = None
+        self, *, source_short_name: str, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EntityDefinition]:
         """
         Get all entity definitions for a given source.
@@ -1244,6 +1344,8 @@ class AsyncEntitiesClient:
         Parameters
         ----------
         source_short_name : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1267,6 +1369,7 @@ class AsyncEntitiesClient:
         async def main() -> None:
             await client.entities.get_entity_definitions_by_source_short_name(
                 source_short_name="source_short_name",
+                creds="creds",
             )
 
 
@@ -1277,6 +1380,7 @@ class AsyncEntitiesClient:
             method="GET",
             params={
                 "source_short_name": source_short_name,
+                "creds": creds,
             },
             request_options=request_options,
         )

@@ -16,7 +16,7 @@ class SearchClient:
         self._client_wrapper = client_wrapper
 
     def search(
-        self, *, sync_id: str, query: str, request_options: typing.Optional[RequestOptions] = None
+        self, *, sync_id: str, query: str, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[typing.Dict[str, typing.Optional[typing.Any]]]:
         """
         Search for documents within a specific sync.
@@ -40,6 +40,8 @@ class SearchClient:
         query : str
             Search query text
 
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -58,6 +60,7 @@ class SearchClient:
         client.search.search(
             sync_id="sync_id",
             query="query",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -66,6 +69,7 @@ class SearchClient:
             params={
                 "sync_id": sync_id,
                 "query": query,
+                "creds": creds,
             },
             request_options=request_options,
         )
@@ -99,7 +103,7 @@ class AsyncSearchClient:
         self._client_wrapper = client_wrapper
 
     async def search(
-        self, *, sync_id: str, query: str, request_options: typing.Optional[RequestOptions] = None
+        self, *, sync_id: str, query: str, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[typing.Dict[str, typing.Optional[typing.Any]]]:
         """
         Search for documents within a specific sync.
@@ -122,6 +126,8 @@ class AsyncSearchClient:
 
         query : str
             Search query text
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -146,6 +152,7 @@ class AsyncSearchClient:
             await client.search.search(
                 sync_id="sync_id",
                 query="query",
+                creds="creds",
             )
 
 
@@ -157,6 +164,7 @@ class AsyncSearchClient:
             params={
                 "sync_id": sync_id,
                 "query": query,
+                "creds": creds,
             },
             request_options=request_options,
         )

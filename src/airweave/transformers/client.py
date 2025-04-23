@@ -20,12 +20,16 @@ class TransformersClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_transformers(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Transformer]:
+    def list_transformers(
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[Transformer]:
         """
         List all transformers for the current user's organization.
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -41,11 +45,16 @@ class TransformersClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.transformers.list_transformers()
+        client.transformers.list_transformers(
+            creds="creds",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
             "transformers/",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -75,6 +84,7 @@ class TransformersClient:
     def create_transformer(
         self,
         *,
+        creds: str,
         name: str,
         method_name: str,
         module_name: str,
@@ -89,6 +99,8 @@ class TransformersClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         method_name : str
@@ -119,16 +131,26 @@ class TransformersClient:
             api_key="YOUR_API_KEY",
         )
         client.transformers.create_transformer(
+            creds="creds",
             name="name",
             method_name="method_name",
             module_name="module_name",
-            input_entity_definition_ids=["input_entity_definition_ids"],
-            output_entity_definition_ids=["output_entity_definition_ids"],
+            input_entity_definition_ids=[
+                "input_entity_definition_ids",
+                "input_entity_definition_ids",
+            ],
+            output_entity_definition_ids=[
+                "output_entity_definition_ids",
+                "output_entity_definition_ids",
+            ],
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             "transformers/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -172,6 +194,7 @@ class TransformersClient:
         self,
         transformer_id: str,
         *,
+        creds: str,
         name: str,
         method_name: str,
         module_name: str,
@@ -187,6 +210,8 @@ class TransformersClient:
         Parameters
         ----------
         transformer_id : str
+
+        creds : str
 
         name : str
 
@@ -219,16 +244,26 @@ class TransformersClient:
         )
         client.transformers.update_transformer(
             transformer_id="transformer_id",
+            creds="creds",
             name="name",
             method_name="method_name",
             module_name="module_name",
-            input_entity_definition_ids=["input_entity_definition_ids"],
-            output_entity_definition_ids=["output_entity_definition_ids"],
+            input_entity_definition_ids=[
+                "input_entity_definition_ids",
+                "input_entity_definition_ids",
+            ],
+            output_entity_definition_ids=[
+                "output_entity_definition_ids",
+                "output_entity_definition_ids",
+            ],
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"transformers/{jsonable_encoder(transformer_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -274,13 +309,15 @@ class AsyncTransformersClient:
         self._client_wrapper = client_wrapper
 
     async def list_transformers(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Transformer]:
         """
         List all transformers for the current user's organization.
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -301,7 +338,9 @@ class AsyncTransformersClient:
 
 
         async def main() -> None:
-            await client.transformers.list_transformers()
+            await client.transformers.list_transformers(
+                creds="creds",
+            )
 
 
         asyncio.run(main())
@@ -309,6 +348,9 @@ class AsyncTransformersClient:
         _response = await self._client_wrapper.httpx_client.request(
             "transformers/",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -338,6 +380,7 @@ class AsyncTransformersClient:
     async def create_transformer(
         self,
         *,
+        creds: str,
         name: str,
         method_name: str,
         module_name: str,
@@ -352,6 +395,8 @@ class AsyncTransformersClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         method_name : str
@@ -387,11 +432,18 @@ class AsyncTransformersClient:
 
         async def main() -> None:
             await client.transformers.create_transformer(
+                creds="creds",
                 name="name",
                 method_name="method_name",
                 module_name="module_name",
-                input_entity_definition_ids=["input_entity_definition_ids"],
-                output_entity_definition_ids=["output_entity_definition_ids"],
+                input_entity_definition_ids=[
+                    "input_entity_definition_ids",
+                    "input_entity_definition_ids",
+                ],
+                output_entity_definition_ids=[
+                    "output_entity_definition_ids",
+                    "output_entity_definition_ids",
+                ],
             )
 
 
@@ -400,6 +452,9 @@ class AsyncTransformersClient:
         _response = await self._client_wrapper.httpx_client.request(
             "transformers/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,
@@ -443,6 +498,7 @@ class AsyncTransformersClient:
         self,
         transformer_id: str,
         *,
+        creds: str,
         name: str,
         method_name: str,
         module_name: str,
@@ -458,6 +514,8 @@ class AsyncTransformersClient:
         Parameters
         ----------
         transformer_id : str
+
+        creds : str
 
         name : str
 
@@ -495,11 +553,18 @@ class AsyncTransformersClient:
         async def main() -> None:
             await client.transformers.update_transformer(
                 transformer_id="transformer_id",
+                creds="creds",
                 name="name",
                 method_name="method_name",
                 module_name="module_name",
-                input_entity_definition_ids=["input_entity_definition_ids"],
-                output_entity_definition_ids=["output_entity_definition_ids"],
+                input_entity_definition_ids=[
+                    "input_entity_definition_ids",
+                    "input_entity_definition_ids",
+                ],
+                output_entity_definition_ids=[
+                    "output_entity_definition_ids",
+                    "output_entity_definition_ids",
+                ],
             )
 
 
@@ -508,6 +573,9 @@ class AsyncTransformersClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"transformers/{jsonable_encoder(transformer_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "description": description,

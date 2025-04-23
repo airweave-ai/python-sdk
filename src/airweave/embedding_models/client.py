@@ -19,7 +19,7 @@ class EmbeddingModelsClient:
         self._client_wrapper = client_wrapper
 
     def read_embedding_model(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, short_name: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> EmbeddingModelWithConfigFields:
         """
         Get embedding model by id.
@@ -38,6 +38,8 @@ class EmbeddingModelsClient:
         ----------
         short_name : str
 
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -55,11 +57,15 @@ class EmbeddingModelsClient:
         )
         client.embedding_models.read_embedding_model(
             short_name="short_name",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"embedding_models/detail/{jsonable_encoder(short_name)}",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -87,7 +93,7 @@ class EmbeddingModelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def read_embedding_models(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EmbeddingModel]:
         """
         Get all embedding models.
@@ -103,6 +109,8 @@ class EmbeddingModelsClient:
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -118,11 +126,16 @@ class EmbeddingModelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.embedding_models.read_embedding_models()
+        client.embedding_models.read_embedding_models(
+            creds="creds",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
             "embedding_models/list",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -155,7 +168,7 @@ class AsyncEmbeddingModelsClient:
         self._client_wrapper = client_wrapper
 
     async def read_embedding_model(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, short_name: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> EmbeddingModelWithConfigFields:
         """
         Get embedding model by id.
@@ -173,6 +186,8 @@ class AsyncEmbeddingModelsClient:
         Parameters
         ----------
         short_name : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -196,6 +211,7 @@ class AsyncEmbeddingModelsClient:
         async def main() -> None:
             await client.embedding_models.read_embedding_model(
                 short_name="short_name",
+                creds="creds",
             )
 
 
@@ -204,6 +220,9 @@ class AsyncEmbeddingModelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"embedding_models/detail/{jsonable_encoder(short_name)}",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -231,7 +250,7 @@ class AsyncEmbeddingModelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def read_embedding_models(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[EmbeddingModel]:
         """
         Get all embedding models.
@@ -247,6 +266,8 @@ class AsyncEmbeddingModelsClient:
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -267,7 +288,9 @@ class AsyncEmbeddingModelsClient:
 
 
         async def main() -> None:
-            await client.embedding_models.read_embedding_models()
+            await client.embedding_models.read_embedding_models(
+                creds="creds",
+            )
 
 
         asyncio.run(main())
@@ -275,6 +298,9 @@ class AsyncEmbeddingModelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             "embedding_models/list",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:

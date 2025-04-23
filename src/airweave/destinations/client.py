@@ -18,7 +18,9 @@ class DestinationsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_destinations(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Destination]:
+    def list_destinations(
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[Destination]:
         """
         Get all available destinations.
 
@@ -33,6 +35,8 @@ class DestinationsClient:
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -48,11 +52,16 @@ class DestinationsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.destinations.list_destinations()
+        client.destinations.list_destinations(
+            creds="creds",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
             "destinations/list",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -80,7 +89,7 @@ class DestinationsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def read_destination(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, short_name: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> DestinationWithConfigFields:
         """
         Get destination by short name.
@@ -99,6 +108,8 @@ class DestinationsClient:
         ----------
         short_name : str
 
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -116,11 +127,15 @@ class DestinationsClient:
         )
         client.destinations.read_destination(
             short_name="short_name",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"destinations/detail/{jsonable_encoder(short_name)}",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -153,7 +168,7 @@ class AsyncDestinationsClient:
         self._client_wrapper = client_wrapper
 
     async def list_destinations(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Destination]:
         """
         Get all available destinations.
@@ -169,6 +184,8 @@ class AsyncDestinationsClient:
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -189,7 +206,9 @@ class AsyncDestinationsClient:
 
 
         async def main() -> None:
-            await client.destinations.list_destinations()
+            await client.destinations.list_destinations(
+                creds="creds",
+            )
 
 
         asyncio.run(main())
@@ -197,6 +216,9 @@ class AsyncDestinationsClient:
         _response = await self._client_wrapper.httpx_client.request(
             "destinations/list",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -224,7 +246,7 @@ class AsyncDestinationsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def read_destination(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, short_name: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> DestinationWithConfigFields:
         """
         Get destination by short name.
@@ -242,6 +264,8 @@ class AsyncDestinationsClient:
         Parameters
         ----------
         short_name : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -265,6 +289,7 @@ class AsyncDestinationsClient:
         async def main() -> None:
             await client.destinations.read_destination(
                 short_name="short_name",
+                creds="creds",
             )
 
 
@@ -273,6 +298,9 @@ class AsyncDestinationsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"destinations/detail/{jsonable_encoder(short_name)}",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:

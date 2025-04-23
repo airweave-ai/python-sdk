@@ -22,7 +22,9 @@ class WhiteLabelsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_white_labels(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[WhiteLabel]:
+    def list_white_labels(
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[WhiteLabel]:
         """
         List all white labels for the current user's organization.
 
@@ -37,6 +39,8 @@ class WhiteLabelsClient:
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -52,11 +56,16 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.list_white_labels()
+        client.white_labels.list_white_labels(
+            creds="creds",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
             "white_labels/list",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -86,6 +95,7 @@ class WhiteLabelsClient:
     def create_white_label(
         self,
         *,
+        creds: str,
         name: str,
         source_short_name: str,
         redirect_url: str,
@@ -108,6 +118,8 @@ class WhiteLabelsClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         source_short_name : str
@@ -134,6 +146,7 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
         )
         client.white_labels.create_white_label(
+            creds="creds",
             name="name",
             source_short_name="source_short_name",
             redirect_url="redirect_url",
@@ -144,6 +157,9 @@ class WhiteLabelsClient:
         _response = self._client_wrapper.httpx_client.request(
             "white_labels/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "source_short_name": source_short_name,
@@ -182,7 +198,7 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> WhiteLabel:
         """
         Get a specific white label integration.
@@ -201,6 +217,8 @@ class WhiteLabelsClient:
         ----------
         white_label_id : str
 
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -218,11 +236,15 @@ class WhiteLabelsClient:
         )
         client.white_labels.get_white_label(
             white_label_id="white_label_id",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -253,6 +275,7 @@ class WhiteLabelsClient:
         self,
         white_label_id: str,
         *,
+        creds: str,
         name: typing.Optional[str] = OMIT,
         redirect_url: typing.Optional[str] = OMIT,
         client_id: typing.Optional[str] = OMIT,
@@ -276,6 +299,8 @@ class WhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         name : typing.Optional[str]
 
@@ -302,11 +327,15 @@ class WhiteLabelsClient:
         )
         client.white_labels.update_white_label(
             white_label_id="white_label_id",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "redirect_url": redirect_url,
@@ -344,7 +373,7 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> WhiteLabel:
         """
         Delete a white label integration.
@@ -363,6 +392,8 @@ class WhiteLabelsClient:
         ----------
         white_label_id : str
 
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -380,11 +411,15 @@ class WhiteLabelsClient:
         )
         client.white_labels.delete_white_label(
             white_label_id="white_label_id",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}",
             method="DELETE",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -412,7 +447,7 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_white_label_oauth_2_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
         Generate the OAuth2 authorization URL by delegating to oauth2_service.
@@ -431,6 +466,8 @@ class WhiteLabelsClient:
         ----------
         white_label_id : str
 
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -448,11 +485,15 @@ class WhiteLabelsClient:
         )
         client.white_labels.get_white_label_oauth_2_auth_url(
             white_label_id="white_label_id",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -480,7 +521,7 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def exchange_white_label_oauth_2_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request: str, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Exchange OAuth2 code for tokens and create connection.
@@ -499,6 +540,8 @@ class WhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         request : str
 
@@ -519,12 +562,16 @@ class WhiteLabelsClient:
         )
         client.white_labels.exchange_white_label_oauth_2_code(
             white_label_id="white_label_id",
+            creds="creds",
             request="string",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/code",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json=request,
             request_options=request_options,
             omit=OMIT,
@@ -554,7 +601,7 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Sync]:
         """
         List all syncs for a specific white label.
@@ -573,6 +620,8 @@ class WhiteLabelsClient:
         ----------
         white_label_id : str
 
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -590,11 +639,15 @@ class WhiteLabelsClient:
         )
         client.white_labels.list_white_label_syncs(
             white_label_id="white_label_id",
+            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -627,7 +680,7 @@ class AsyncWhiteLabelsClient:
         self._client_wrapper = client_wrapper
 
     async def list_white_labels(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[WhiteLabel]:
         """
         List all white labels for the current user's organization.
@@ -643,6 +696,8 @@ class AsyncWhiteLabelsClient:
 
         Parameters
         ----------
+        creds : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -663,7 +718,9 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_labels()
+            await client.white_labels.list_white_labels(
+                creds="creds",
+            )
 
 
         asyncio.run(main())
@@ -671,6 +728,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             "white_labels/list",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -700,6 +760,7 @@ class AsyncWhiteLabelsClient:
     async def create_white_label(
         self,
         *,
+        creds: str,
         name: str,
         source_short_name: str,
         redirect_url: str,
@@ -722,6 +783,8 @@ class AsyncWhiteLabelsClient:
 
         Parameters
         ----------
+        creds : str
+
         name : str
 
         source_short_name : str
@@ -753,6 +816,7 @@ class AsyncWhiteLabelsClient:
 
         async def main() -> None:
             await client.white_labels.create_white_label(
+                creds="creds",
                 name="name",
                 source_short_name="source_short_name",
                 redirect_url="redirect_url",
@@ -766,6 +830,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             "white_labels/",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "source_short_name": source_short_name,
@@ -804,7 +871,7 @@ class AsyncWhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> WhiteLabel:
         """
         Get a specific white label integration.
@@ -822,6 +889,8 @@ class AsyncWhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -845,6 +914,7 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.get_white_label(
                 white_label_id="white_label_id",
+                creds="creds",
             )
 
 
@@ -853,6 +923,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -883,6 +956,7 @@ class AsyncWhiteLabelsClient:
         self,
         white_label_id: str,
         *,
+        creds: str,
         name: typing.Optional[str] = OMIT,
         redirect_url: typing.Optional[str] = OMIT,
         client_id: typing.Optional[str] = OMIT,
@@ -906,6 +980,8 @@ class AsyncWhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         name : typing.Optional[str]
 
@@ -937,6 +1013,7 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.update_white_label(
                 white_label_id="white_label_id",
+                creds="creds",
             )
 
 
@@ -945,6 +1022,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}",
             method="PUT",
+            params={
+                "creds": creds,
+            },
             json={
                 "name": name,
                 "redirect_url": redirect_url,
@@ -982,7 +1062,7 @@ class AsyncWhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> WhiteLabel:
         """
         Delete a white label integration.
@@ -1000,6 +1080,8 @@ class AsyncWhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1023,6 +1105,7 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.delete_white_label(
                 white_label_id="white_label_id",
+                creds="creds",
             )
 
 
@@ -1031,6 +1114,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}",
             method="DELETE",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -1058,7 +1144,7 @@ class AsyncWhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_white_label_oauth_2_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
         Generate the OAuth2 authorization URL by delegating to oauth2_service.
@@ -1076,6 +1162,8 @@ class AsyncWhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1099,6 +1187,7 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.get_white_label_oauth_2_auth_url(
                 white_label_id="white_label_id",
+                creds="creds",
             )
 
 
@@ -1107,6 +1196,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
@@ -1134,7 +1226,7 @@ class AsyncWhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def exchange_white_label_oauth_2_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request: str, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Exchange OAuth2 code for tokens and create connection.
@@ -1153,6 +1245,8 @@ class AsyncWhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         request : str
 
@@ -1178,6 +1272,7 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.exchange_white_label_oauth_2_code(
                 white_label_id="white_label_id",
+                creds="creds",
                 request="string",
             )
 
@@ -1187,6 +1282,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/code",
             method="POST",
+            params={
+                "creds": creds,
+            },
             json=request,
             request_options=request_options,
             omit=OMIT,
@@ -1216,7 +1314,7 @@ class AsyncWhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Sync]:
         """
         List all syncs for a specific white label.
@@ -1234,6 +1332,8 @@ class AsyncWhiteLabelsClient:
         Parameters
         ----------
         white_label_id : str
+
+        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1257,6 +1357,7 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.list_white_label_syncs(
                 white_label_id="white_label_id",
+                creds="creds",
             )
 
 
@@ -1265,6 +1366,9 @@ class AsyncWhiteLabelsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
             method="GET",
+            params={
+                "creds": creds,
+            },
             request_options=request_options,
         )
         try:
