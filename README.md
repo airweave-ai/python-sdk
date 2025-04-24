@@ -25,8 +25,9 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.api_keys.create_api_key(
+client.users.create_or_update_user(
     creds="creds",
+    email="email",
 )
 ```
 
@@ -45,8 +46,9 @@ client = AsyncAirweaveSDK(
 
 
 async def main() -> None:
-    await client.api_keys.create_api_key(
+    await client.users.create_or_update_user(
         creds="creds",
+        email="email",
     )
 
 
@@ -62,7 +64,7 @@ will be thrown.
 from airweave.core.api_error import ApiError
 
 try:
-    client.api_keys.create_api_key(...)
+    client.users.create_or_update_user(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -85,7 +87,7 @@ A request is deemed retriable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.api_keys.create_api_key(..., request_options={
+client.users.create_or_update_user(..., request_options={
     "max_retries": 1
 })
 ```
@@ -105,7 +107,7 @@ client = AirweaveSDK(
 
 
 # Override timeout for a specific method
-client.api_keys.create_api_key(..., request_options={
+client.users.create_or_update_user(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

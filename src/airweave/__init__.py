@@ -2,6 +2,7 @@
 
 from .types import (
     ApiKey,
+    ApiKeyCreate,
     ApiKeyWithPlainKey,
     AuthType,
     BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
@@ -48,7 +49,6 @@ from .types import (
 )
 from .errors import UnprocessableEntityError
 from . import (
-    api_keys,
     connections,
     destinations,
     embedding_models,
@@ -70,6 +70,7 @@ __all__ = [
     "AirweaveSDK",
     "AirweaveSDKEnvironment",
     "ApiKey",
+    "ApiKeyCreate",
     "ApiKeyWithPlainKey",
     "AsyncAirweaveSDK",
     "AuthType",
@@ -119,7 +120,6 @@ __all__ = [
     "ValidationErrorLocItem",
     "WhiteLabel",
     "__version__",
-    "api_keys",
     "connections",
     "destinations",
     "embedding_models",

@@ -5,4 +5,4 @@ import enum
 
 class AirweaveSDKEnvironment(enum.Enum):
     PRODUCTION = "https://api.airweave.ai"
-    DEVELOPMENT = "https://api.dev-airweave.com"
+    LOCAL = "http://localhost:8001"
