@@ -4,6 +4,7 @@ import typing
 from .environment import AirweaveSDKEnvironment
 import httpx
 from .core.client_wrapper import SyncClientWrapper
+from .api_keys.client import ApiKeysClient
 from .users.client import UsersClient
 from .sources.client import SourcesClient
 from .destinations.client import DestinationsClient
@@ -15,6 +16,7 @@ from .white_labels.client import WhiteLabelsClient
 from .entities.client import EntitiesClient
 from .transformers.client import TransformersClient
 from .core.client_wrapper import AsyncClientWrapper
+from .api_keys.client import AsyncApiKeysClient
 from .users.client import AsyncUsersClient
 from .sources.client import AsyncSourcesClient
 from .destinations.client import AsyncDestinationsClient
@@ -85,6 +87,7 @@ class AirweaveSDK:
             else httpx.Client(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
+        self.api_keys = ApiKeysClient(client_wrapper=self._client_wrapper)
         self.users = UsersClient(client_wrapper=self._client_wrapper)
         self.sources = SourcesClient(client_wrapper=self._client_wrapper)
         self.destinations = DestinationsClient(client_wrapper=self._client_wrapper)
@@ -155,6 +158,7 @@ class AsyncAirweaveSDK:
             else httpx.AsyncClient(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
+        self.api_keys = AsyncApiKeysClient(client_wrapper=self._client_wrapper)
         self.users = AsyncUsersClient(client_wrapper=self._client_wrapper)
         self.sources = AsyncSourcesClient(client_wrapper=self._client_wrapper)
         self.destinations = AsyncDestinationsClient(client_wrapper=self._client_wrapper)

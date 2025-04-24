@@ -1,4 +1,379 @@
 # Reference
+## ApiKeys
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">read_api_keys</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve all API keys for the current user.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    skip (int): Number of records to skip for pagination.
+    limit (int): Maximum number of records to return.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    List[schemas.APIKey]: A list of API keys.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.read_api_keys(
+    creds="creds",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**creds:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**skip:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">create_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new API key for the current user.
+
+Returns a temporary plain key for the user to store securely.
+This is not stored in the database.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    api_key_in (schemas.APIKeyCreate): The API key creation data.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKeyWithPlainKey: The created API key object, including the key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.create_api_key(
+    creds="creds",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**creds:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**expiration_date:** `typing.Optional[dt.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">delete_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete an API key.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    id (UUID): The ID of the API key.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKey: The revoked API key object.
+
+Raises:
+------
+    HTTPException: If the API key is not found.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.delete_api_key(
+    id="id",
+    creds="creds",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**creds:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">read_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve an API key by ID.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    id (UUID): The ID of the API key.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKey: The API key object.
+
+Raises:
+------
+    HTTPException: If the API key is not found.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.read_api_key(
+    id="id",
+    creds="creds",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**creds:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Users
 <details><summary><code>client.users.<a href="src/airweave/users/client.py">read_user</a>(...)</code></summary>
 <dl>
@@ -16,6 +391,7 @@ Get current user.
 
 Args:
 ----
+    request (Request): The current request.
     current_user (User): The current user.
 
 Returns:
@@ -95,6 +471,7 @@ Create new user in database if it does not exist.
 Can only create user with the same email as the authenticated user.
 
 Args:
+    request (Request): The request object
     user_data (schemas.UserCreate): The user object to be created.
     db (AsyncSession): Database session dependency to handle database operations.
     auth0_user (Auth0User): Authenticated auth0 user.

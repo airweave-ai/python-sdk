@@ -25,6 +25,7 @@ class UsersClient:
 
         Args:
         ----
+            request (Request): The current request.
             current_user (User): The current user.
 
         Returns:
@@ -101,6 +102,7 @@ class UsersClient:
         Can only create user with the same email as the authenticated user.
 
         Args:
+            request (Request): The request object
             user_data (schemas.UserCreate): The user object to be created.
             db (AsyncSession): Database session dependency to handle database operations.
             auth0_user (Auth0User): Authenticated auth0 user.
@@ -193,6 +195,7 @@ class AsyncUsersClient:
 
         Args:
         ----
+            request (Request): The current request.
             current_user (User): The current user.
 
         Returns:
@@ -277,6 +280,7 @@ class AsyncUsersClient:
         Can only create user with the same email as the authenticated user.
 
         Args:
+            request (Request): The request object
             user_data (schemas.UserCreate): The user object to be created.
             db (AsyncSession): Database session dependency to handle database operations.
             auth0_user (Auth0User): Authenticated auth0 user.
