@@ -254,6 +254,7 @@ class SyncClient:
         creds: str,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
+        status: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SyncJob]:
         """
@@ -264,6 +265,7 @@ class SyncClient:
             db: The database session
             skip: The number of jobs to skip
             limit: The number of jobs to return
+            status: Filter by job status
             user: The current user
 
         Returns:
@@ -277,6 +279,9 @@ class SyncClient:
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
+
+        status : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+            Filter by job status
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -303,6 +308,7 @@ class SyncClient:
             params={
                 "skip": skip,
                 "limit": limit,
+                "status": status,
                 "creds": creds,
             },
             request_options=request_options,
@@ -1206,6 +1212,7 @@ class AsyncSyncClient:
         creds: str,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
+        status: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SyncJob]:
         """
@@ -1216,6 +1223,7 @@ class AsyncSyncClient:
             db: The database session
             skip: The number of jobs to skip
             limit: The number of jobs to return
+            status: Filter by job status
             user: The current user
 
         Returns:
@@ -1229,6 +1237,9 @@ class AsyncSyncClient:
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
+
+        status : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+            Filter by job status
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1263,6 +1274,7 @@ class AsyncSyncClient:
             params={
                 "skip": skip,
                 "limit": limit,
+                "status": status,
                 "creds": creds,
             },
             request_options=request_options,

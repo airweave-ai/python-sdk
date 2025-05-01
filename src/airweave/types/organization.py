@@ -2,25 +2,21 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import datetime as dt
-import typing
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
+import typing
 import pydantic
 
 
-class ApiKey(UniversalBaseModel):
+class Organization(UniversalBaseModel):
     """
-    Schema for APIKey.
+    Organization schema.
     """
 
+    name: str
+    description: str
     id: str
-    key_prefix: str
-    organization: str
     created_at: dt.datetime
     modified_at: dt.datetime
-    last_used_date: typing.Optional[dt.datetime] = None
-    expiration_date: dt.datetime
-    created_by_email: str
-    modified_by_email: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

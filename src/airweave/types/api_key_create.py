@@ -3,8 +3,8 @@
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
 import datetime as dt
-from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
+from ..core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class ApiKeyCreate(UniversalBaseModel):
@@ -12,7 +12,10 @@ class ApiKeyCreate(UniversalBaseModel):
     Schema for creating an APIKey object.
     """
 
-    expiration_date: typing.Optional[dt.datetime] = None
+    expiration_date: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Expiration date for the API key, defaults to 180 days from now
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

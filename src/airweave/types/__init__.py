@@ -7,6 +7,9 @@ from .auth_type import AuthType
 from .body_connect_slack_with_token_connections_direct_token_slack_post import (
     BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
 )
+from .body_send_oauth_2_code_connections_oauth_2_source_code_post import (
+    BodySendOauth2CodeConnectionsOauth2SourceCodePost,
+)
 from .chat import Chat
 from .chat_create import ChatCreate
 from .chat_message import ChatMessage
@@ -23,14 +26,22 @@ from .destination import Destination
 from .destination_with_config_fields import DestinationWithConfigFields
 from .embedding_model import EmbeddingModel
 from .embedding_model_with_config_fields import EmbeddingModelWithConfigFields
+from .entity_count import EntityCount
 from .entity_definition import EntityDefinition
+from .entity_definition_create import EntityDefinitionCreate
+from .entity_definition_create_entity_schema import EntityDefinitionCreateEntitySchema
 from .entity_definition_entity_schema import EntityDefinitionEntitySchema
+from .entity_definition_update import EntityDefinitionUpdate
+from .entity_definition_update_entity_schema import EntityDefinitionUpdateEntitySchema
 from .entity_relation import EntityRelation
+from .entity_relation_create import EntityRelationCreate
+from .entity_relation_update import EntityRelationUpdate
 from .entity_type import EntityType
 from .fields import Fields
 from .http_validation_error import HttpValidationError
 from .integration_type import IntegrationType
 from .node_type import NodeType
+from .organization import Organization
 from .response_type import ResponseType
 from .source import Source
 from .source_with_config_fields import SourceWithConfigFields
@@ -43,7 +54,10 @@ from .sync_job_status import SyncJobStatus
 from .sync_status import SyncStatus
 from .sync_with_source_connection import SyncWithSourceConnection
 from .transformer import Transformer
+from .transformer_create import TransformerCreate
+from .transformer_update import TransformerUpdate
 from .user import User
+from .user_create import UserCreate
 from .validation_error import ValidationError
 from .validation_error_loc_item import ValidationErrorLocItem
 from .white_label import WhiteLabel
@@ -54,6 +68,7 @@ __all__ = [
     "ApiKeyWithPlainKey",
     "AuthType",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
+    "BodySendOauth2CodeConnectionsOauth2SourceCodePost",
     "Chat",
     "ChatCreate",
     "ChatMessage",
@@ -70,14 +85,22 @@ __all__ = [
     "DestinationWithConfigFields",
     "EmbeddingModel",
     "EmbeddingModelWithConfigFields",
+    "EntityCount",
     "EntityDefinition",
+    "EntityDefinitionCreate",
+    "EntityDefinitionCreateEntitySchema",
     "EntityDefinitionEntitySchema",
+    "EntityDefinitionUpdate",
+    "EntityDefinitionUpdateEntitySchema",
     "EntityRelation",
+    "EntityRelationCreate",
+    "EntityRelationUpdate",
     "EntityType",
     "Fields",
     "HttpValidationError",
     "IntegrationType",
     "NodeType",
+    "Organization",
     "ResponseType",
     "Source",
     "SourceWithConfigFields",
@@ -90,7 +113,10 @@ __all__ = [
     "SyncStatus",
     "SyncWithSourceConnection",
     "Transformer",
+    "TransformerCreate",
+    "TransformerUpdate",
     "User",
+    "UserCreate",
     "ValidationError",
     "ValidationErrorLocItem",
     "WhiteLabel",
