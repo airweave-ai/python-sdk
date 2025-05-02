@@ -15,14 +15,10 @@ class SyncJob(UniversalBaseModel):
 
     sync_id: str
     status: typing.Optional[SyncJobStatus] = None
+    entities_detected: typing.Optional[int] = None
     entities_inserted: typing.Optional[int] = None
-    entities_updated: typing.Optional[int] = None
     entities_deleted: typing.Optional[int] = None
-    entities_kept: typing.Optional[int] = None
     entities_skipped: typing.Optional[int] = None
-    started_at: typing.Optional[dt.datetime] = None
-    completed_at: typing.Optional[dt.datetime] = None
-    failed_at: typing.Optional[dt.datetime] = None
     error: typing.Optional[str] = None
     id: str
     organization_id: str
@@ -30,6 +26,9 @@ class SyncJob(UniversalBaseModel):
     modified_by_email: str
     created_at: dt.datetime
     modified_at: dt.datetime
+    started_at: typing.Optional[dt.datetime] = None
+    completed_at: typing.Optional[dt.datetime] = None
+    failed_at: typing.Optional[dt.datetime] = None
     sync_name: typing.Optional[str] = pydantic.Field(default=None)
     """
     Name of the sync, populated from join query

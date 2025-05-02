@@ -28,7 +28,6 @@ class SyncClient:
     def list_syncs(
         self,
         *,
-        creds: str,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
         with_source_connection: typing.Optional[bool] = None,
@@ -51,8 +50,6 @@ class SyncClient:
 
         Parameters
         ----------
-        creds : str
-
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
@@ -74,9 +71,7 @@ class SyncClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sync.list_syncs(
-            creds="creds",
-        )
+        client.sync.list_syncs()
         """
         _response = self._client_wrapper.httpx_client.request(
             "sync/",
@@ -85,7 +80,6 @@ class SyncClient:
                 "skip": skip,
                 "limit": limit,
                 "with_source_connection": with_source_connection,
-                "creds": creds,
             },
             request_options=request_options,
         )
@@ -116,7 +110,6 @@ class SyncClient:
     def create_sync(
         self,
         *,
-        creds: str,
         name: str,
         source_connection_id: str,
         destination_connection_ids: typing.Sequence[str],
@@ -147,8 +140,6 @@ class SyncClient:
 
         Parameters
         ----------
-        creds : str
-
         name : str
 
         source_connection_id : str
@@ -189,21 +180,14 @@ class SyncClient:
             api_key="YOUR_API_KEY",
         )
         client.sync.create_sync(
-            creds="creds",
             name="name",
             source_connection_id="source_connection_id",
-            destination_connection_ids=[
-                "destination_connection_ids",
-                "destination_connection_ids",
-            ],
+            destination_connection_ids=["destination_connection_ids"],
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             "sync/",
             method="POST",
-            params={
-                "creds": creds,
-            },
             json={
                 "name": name,
                 "source_connection_id": source_connection_id,
@@ -251,10 +235,8 @@ class SyncClient:
     def list_all_jobs(
         self,
         *,
-        creds: str,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
-        status: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SyncJob]:
         """
@@ -265,7 +247,6 @@ class SyncClient:
             db: The database session
             skip: The number of jobs to skip
             limit: The number of jobs to return
-            status: Filter by job status
             user: The current user
 
         Returns:
@@ -274,14 +255,9 @@ class SyncClient:
 
         Parameters
         ----------
-        creds : str
-
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
-
-        status : typing.Optional[typing.Union[str, typing.Sequence[str]]]
-            Filter by job status
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -298,9 +274,7 @@ class SyncClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sync.list_all_jobs(
-            creds="creds",
-        )
+        client.sync.list_all_jobs()
         """
         _response = self._client_wrapper.httpx_client.request(
             "sync/jobs",
@@ -308,8 +282,6 @@ class SyncClient:
             params={
                 "skip": skip,
                 "limit": limit,
-                "status": status,
-                "creds": creds,
             },
             request_options=request_options,
         )
@@ -337,7 +309,7 @@ class SyncClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get_sync(self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None) -> Sync:
+    def get_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Sync:
         """
         Get a specific sync by ID.
 
@@ -354,8 +326,6 @@ class SyncClient:
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -374,15 +344,11 @@ class SyncClient:
         )
         client.sync.get_sync(
             sync_id="sync_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -413,7 +379,6 @@ class SyncClient:
         self,
         sync_id: str,
         *,
-        creds: str,
         delete_data: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Sync:
@@ -435,8 +400,6 @@ class SyncClient:
         ----------
         sync_id : str
 
-        creds : str
-
         delete_data : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
@@ -456,7 +419,6 @@ class SyncClient:
         )
         client.sync.delete_sync(
             sync_id="sync_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -464,7 +426,6 @@ class SyncClient:
             method="DELETE",
             params={
                 "delete_data": delete_data,
-                "creds": creds,
             },
             request_options=request_options,
         )
@@ -496,7 +457,6 @@ class SyncClient:
         self,
         sync_id: str,
         *,
-        creds: str,
         name: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
@@ -523,8 +483,6 @@ class SyncClient:
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         name : typing.Optional[str]
 
@@ -557,15 +515,11 @@ class SyncClient:
         )
         client.sync.update_sync(
             sync_id="sync_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}",
             method="PATCH",
-            params={
-                "creds": creds,
-            },
             json={
                 "name": name,
                 "cron_schedule": cron_schedule,
@@ -605,7 +559,7 @@ class SyncClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def run_sync(self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None) -> SyncJob:
+    def run_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncJob:
         """
         Trigger a sync run.
 
@@ -624,8 +578,6 @@ class SyncClient:
         ----------
         sync_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -643,15 +595,11 @@ class SyncClient:
         )
         client.sync.run_sync(
             sync_id="sync_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/run",
             method="POST",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -679,7 +627,7 @@ class SyncClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def list_sync_jobs(
-        self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SyncJob]:
         """
         List all jobs for a specific sync.
@@ -698,8 +646,6 @@ class SyncClient:
         ----------
         sync_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -717,15 +663,11 @@ class SyncClient:
         )
         client.sync.list_sync_jobs(
             sync_id="sync_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/jobs",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -753,7 +695,7 @@ class SyncClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_sync_job(
-        self, sync_id: str, job_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, sync_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SyncJob:
         """
         Get details of a specific sync job.
@@ -775,8 +717,6 @@ class SyncClient:
 
         job_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -795,15 +735,11 @@ class SyncClient:
         client.sync.get_sync_job(
             sync_id="sync_id",
             job_id="job_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/job/{jsonable_encoder(job_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -839,8 +775,7 @@ class SyncClient:
         Args:
         -----
             job_id: The ID of the job to subscribe to
-            request: The request object
-            db: The database session
+            user: The current user
 
         Returns:
         --------
@@ -898,17 +833,13 @@ class SyncClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get_sync_dag(
-        self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> SyncDag:
+    def get_sync_dag(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncDag:
         """
         Get the DAG for a specific sync.
 
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -927,15 +858,11 @@ class SyncClient:
         )
         client.sync.get_sync_dag(
             sync_id="sync_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/dag",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -970,7 +897,6 @@ class AsyncSyncClient:
     async def list_syncs(
         self,
         *,
-        creds: str,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
         with_source_connection: typing.Optional[bool] = None,
@@ -993,8 +919,6 @@ class AsyncSyncClient:
 
         Parameters
         ----------
-        creds : str
-
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
@@ -1021,9 +945,7 @@ class AsyncSyncClient:
 
 
         async def main() -> None:
-            await client.sync.list_syncs(
-                creds="creds",
-            )
+            await client.sync.list_syncs()
 
 
         asyncio.run(main())
@@ -1035,7 +957,6 @@ class AsyncSyncClient:
                 "skip": skip,
                 "limit": limit,
                 "with_source_connection": with_source_connection,
-                "creds": creds,
             },
             request_options=request_options,
         )
@@ -1066,7 +987,6 @@ class AsyncSyncClient:
     async def create_sync(
         self,
         *,
-        creds: str,
         name: str,
         source_connection_id: str,
         destination_connection_ids: typing.Sequence[str],
@@ -1097,8 +1017,6 @@ class AsyncSyncClient:
 
         Parameters
         ----------
-        creds : str
-
         name : str
 
         source_connection_id : str
@@ -1144,13 +1062,9 @@ class AsyncSyncClient:
 
         async def main() -> None:
             await client.sync.create_sync(
-                creds="creds",
                 name="name",
                 source_connection_id="source_connection_id",
-                destination_connection_ids=[
-                    "destination_connection_ids",
-                    "destination_connection_ids",
-                ],
+                destination_connection_ids=["destination_connection_ids"],
             )
 
 
@@ -1159,9 +1073,6 @@ class AsyncSyncClient:
         _response = await self._client_wrapper.httpx_client.request(
             "sync/",
             method="POST",
-            params={
-                "creds": creds,
-            },
             json={
                 "name": name,
                 "source_connection_id": source_connection_id,
@@ -1209,10 +1120,8 @@ class AsyncSyncClient:
     async def list_all_jobs(
         self,
         *,
-        creds: str,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
-        status: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SyncJob]:
         """
@@ -1223,7 +1132,6 @@ class AsyncSyncClient:
             db: The database session
             skip: The number of jobs to skip
             limit: The number of jobs to return
-            status: Filter by job status
             user: The current user
 
         Returns:
@@ -1232,14 +1140,9 @@ class AsyncSyncClient:
 
         Parameters
         ----------
-        creds : str
-
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
-
-        status : typing.Optional[typing.Union[str, typing.Sequence[str]]]
-            Filter by job status
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1261,9 +1164,7 @@ class AsyncSyncClient:
 
 
         async def main() -> None:
-            await client.sync.list_all_jobs(
-                creds="creds",
-            )
+            await client.sync.list_all_jobs()
 
 
         asyncio.run(main())
@@ -1274,8 +1175,6 @@ class AsyncSyncClient:
             params={
                 "skip": skip,
                 "limit": limit,
-                "status": status,
-                "creds": creds,
             },
             request_options=request_options,
         )
@@ -1303,9 +1202,7 @@ class AsyncSyncClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get_sync(
-        self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Sync:
+    async def get_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Sync:
         """
         Get a specific sync by ID.
 
@@ -1322,8 +1219,6 @@ class AsyncSyncClient:
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1347,7 +1242,6 @@ class AsyncSyncClient:
         async def main() -> None:
             await client.sync.get_sync(
                 sync_id="sync_id",
-                creds="creds",
             )
 
 
@@ -1356,9 +1250,6 @@ class AsyncSyncClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -1389,7 +1280,6 @@ class AsyncSyncClient:
         self,
         sync_id: str,
         *,
-        creds: str,
         delete_data: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Sync:
@@ -1410,8 +1300,6 @@ class AsyncSyncClient:
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         delete_data : typing.Optional[bool]
 
@@ -1437,7 +1325,6 @@ class AsyncSyncClient:
         async def main() -> None:
             await client.sync.delete_sync(
                 sync_id="sync_id",
-                creds="creds",
             )
 
 
@@ -1448,7 +1335,6 @@ class AsyncSyncClient:
             method="DELETE",
             params={
                 "delete_data": delete_data,
-                "creds": creds,
             },
             request_options=request_options,
         )
@@ -1480,7 +1366,6 @@ class AsyncSyncClient:
         self,
         sync_id: str,
         *,
-        creds: str,
         name: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
@@ -1507,8 +1392,6 @@ class AsyncSyncClient:
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         name : typing.Optional[str]
 
@@ -1546,7 +1429,6 @@ class AsyncSyncClient:
         async def main() -> None:
             await client.sync.update_sync(
                 sync_id="sync_id",
-                creds="creds",
             )
 
 
@@ -1555,9 +1437,6 @@ class AsyncSyncClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}",
             method="PATCH",
-            params={
-                "creds": creds,
-            },
             json={
                 "name": name,
                 "cron_schedule": cron_schedule,
@@ -1597,9 +1476,7 @@ class AsyncSyncClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def run_sync(
-        self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> SyncJob:
+    async def run_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncJob:
         """
         Trigger a sync run.
 
@@ -1617,8 +1494,6 @@ class AsyncSyncClient:
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1642,7 +1517,6 @@ class AsyncSyncClient:
         async def main() -> None:
             await client.sync.run_sync(
                 sync_id="sync_id",
-                creds="creds",
             )
 
 
@@ -1651,9 +1525,6 @@ class AsyncSyncClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/run",
             method="POST",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -1681,7 +1552,7 @@ class AsyncSyncClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def list_sync_jobs(
-        self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SyncJob]:
         """
         List all jobs for a specific sync.
@@ -1699,8 +1570,6 @@ class AsyncSyncClient:
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1724,7 +1593,6 @@ class AsyncSyncClient:
         async def main() -> None:
             await client.sync.list_sync_jobs(
                 sync_id="sync_id",
-                creds="creds",
             )
 
 
@@ -1733,9 +1601,6 @@ class AsyncSyncClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/jobs",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -1763,7 +1628,7 @@ class AsyncSyncClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_sync_job(
-        self, sync_id: str, job_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, sync_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SyncJob:
         """
         Get details of a specific sync job.
@@ -1784,8 +1649,6 @@ class AsyncSyncClient:
         sync_id : str
 
         job_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1810,7 +1673,6 @@ class AsyncSyncClient:
             await client.sync.get_sync_job(
                 sync_id="sync_id",
                 job_id="job_id",
-                creds="creds",
             )
 
 
@@ -1819,9 +1681,6 @@ class AsyncSyncClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/job/{jsonable_encoder(job_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -1857,8 +1716,7 @@ class AsyncSyncClient:
         Args:
         -----
             job_id: The ID of the job to subscribe to
-            request: The request object
-            db: The database session
+            user: The current user
 
         Returns:
         --------
@@ -1924,17 +1782,13 @@ class AsyncSyncClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get_sync_dag(
-        self, sync_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> SyncDag:
+    async def get_sync_dag(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncDag:
         """
         Get the DAG for a specific sync.
 
         Parameters
         ----------
         sync_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1958,7 +1812,6 @@ class AsyncSyncClient:
         async def main() -> None:
             await client.sync.get_sync_dag(
                 sync_id="sync_id",
-                creds="creds",
             )
 
 
@@ -1967,9 +1820,6 @@ class AsyncSyncClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"sync/{jsonable_encoder(sync_id)}/dag",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:

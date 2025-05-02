@@ -1,5 +1,257 @@
 # Reference
 ## ApiKeys
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">read_api_keys</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve all API keys for the current user.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    skip (int): Number of records to skip for pagination.
+    limit (int): Maximum number of records to return.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    List[schemas.APIKey]: A list of API keys.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.read_api_keys()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**skip:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">create_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new API key for the current user.
+
+Returns a temporary plain key for the user to store securely.
+This is not stored in the database.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    api_key_in (schemas.APIKeyCreate): The API key creation data.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKeyWithPlainKey: The created API key object, including the key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.create_api_key()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**expiration_date:** `typing.Optional[dt.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">delete_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete an API key.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    id (UUID): The ID of the API key.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKey: The revoked API key object.
+
+Raises:
+------
+    HTTPException: If the API key is not found.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.delete_api_key(
+    id="id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">read_api_key</a>(...)</code></summary>
 <dl>
 <dd>
@@ -48,7 +300,6 @@ client = AirweaveSDK(
 )
 client.api_keys.read_api_key(
     id="id",
-    creds="creds",
 )
 
 ```
@@ -66,14 +317,6 @@ client.api_keys.read_api_key(
 <dd>
 
 **id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -138,7 +381,6 @@ client = AirweaveSDK(
 )
 client.sources.read_source(
     short_name="short_name",
-    creds="creds",
 )
 
 ```
@@ -163,14 +405,6 @@ client.sources.read_source(
 <dl>
 <dd>
 
-**creds:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -183,7 +417,7 @@ client.sources.read_source(
 </dl>
 </details>
 
-<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read_sources</a>(...)</code></summary>
+<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read_sources</a>()</code></summary>
 <dl>
 <dd>
 
@@ -224,9 +458,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sources.read_sources(
-    creds="creds",
-)
+client.sources.read_sources()
 
 ```
 </dd>
@@ -238,14 +470,6 @@ client.sources.read_sources(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**creds:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -307,7 +531,6 @@ client = AirweaveSDK(
 )
 client.embedding_models.read_embedding_model(
     short_name="short_name",
-    creds="creds",
 )
 
 ```
@@ -332,14 +555,6 @@ client.embedding_models.read_embedding_model(
 <dl>
 <dd>
 
-**creds:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -352,7 +567,7 @@ client.embedding_models.read_embedding_model(
 </dl>
 </details>
 
-<details><summary><code>client.embedding_models.<a href="src/airweave/embedding_models/client.py">read_embedding_models</a>(...)</code></summary>
+<details><summary><code>client.embedding_models.<a href="src/airweave/embedding_models/client.py">read_embedding_models</a>()</code></summary>
 <dl>
 <dd>
 
@@ -393,9 +608,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.embedding_models.read_embedding_models(
-    creds="creds",
-)
+client.embedding_models.read_embedding_models()
 
 ```
 </dd>
@@ -407,14 +620,6 @@ client.embedding_models.read_embedding_models(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**creds:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -476,7 +681,6 @@ client = AirweaveSDK(
 )
 client.connections.get_connection(
     connection_id="connection_id",
-    creds="creds",
 )
 
 ```
@@ -501,14 +705,6 @@ client.connections.get_connection(
 <dl>
 <dd>
 
-**creds:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -521,7 +717,7 @@ client.connections.get_connection(
 </dl>
 </details>
 
-<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">list_all_connected_integrations</a>(...)</code></summary>
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">list_all_connected_integrations</a>()</code></summary>
 <dl>
 <dd>
 
@@ -562,9 +758,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.connections.list_all_connected_integrations(
-    creds="creds",
-)
+client.connections.list_all_connected_integrations()
 
 ```
 </dd>
@@ -576,14 +770,6 @@ client.connections.list_all_connected_integrations(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**creds:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -644,7 +830,6 @@ client = AirweaveSDK(
 )
 client.connections.list_connected_integrations(
     integration_type="source",
-    creds="creds",
 )
 
 ```
@@ -662,14 +847,6 @@ client.connections.list_connected_integrations(
 <dd>
 
 **integration_type:** `IntegrationType` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -745,8 +922,7 @@ client = AirweaveSDK(
 client.connections.connect_integration(
     integration_type="source",
     short_name="short_name",
-    creds="creds",
-    config_fields={"config_fields": {"key": "value"}},
+    config_fields={"key": "value"},
 )
 
 ```
@@ -772,14 +948,6 @@ client.connections.connect_integration(
 <dd>
 
 **short_name:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -859,7 +1027,6 @@ client = AirweaveSDK(
 )
 client.connections.get_connection_credentials(
     connection_id="connection_id",
-    creds="creds",
 )
 
 ```
@@ -877,14 +1044,6 @@ client.connections.get_connection_credentials(
 <dd>
 
 **connection_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -950,7 +1109,6 @@ client = AirweaveSDK(
 )
 client.connections.delete_connection(
     connection_id="connection_id",
-    creds="creds",
 )
 
 ```
@@ -968,14 +1126,6 @@ client.connections.delete_connection(
 <dd>
 
 **connection_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -1039,7 +1189,6 @@ client = AirweaveSDK(
 )
 client.connections.disconnect_source_connection(
     connection_id="connection_id",
-    creds="creds",
 )
 
 ```
@@ -1057,14 +1206,6 @@ client.connections.disconnect_source_connection(
 <dd>
 
 **connection_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -1130,7 +1271,6 @@ client = AirweaveSDK(
 )
 client.connections.send_oauth_2_white_label_code(
     white_label_id="white_label_id",
-    creds="creds",
     request="string",
 )
 
@@ -1149,14 +1289,6 @@ client.connections.send_oauth_2_white_label_code(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -1228,7 +1360,6 @@ client = AirweaveSDK(
 )
 client.connections.get_oauth_2_white_label_auth_url(
     white_label_id="white_label_id",
-    creds="creds",
 )
 
 ```
@@ -1246,14 +1377,6 @@ client.connections.get_oauth_2_white_label_auth_url(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -1318,9 +1441,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sync.list_syncs(
-    creds="creds",
-)
+client.sync.list_syncs()
 
 ```
 </dd>
@@ -1332,14 +1453,6 @@ client.sync.list_syncs(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**creds:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -1424,13 +1537,9 @@ client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
 client.sync.create_sync(
-    creds="creds",
     name="name",
     source_connection_id="source_connection_id",
-    destination_connection_ids=[
-        "destination_connection_ids",
-        "destination_connection_ids",
-    ],
+    destination_connection_ids=["destination_connection_ids"],
 )
 
 ```
@@ -1443,14 +1552,6 @@ client.sync.create_sync(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**creds:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -1582,7 +1683,6 @@ Args:
     db: The database session
     skip: The number of jobs to skip
     limit: The number of jobs to return
-    status: Filter by job status
     user: The current user
 
 Returns:
@@ -1607,9 +1707,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sync.list_all_jobs(
-    creds="creds",
-)
+client.sync.list_all_jobs()
 
 ```
 </dd>
@@ -1625,14 +1723,6 @@ client.sync.list_all_jobs(
 <dl>
 <dd>
 
-**creds:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **skip:** `typing.Optional[int]` 
     
 </dd>
@@ -1642,14 +1732,6 @@ client.sync.list_all_jobs(
 <dd>
 
 **limit:** `typing.Optional[int]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**status:** `typing.Optional[typing.Union[str, typing.Sequence[str]]]` — Filter by job status
     
 </dd>
 </dl>
@@ -1713,7 +1795,6 @@ client = AirweaveSDK(
 )
 client.sync.get_sync(
     sync_id="sync_id",
-    creds="creds",
 )
 
 ```
@@ -1731,14 +1812,6 @@ client.sync.get_sync(
 <dd>
 
 **sync_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -1803,7 +1876,6 @@ client = AirweaveSDK(
 )
 client.sync.delete_sync(
     sync_id="sync_id",
-    creds="creds",
 )
 
 ```
@@ -1821,14 +1893,6 @@ client.sync.delete_sync(
 <dd>
 
 **sync_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -1901,7 +1965,6 @@ client = AirweaveSDK(
 )
 client.sync.update_sync(
     sync_id="sync_id",
-    creds="creds",
 )
 
 ```
@@ -1919,14 +1982,6 @@ client.sync.update_sync(
 <dd>
 
 **sync_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -2047,7 +2102,6 @@ client = AirweaveSDK(
 )
 client.sync.run_sync(
     sync_id="sync_id",
-    creds="creds",
 )
 
 ```
@@ -2065,14 +2119,6 @@ client.sync.run_sync(
 <dd>
 
 **sync_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -2136,7 +2182,6 @@ client = AirweaveSDK(
 )
 client.sync.list_sync_jobs(
     sync_id="sync_id",
-    creds="creds",
 )
 
 ```
@@ -2154,14 +2199,6 @@ client.sync.list_sync_jobs(
 <dd>
 
 **sync_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -2227,7 +2264,6 @@ client = AirweaveSDK(
 client.sync.get_sync_job(
     sync_id="sync_id",
     job_id="job_id",
-    creds="creds",
 )
 
 ```
@@ -2253,14 +2289,6 @@ client.sync.get_sync_job(
 <dd>
 
 **job_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -2297,8 +2325,7 @@ Server-Sent Events (SSE) endpoint to subscribe to a sync job's progress.
 Args:
 -----
     job_id: The ID of the job to subscribe to
-    request: The request object
-    db: The database session
+    user: The current user
 
 Returns:
 --------
@@ -2394,7 +2421,6 @@ client = AirweaveSDK(
 )
 client.sync.get_sync_dag(
     sync_id="sync_id",
-    creds="creds",
 )
 
 ```
@@ -2412,14 +2438,6 @@ client.sync.get_sync_dag(
 <dd>
 
 **sync_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -2459,12 +2477,11 @@ Args:
     db: The database session
     sync_id: The ID of the sync to search within
     query: The search query text
-    response_type: Type of response (raw results or AI completion)
     user: The current user
 
 Returns:
 --------
-    dict: A dictionary containing search results or AI completion
+    list[dict]: A list of search results
 </dd>
 </dl>
 </dd>
@@ -2487,7 +2504,6 @@ client = AirweaveSDK(
 client.search.search(
     sync_id="sync_id",
     query="query",
-    creds="creds",
 )
 
 ```
@@ -2520,22 +2536,6 @@ client.search.search(
 <dl>
 <dd>
 
-**creds:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**response_type:** `typing.Optional[ResponseType]` — Type of response: raw search results or AI completion
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -2549,7 +2549,7 @@ client.search.search(
 </details>
 
 ## WhiteLabels
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">list_white_labels</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">list_white_labels</a>()</code></summary>
 <dl>
 <dd>
 
@@ -2590,9 +2590,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.white_labels.list_white_labels(
-    creds="creds",
-)
+client.white_labels.list_white_labels()
 
 ```
 </dd>
@@ -2604,14 +2602,6 @@ client.white_labels.list_white_labels(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**creds:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -2671,7 +2661,6 @@ client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
 client.white_labels.create_white_label(
-    creds="creds",
     name="name",
     source_short_name="source_short_name",
     redirect_url="redirect_url",
@@ -2689,14 +2678,6 @@ client.white_labels.create_white_label(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**creds:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -2797,7 +2778,6 @@ client = AirweaveSDK(
 )
 client.white_labels.get_white_label(
     white_label_id="white_label_id",
-    creds="creds",
 )
 
 ```
@@ -2815,14 +2795,6 @@ client.white_labels.get_white_label(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -2887,7 +2859,6 @@ client = AirweaveSDK(
 )
 client.white_labels.update_white_label(
     white_label_id="white_label_id",
-    creds="creds",
 )
 
 ```
@@ -2905,14 +2876,6 @@ client.white_labels.update_white_label(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -3008,7 +2971,6 @@ client = AirweaveSDK(
 )
 client.white_labels.delete_white_label(
     white_label_id="white_label_id",
-    creds="creds",
 )
 
 ```
@@ -3026,14 +2988,6 @@ client.white_labels.delete_white_label(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -3097,7 +3051,6 @@ client = AirweaveSDK(
 )
 client.white_labels.get_white_label_oauth_2_auth_url(
     white_label_id="white_label_id",
-    creds="creds",
 )
 
 ```
@@ -3115,14 +3068,6 @@ client.white_labels.get_white_label_oauth_2_auth_url(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -3187,7 +3132,6 @@ client = AirweaveSDK(
 )
 client.white_labels.exchange_white_label_oauth_2_code(
     white_label_id="white_label_id",
-    creds="creds",
     request="string",
 )
 
@@ -3206,14 +3150,6 @@ client.white_labels.exchange_white_label_oauth_2_code(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>
@@ -3285,7 +3221,6 @@ client = AirweaveSDK(
 )
 client.white_labels.list_white_label_syncs(
     white_label_id="white_label_id",
-    creds="creds",
 )
 
 ```
@@ -3303,14 +3238,6 @@ client.white_labels.list_white_label_syncs(
 <dd>
 
 **white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**creds:** `str` 
     
 </dd>
 </dl>

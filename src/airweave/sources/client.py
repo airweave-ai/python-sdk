@@ -19,7 +19,7 @@ class SourcesClient:
         self._client_wrapper = client_wrapper
 
     def read_source(
-        self, short_name: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceWithConfigFields:
         """
         Get source by id.
@@ -38,8 +38,6 @@ class SourcesClient:
         ----------
         short_name : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -57,15 +55,11 @@ class SourcesClient:
         )
         client.sources.read_source(
             short_name="short_name",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"sources/detail/{jsonable_encoder(short_name)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -92,9 +86,7 @@ class SourcesClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def read_sources(
-        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Source]:
+    def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
         Get all sources for the current user.
 
@@ -109,8 +101,6 @@ class SourcesClient:
 
         Parameters
         ----------
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -126,16 +116,11 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read_sources(
-            creds="creds",
-        )
+        client.sources.read_sources()
         """
         _response = self._client_wrapper.httpx_client.request(
             "sources/list",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -168,7 +153,7 @@ class AsyncSourcesClient:
         self._client_wrapper = client_wrapper
 
     async def read_source(
-        self, short_name: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceWithConfigFields:
         """
         Get source by id.
@@ -186,8 +171,6 @@ class AsyncSourcesClient:
         Parameters
         ----------
         short_name : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -211,7 +194,6 @@ class AsyncSourcesClient:
         async def main() -> None:
             await client.sources.read_source(
                 short_name="short_name",
-                creds="creds",
             )
 
 
@@ -220,9 +202,6 @@ class AsyncSourcesClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"sources/detail/{jsonable_encoder(short_name)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -249,9 +228,7 @@ class AsyncSourcesClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def read_sources(
-        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Source]:
+    async def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
         Get all sources for the current user.
 
@@ -266,8 +243,6 @@ class AsyncSourcesClient:
 
         Parameters
         ----------
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -288,9 +263,7 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_sources(
-                creds="creds",
-            )
+            await client.sources.read_sources()
 
 
         asyncio.run(main())
@@ -298,9 +271,6 @@ class AsyncSourcesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "sources/list",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:

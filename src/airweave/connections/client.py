@@ -22,7 +22,7 @@ class ConnectionsClient:
         self._client_wrapper = client_wrapper
 
     def get_connection(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Get a specific connection.
@@ -41,8 +41,6 @@ class ConnectionsClient:
         ----------
         connection_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -60,15 +58,11 @@ class ConnectionsClient:
         )
         client.connections.get_connection(
             connection_id="connection_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/detail/{jsonable_encoder(connection_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -96,7 +90,7 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def list_all_connected_integrations(
-        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Connection]:
         """
         Get all active connections for the current user across all integration types.
@@ -112,8 +106,6 @@ class ConnectionsClient:
 
         Parameters
         ----------
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -129,16 +121,11 @@ class ConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.connections.list_all_connected_integrations(
-            creds="creds",
-        )
+        client.connections.list_all_connected_integrations()
         """
         _response = self._client_wrapper.httpx_client.request(
             "connections/list",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -166,7 +153,7 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def list_connected_integrations(
-        self, integration_type: IntegrationType, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, integration_type: IntegrationType, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Connection]:
         """
         Get all integrations of specified type connected to the current user.
@@ -185,8 +172,6 @@ class ConnectionsClient:
         ----------
         integration_type : IntegrationType
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -204,15 +189,11 @@ class ConnectionsClient:
         )
         client.connections.list_connected_integrations(
             integration_type="source",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/list/{jsonable_encoder(integration_type)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -244,7 +225,6 @@ class ConnectionsClient:
         integration_type: IntegrationType,
         short_name: str,
         *,
-        creds: str,
         config_fields: typing.Dict[str, typing.Optional[typing.Any]],
         name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -279,8 +259,6 @@ class ConnectionsClient:
 
         short_name : str
 
-        creds : str
-
         config_fields : typing.Dict[str, typing.Optional[typing.Any]]
 
         name : typing.Optional[str]
@@ -303,16 +281,12 @@ class ConnectionsClient:
         client.connections.connect_integration(
             integration_type="source",
             short_name="short_name",
-            creds="creds",
-            config_fields={"config_fields": {"key": "value"}},
+            config_fields={"key": "value"},
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/connect/{jsonable_encoder(integration_type)}/{jsonable_encoder(short_name)}",
             method="POST",
-            params={
-                "creds": creds,
-            },
             json={
                 "name": name,
                 "config_fields": config_fields,
@@ -348,7 +322,7 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_connection_credentials(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.Dict[str, typing.Optional[typing.Any]]:
         """
         Get the credentials for a connection.
@@ -367,8 +341,6 @@ class ConnectionsClient:
         ----------
         connection_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -386,15 +358,11 @@ class ConnectionsClient:
         )
         client.connections.get_connection_credentials(
             connection_id="connection_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/credentials/{jsonable_encoder(connection_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -422,7 +390,7 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def delete_connection(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Delete a connection.
@@ -443,8 +411,6 @@ class ConnectionsClient:
         ----------
         connection_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -462,15 +428,11 @@ class ConnectionsClient:
         )
         client.connections.delete_connection(
             connection_id="connection_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/delete/source/{jsonable_encoder(connection_id)}",
             method="DELETE",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -498,7 +460,7 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def disconnect_source_connection(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Disconnect from a source connection.
@@ -517,8 +479,6 @@ class ConnectionsClient:
         ----------
         connection_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -536,15 +496,11 @@ class ConnectionsClient:
         )
         client.connections.disconnect_source_connection(
             connection_id="connection_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/disconnect/source/{jsonable_encoder(connection_id)}",
             method="PUT",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -572,7 +528,7 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def send_oauth_2_white_label_code(
-        self, white_label_id: str, *, creds: str, request: str, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Exchange the OAuth2 authorization code for a white label integration.
@@ -593,8 +549,6 @@ class ConnectionsClient:
         ----------
         white_label_id : str
 
-        creds : str
-
         request : str
 
         request_options : typing.Optional[RequestOptions]
@@ -614,16 +568,12 @@ class ConnectionsClient:
         )
         client.connections.send_oauth_2_white_label_code(
             white_label_id="white_label_id",
-            creds="creds",
             request="string",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/code",
             method="POST",
-            params={
-                "creds": creds,
-            },
             json=request,
             request_options=request_options,
             omit=OMIT,
@@ -653,7 +603,7 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_oauth_2_white_label_auth_url(
-        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
         Get the OAuth2 authorization URL for a white label integration.
@@ -672,8 +622,6 @@ class ConnectionsClient:
         ----------
         white_label_id : str
 
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -691,15 +639,11 @@ class ConnectionsClient:
         )
         client.connections.get_oauth_2_white_label_auth_url(
             white_label_id="white_label_id",
-            creds="creds",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/auth_url",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -732,7 +676,7 @@ class AsyncConnectionsClient:
         self._client_wrapper = client_wrapper
 
     async def get_connection(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Get a specific connection.
@@ -750,8 +694,6 @@ class AsyncConnectionsClient:
         Parameters
         ----------
         connection_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -775,7 +717,6 @@ class AsyncConnectionsClient:
         async def main() -> None:
             await client.connections.get_connection(
                 connection_id="connection_id",
-                creds="creds",
             )
 
 
@@ -784,9 +725,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/detail/{jsonable_encoder(connection_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -814,7 +752,7 @@ class AsyncConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def list_all_connected_integrations(
-        self, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Connection]:
         """
         Get all active connections for the current user across all integration types.
@@ -830,8 +768,6 @@ class AsyncConnectionsClient:
 
         Parameters
         ----------
-        creds : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -852,9 +788,7 @@ class AsyncConnectionsClient:
 
 
         async def main() -> None:
-            await client.connections.list_all_connected_integrations(
-                creds="creds",
-            )
+            await client.connections.list_all_connected_integrations()
 
 
         asyncio.run(main())
@@ -862,9 +796,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             "connections/list",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -892,7 +823,7 @@ class AsyncConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def list_connected_integrations(
-        self, integration_type: IntegrationType, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, integration_type: IntegrationType, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[Connection]:
         """
         Get all integrations of specified type connected to the current user.
@@ -910,8 +841,6 @@ class AsyncConnectionsClient:
         Parameters
         ----------
         integration_type : IntegrationType
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -935,7 +864,6 @@ class AsyncConnectionsClient:
         async def main() -> None:
             await client.connections.list_connected_integrations(
                 integration_type="source",
-                creds="creds",
             )
 
 
@@ -944,9 +872,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/list/{jsonable_encoder(integration_type)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -978,7 +903,6 @@ class AsyncConnectionsClient:
         integration_type: IntegrationType,
         short_name: str,
         *,
-        creds: str,
         config_fields: typing.Dict[str, typing.Optional[typing.Any]],
         name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1013,8 +937,6 @@ class AsyncConnectionsClient:
 
         short_name : str
 
-        creds : str
-
         config_fields : typing.Dict[str, typing.Optional[typing.Any]]
 
         name : typing.Optional[str]
@@ -1042,8 +964,7 @@ class AsyncConnectionsClient:
             await client.connections.connect_integration(
                 integration_type="source",
                 short_name="short_name",
-                creds="creds",
-                config_fields={"config_fields": {"key": "value"}},
+                config_fields={"key": "value"},
             )
 
 
@@ -1052,9 +973,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/connect/{jsonable_encoder(integration_type)}/{jsonable_encoder(short_name)}",
             method="POST",
-            params={
-                "creds": creds,
-            },
             json={
                 "name": name,
                 "config_fields": config_fields,
@@ -1090,7 +1008,7 @@ class AsyncConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_connection_credentials(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.Dict[str, typing.Optional[typing.Any]]:
         """
         Get the credentials for a connection.
@@ -1108,8 +1026,6 @@ class AsyncConnectionsClient:
         Parameters
         ----------
         connection_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1133,7 +1049,6 @@ class AsyncConnectionsClient:
         async def main() -> None:
             await client.connections.get_connection_credentials(
                 connection_id="connection_id",
-                creds="creds",
             )
 
 
@@ -1142,9 +1057,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/credentials/{jsonable_encoder(connection_id)}",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -1172,7 +1084,7 @@ class AsyncConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def delete_connection(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Delete a connection.
@@ -1192,8 +1104,6 @@ class AsyncConnectionsClient:
         Parameters
         ----------
         connection_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1217,7 +1127,6 @@ class AsyncConnectionsClient:
         async def main() -> None:
             await client.connections.delete_connection(
                 connection_id="connection_id",
-                creds="creds",
             )
 
 
@@ -1226,9 +1135,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/delete/source/{jsonable_encoder(connection_id)}",
             method="DELETE",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -1256,7 +1162,7 @@ class AsyncConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def disconnect_source_connection(
-        self, connection_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Disconnect from a source connection.
@@ -1274,8 +1180,6 @@ class AsyncConnectionsClient:
         Parameters
         ----------
         connection_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1299,7 +1203,6 @@ class AsyncConnectionsClient:
         async def main() -> None:
             await client.connections.disconnect_source_connection(
                 connection_id="connection_id",
-                creds="creds",
             )
 
 
@@ -1308,9 +1211,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/disconnect/source/{jsonable_encoder(connection_id)}",
             method="PUT",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
@@ -1338,7 +1238,7 @@ class AsyncConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def send_oauth_2_white_label_code(
-        self, white_label_id: str, *, creds: str, request: str, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
     ) -> Connection:
         """
         Exchange the OAuth2 authorization code for a white label integration.
@@ -1358,8 +1258,6 @@ class AsyncConnectionsClient:
         Parameters
         ----------
         white_label_id : str
-
-        creds : str
 
         request : str
 
@@ -1385,7 +1283,6 @@ class AsyncConnectionsClient:
         async def main() -> None:
             await client.connections.send_oauth_2_white_label_code(
                 white_label_id="white_label_id",
-                creds="creds",
                 request="string",
             )
 
@@ -1395,9 +1292,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/code",
             method="POST",
-            params={
-                "creds": creds,
-            },
             json=request,
             request_options=request_options,
             omit=OMIT,
@@ -1427,7 +1321,7 @@ class AsyncConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_oauth_2_white_label_auth_url(
-        self, white_label_id: str, *, creds: str, request_options: typing.Optional[RequestOptions] = None
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
         Get the OAuth2 authorization URL for a white label integration.
@@ -1445,8 +1339,6 @@ class AsyncConnectionsClient:
         Parameters
         ----------
         white_label_id : str
-
-        creds : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1470,7 +1362,6 @@ class AsyncConnectionsClient:
         async def main() -> None:
             await client.connections.get_oauth_2_white_label_auth_url(
                 white_label_id="white_label_id",
-                creds="creds",
             )
 
 
@@ -1479,9 +1370,6 @@ class AsyncConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/auth_url",
             method="GET",
-            params={
-                "creds": creds,
-            },
             request_options=request_options,
         )
         try:
