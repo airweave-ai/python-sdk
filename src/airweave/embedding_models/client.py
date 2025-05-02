@@ -3,7 +3,7 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.embedding_model_with_config_fields import EmbeddingModelWithConfigFields
+from ..types.embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
@@ -20,7 +20,7 @@ class EmbeddingModelsClient:
 
     def read_embedding_model(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> EmbeddingModelWithConfigFields:
+    ) -> EmbeddingModelWithAuthenticationFields:
         """
         Get embedding model by id.
 
@@ -43,7 +43,7 @@ class EmbeddingModelsClient:
 
         Returns
         -------
-        EmbeddingModelWithConfigFields
+        EmbeddingModelWithAuthenticationFields
             Successful Response
 
         Examples
@@ -65,9 +65,9 @@ class EmbeddingModelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    EmbeddingModelWithConfigFields,
+                    EmbeddingModelWithAuthenticationFields,
                     parse_obj_as(
-                        type_=EmbeddingModelWithConfigFields,  # type: ignore
+                        type_=EmbeddingModelWithAuthenticationFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -156,7 +156,7 @@ class AsyncEmbeddingModelsClient:
 
     async def read_embedding_model(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> EmbeddingModelWithConfigFields:
+    ) -> EmbeddingModelWithAuthenticationFields:
         """
         Get embedding model by id.
 
@@ -179,7 +179,7 @@ class AsyncEmbeddingModelsClient:
 
         Returns
         -------
-        EmbeddingModelWithConfigFields
+        EmbeddingModelWithAuthenticationFields
             Successful Response
 
         Examples
@@ -209,9 +209,9 @@ class AsyncEmbeddingModelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    EmbeddingModelWithConfigFields,
+                    EmbeddingModelWithAuthenticationFields,
                     parse_obj_as(
-                        type_=EmbeddingModelWithConfigFields,  # type: ignore
+                        type_=EmbeddingModelWithAuthenticationFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -6,15 +6,14 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class EntityRelationCreate(UniversalBaseModel):
+class UserCreate(UniversalBaseModel):
     """
-    Schema for creating an entity relation.
+    Schema for creating a User object.
     """
 
-    name: str
-    description: typing.Optional[str] = None
-    from_entity_id: str
-    to_entity_id: str
+    email: str
+    full_name: typing.Optional[str] = None
+    organization_id: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

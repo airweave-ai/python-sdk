@@ -225,7 +225,7 @@ class ConnectionsClient:
         integration_type: IntegrationType,
         short_name: str,
         *,
-        config_fields: typing.Dict[str, typing.Optional[typing.Any]],
+        auth_fields: typing.Dict[str, typing.Optional[typing.Any]],
         name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Connection:
@@ -246,7 +246,7 @@ class ConnectionsClient:
             integration_type: The type of integration to connect to.
             short_name: The short name of the integration to connect to.
             name: The name of the connection.
-            config_fields: The config fields for the integration.
+            auth_fields: The config fields for the integration.
             user: The current user.
 
         Returns:
@@ -259,7 +259,7 @@ class ConnectionsClient:
 
         short_name : str
 
-        config_fields : typing.Dict[str, typing.Optional[typing.Any]]
+        auth_fields : typing.Dict[str, typing.Optional[typing.Any]]
 
         name : typing.Optional[str]
 
@@ -281,7 +281,7 @@ class ConnectionsClient:
         client.connections.connect_integration(
             integration_type="source",
             short_name="short_name",
-            config_fields={"key": "value"},
+            auth_fields={"key": "value"},
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -289,7 +289,7 @@ class ConnectionsClient:
             method="POST",
             json={
                 "name": name,
-                "config_fields": config_fields,
+                "auth_fields": auth_fields,
             },
             headers={
                 "content-type": "application/json",
@@ -903,7 +903,7 @@ class AsyncConnectionsClient:
         integration_type: IntegrationType,
         short_name: str,
         *,
-        config_fields: typing.Dict[str, typing.Optional[typing.Any]],
+        auth_fields: typing.Dict[str, typing.Optional[typing.Any]],
         name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Connection:
@@ -924,7 +924,7 @@ class AsyncConnectionsClient:
             integration_type: The type of integration to connect to.
             short_name: The short name of the integration to connect to.
             name: The name of the connection.
-            config_fields: The config fields for the integration.
+            auth_fields: The config fields for the integration.
             user: The current user.
 
         Returns:
@@ -937,7 +937,7 @@ class AsyncConnectionsClient:
 
         short_name : str
 
-        config_fields : typing.Dict[str, typing.Optional[typing.Any]]
+        auth_fields : typing.Dict[str, typing.Optional[typing.Any]]
 
         name : typing.Optional[str]
 
@@ -964,7 +964,7 @@ class AsyncConnectionsClient:
             await client.connections.connect_integration(
                 integration_type="source",
                 short_name="short_name",
-                config_fields={"key": "value"},
+                auth_fields={"key": "value"},
             )
 
 
@@ -975,7 +975,7 @@ class AsyncConnectionsClient:
             method="POST",
             json={
                 "name": name,
-                "config_fields": config_fields,
+                "auth_fields": auth_fields,
             },
             headers={
                 "content-type": "application/json",

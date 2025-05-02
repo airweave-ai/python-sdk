@@ -142,7 +142,7 @@ class WhiteLabelsClient:
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels/",
+            "white_labels",
             method="POST",
             json={
                 "name": name,
@@ -764,7 +764,7 @@ class AsyncWhiteLabelsClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels/",
+            "white_labels",
             method="POST",
             json={
                 "name": name,
