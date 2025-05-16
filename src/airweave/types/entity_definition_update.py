@@ -2,20 +2,24 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
+from .entity_type import EntityType
+from .entity_definition_update_entity_schema import EntityDefinitionUpdateEntitySchema
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class User(UniversalBaseModel):
+class EntityDefinitionUpdate(UniversalBaseModel):
     """
-    Schema for User.
+    Schema for updating an entity.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
-    id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    name: str
+    description: typing.Optional[str] = None
+    type: EntityType
+    entity_schema: EntityDefinitionUpdateEntitySchema
+    parent_id: typing.Optional[str] = None
+    module_name: str
+    class_name: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

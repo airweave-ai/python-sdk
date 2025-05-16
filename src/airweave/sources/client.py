@@ -3,7 +3,7 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.source_with_config_fields import SourceWithConfigFields
+from ..types.source_with_authentication_fields import SourceWithAuthenticationFields
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
@@ -20,7 +20,7 @@ class SourcesClient:
 
     def read_source(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    ) -> SourceWithAuthenticationFields:
         """
         Get source by id.
 
@@ -43,7 +43,7 @@ class SourcesClient:
 
         Returns
         -------
-        SourceWithConfigFields
+        SourceWithAuthenticationFields
             Successful Response
 
         Examples
@@ -52,6 +52,7 @@ class SourcesClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
         client.sources.read_source(
             short_name="short_name",
@@ -65,9 +66,9 @@ class SourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithConfigFields,
+                    SourceWithAuthenticationFields,
                     parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
+                        type_=SourceWithAuthenticationFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -115,6 +116,7 @@ class SourcesClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
         client.sources.read_sources()
         """
@@ -154,7 +156,7 @@ class AsyncSourcesClient:
 
     async def read_source(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    ) -> SourceWithAuthenticationFields:
         """
         Get source by id.
 
@@ -177,7 +179,7 @@ class AsyncSourcesClient:
 
         Returns
         -------
-        SourceWithConfigFields
+        SourceWithAuthenticationFields
             Successful Response
 
         Examples
@@ -188,6 +190,7 @@ class AsyncSourcesClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
 
 
@@ -207,9 +210,9 @@ class AsyncSourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithConfigFields,
+                    SourceWithAuthenticationFields,
                     parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
+                        type_=SourceWithAuthenticationFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -259,6 +262,7 @@ class AsyncSourcesClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
 
 

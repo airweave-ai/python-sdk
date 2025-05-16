@@ -6,16 +6,15 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class User(UniversalBaseModel):
+class ChatUpdate(UniversalBaseModel):
     """
-    Schema for User.
+    Schema for updating a chat.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
-    id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    name: typing.Optional[str] = None
+    description: typing.Optional[str] = None
+    model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

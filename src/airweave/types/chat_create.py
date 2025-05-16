@@ -6,16 +6,17 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class User(UniversalBaseModel):
+class ChatCreate(UniversalBaseModel):
     """
-    Schema for User.
+    Schema for creating a chat.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
-    id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    name: str
+    sync_id: str
+    description: typing.Optional[str] = None
+    model_name: typing.Optional[str] = None
+    model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

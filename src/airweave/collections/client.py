@@ -3,45 +3,46 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.white_label import WhiteLabel
+from ..types.collection import Collection
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
 from ..core.jsonable_encoder import jsonable_encoder
-from ..types.sync import Sync
+from ..types.source_connection_job import SourceConnectionJob
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class WhiteLabelsClient:
+class CollectionsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_white_labels(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[WhiteLabel]:
+    def list_collections(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[Collection]:
         """
-        List all white labels for the current user's organization.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-
-        Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        List all collections for the current user's organization.
 
         Parameters
         ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        typing.List[Collection]
             Successful Response
 
         Examples
@@ -52,19 +53,23 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.list_white_labels()
+        client.collections.list_collections()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "collections",
             method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    typing.List[Collection],
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=typing.List[Collection],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -83,47 +88,30 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def create_white_label(
+    def create_collection(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        readable_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Collection:
         """
-        Create new white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        Create a new collection.
 
         Parameters
         ----------
         name : str
+            Display name for the collection
 
-        source_short_name : str
-
-        redirect_url : str
-
-        client_id : str
-
-        client_secret : str
+        readable_id : typing.Optional[str]
+            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Collection
             Successful Response
 
         Examples
@@ -134,23 +122,16 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.create_white_label(
+        client.collections.create_collection(
             name="name",
-            source_short_name="source_short_name",
-            redirect_url="redirect_url",
-            client_id="client_id",
-            client_secret="client_secret",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels",
+            "collections",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "readable_id": readable_id,
             },
             headers={
                 "content-type": "application/json",
@@ -161,9 +142,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Collection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -182,32 +163,22 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    def get_collection(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> Collection:
         """
-        Get a specific white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+        Get a specific collection by its readable ID.
 
         Parameters
         ----------
-        white_label_id : str
+        readable_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Collection
             Successful Response
 
         Examples
@@ -218,21 +189,21 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.get_white_label(
-            white_label_id="white_label_id",
+        client.collections.get_collection(
+            readable_id="readable_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"collections/{jsonable_encoder(readable_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Collection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -251,48 +222,37 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def update_white_label(
+    def delete_collection(
         self,
-        white_label_id: str,
+        readable_id: str,
         *,
-        name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        delete_data: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Collection:
         """
-        Update a white label integration.
+        Delete a collection by its readable ID.
 
         Args:
-        -----
+            readable_id: The readable ID of the collection to delete
+            delete_data: Whether to delete the data in destinations
             db: The database session
             current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+            The deleted collection
 
         Parameters
         ----------
-        white_label_id : str
+        readable_id : str
 
-        name : typing.Optional[str]
-
-        redirect_url : typing.Optional[str]
-
-        client_id : typing.Optional[str]
-
-        client_secret : typing.Optional[str]
+        delete_data : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Collection
             Successful Response
 
         Examples
@@ -303,100 +263,24 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.update_white_label(
-            white_label_id="white_label_id",
+        client.collections.delete_collection(
+            readable_id="readable_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
-            method="PUT",
-            json={
-                "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
-        """
-        Delete a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        WhiteLabel
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
-        )
-        client.white_labels.delete_white_label(
-            white_label_id="white_label_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"collections/{jsonable_encoder(readable_id)}",
             method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Collection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -415,32 +299,31 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    def refresh_all_source_connections(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionJob]:
         """
-        List all syncs for a specific white label.
+        Start sync jobs for all source connections in the collection.
 
         Args:
-        -----
-            white_label_id: The ID of the white label to list syncs for
+            readable_id: The readable ID of the collection
             db: The database session
             current_user: The current user
+            background_tasks: Background tasks for async operations
 
         Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+            A list of created sync jobs
 
         Parameters
         ----------
-        white_label_id : str
+        readable_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
+        typing.List[SourceConnectionJob]
             Successful Response
 
         Examples
@@ -451,21 +334,21 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.list_white_label_syncs(
-            white_label_id="white_label_id",
+        client.collections.refresh_all_source_connections(
+            readable_id="readable_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
-            method="GET",
+            f"collections/{jsonable_encoder(readable_id)}/refresh_all",
+            method="POST",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Sync],
+                    typing.List[SourceConnectionJob],
                     parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
+                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -485,33 +368,32 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncWhiteLabelsClient:
+class AsyncCollectionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def list_white_labels(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[WhiteLabel]:
+    async def list_collections(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[Collection]:
         """
-        List all white labels for the current user's organization.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-
-        Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        List all collections for the current user's organization.
 
         Parameters
         ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        typing.List[Collection]
             Successful Response
 
         Examples
@@ -527,22 +409,26 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_labels()
+            await client.collections.list_collections()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "collections",
             method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    typing.List[Collection],
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=typing.List[Collection],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -561,47 +447,30 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def create_white_label(
+    async def create_collection(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        readable_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Collection:
         """
-        Create new white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        Create a new collection.
 
         Parameters
         ----------
         name : str
+            Display name for the collection
 
-        source_short_name : str
-
-        redirect_url : str
-
-        client_id : str
-
-        client_secret : str
+        readable_id : typing.Optional[str]
+            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Collection
             Successful Response
 
         Examples
@@ -617,26 +486,19 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.create_white_label(
+            await client.collections.create_collection(
                 name="name",
-                source_short_name="source_short_name",
-                redirect_url="redirect_url",
-                client_id="client_id",
-                client_secret="client_secret",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels",
+            "collections",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "readable_id": readable_id,
             },
             headers={
                 "content-type": "application/json",
@@ -647,9 +509,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Collection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -668,32 +530,22 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    async def get_collection(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> Collection:
         """
-        Get a specific white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+        Get a specific collection by its readable ID.
 
         Parameters
         ----------
-        white_label_id : str
+        readable_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Collection
             Successful Response
 
         Examples
@@ -709,24 +561,24 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.get_white_label(
-                white_label_id="white_label_id",
+            await client.collections.get_collection(
+                readable_id="readable_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"collections/{jsonable_encoder(readable_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Collection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -745,48 +597,37 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def update_white_label(
+    async def delete_collection(
         self,
-        white_label_id: str,
+        readable_id: str,
         *,
-        name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        delete_data: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Collection:
         """
-        Update a white label integration.
+        Delete a collection by its readable ID.
 
         Args:
-        -----
+            readable_id: The readable ID of the collection to delete
+            delete_data: Whether to delete the data in destinations
             db: The database session
             current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+            The deleted collection
 
         Parameters
         ----------
-        white_label_id : str
+        readable_id : str
 
-        name : typing.Optional[str]
-
-        redirect_url : typing.Optional[str]
-
-        client_id : typing.Optional[str]
-
-        client_secret : typing.Optional[str]
+        delete_data : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Collection
             Successful Response
 
         Examples
@@ -802,111 +643,27 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.update_white_label(
-                white_label_id="white_label_id",
+            await client.collections.delete_collection(
+                readable_id="readable_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
-            method="PUT",
-            json={
-                "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
-        """
-        Delete a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        WhiteLabel
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
-        )
-
-
-        async def main() -> None:
-            await client.white_labels.delete_white_label(
-                white_label_id="white_label_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"collections/{jsonable_encoder(readable_id)}",
             method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Collection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -925,32 +682,31 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    async def refresh_all_source_connections(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionJob]:
         """
-        List all syncs for a specific white label.
+        Start sync jobs for all source connections in the collection.
 
         Args:
-        -----
-            white_label_id: The ID of the white label to list syncs for
+            readable_id: The readable ID of the collection
             db: The database session
             current_user: The current user
+            background_tasks: Background tasks for async operations
 
         Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+            A list of created sync jobs
 
         Parameters
         ----------
-        white_label_id : str
+        readable_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
+        typing.List[SourceConnectionJob]
             Successful Response
 
         Examples
@@ -966,24 +722,24 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_label_syncs(
-                white_label_id="white_label_id",
+            await client.collections.refresh_all_source_connections(
+                readable_id="readable_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
-            method="GET",
+            f"collections/{jsonable_encoder(readable_id)}/refresh_all",
+            method="POST",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Sync],
+                    typing.List[SourceConnectionJob],
                     parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
+                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )

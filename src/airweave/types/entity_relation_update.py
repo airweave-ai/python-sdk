@@ -6,16 +6,15 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class User(UniversalBaseModel):
+class EntityRelationUpdate(UniversalBaseModel):
     """
-    Schema for User.
+    Schema for updating an entity relation.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
-    id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    name: str
+    description: typing.Optional[str] = None
+    from_entity_id: str
+    to_entity_id: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

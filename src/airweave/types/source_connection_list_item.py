@@ -2,20 +2,29 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
+from .source_connection_status import SourceConnectionStatus
+import datetime as dt
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class User(UniversalBaseModel):
+class SourceConnectionListItem(UniversalBaseModel):
     """
-    Schema for User.
+    Simplified schema for source connection list item.
+
+    This is a compact representation containing only core attributes
+    directly from the source connection model.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
     id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    name: str
+    description: typing.Optional[str] = None
+    short_name: str
+    status: SourceConnectionStatus
+    created_at: dt.datetime
+    modified_at: dt.datetime
+    sync_id: str
+    collection: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

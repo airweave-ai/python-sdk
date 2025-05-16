@@ -24,8 +24,11 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    token="YOUR_TOKEN",
 )
-client.api_keys.create_api_key()
+client.collections.create_collection(
+    name="name",
+)
 ```
 
 ## Async Client
@@ -39,11 +42,14 @@ from airweave import AsyncAirweaveSDK
 
 client = AsyncAirweaveSDK(
     api_key="YOUR_API_KEY",
+    token="YOUR_TOKEN",
 )
 
 
 async def main() -> None:
-    await client.api_keys.create_api_key()
+    await client.collections.create_collection(
+        name="name",
+    )
 
 
 asyncio.run(main())
@@ -58,7 +64,7 @@ will be thrown.
 from airweave.core.api_error import ApiError
 
 try:
-    client.api_keys.create_api_key(...)
+    client.collections.create_collection(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -81,7 +87,7 @@ A request is deemed retriable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.api_keys.create_api_key(..., request_options={
+client.collections.create_collection(..., request_options={
     "max_retries": 1
 })
 ```
@@ -101,7 +107,7 @@ client = AirweaveSDK(
 
 
 # Override timeout for a specific method
-client.api_keys.create_api_key(..., request_options={
+client.collections.create_collection(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

@@ -3,45 +3,62 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.white_label import WhiteLabel
+from ..types.source_connection_list_item import SourceConnectionListItem
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
+from ..types.config_values import ConfigValues
+from ..types.source_connection import SourceConnection
 from ..core.jsonable_encoder import jsonable_encoder
-from ..types.sync import Sync
+from ..types.source_connection_job import SourceConnectionJob
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class WhiteLabelsClient:
+class SourceConnectionsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_white_labels(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[WhiteLabel]:
+    def list_source_connections(
+        self,
+        *,
+        collection: typing.Optional[str] = None,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[SourceConnectionListItem]:
         """
-        List all white labels for the current user's organization.
+        List all source connections for the current user.
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
+            collection: The collection to filter by
+            skip: The number of connections to skip
+            limit: The number of connections to return
+            user: The current user
 
         Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+            A list of source connection list items with essential information
 
         Parameters
         ----------
+        collection : typing.Optional[str]
+            Filter by collection
+
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        typing.List[SourceConnectionListItem]
             Successful Response
 
         Examples
@@ -52,19 +69,24 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.list_white_labels()
+        client.source_connections.list_source_connections()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "source-connections",
             method="GET",
+            params={
+                "collection": collection,
+                "skip": skip,
+                "limit": limit,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    typing.List[SourceConnectionListItem],
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=typing.List[SourceConnectionListItem],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -83,47 +105,63 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def create_white_label(
+    def create_source_connection(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        short_name: str,
+        description: typing.Optional[str] = OMIT,
+        config_fields: typing.Optional[ConfigValues] = OMIT,
+        collection: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        auth_fields: typing.Optional[ConfigValues] = OMIT,
+        sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> SourceConnection:
         """
-        Create new white label integration.
+        Create a new source connection.
+
+        This endpoint creates:
+        1. An integration credential with the provided auth fields
+        2. A collection if not provided
+        3. The source connection
+        4. A sync configuration and DAG
+        5. A sync job if immediate execution is requested
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
+            source_connection_in: The source connection to create
+            user: The current user
+            background_tasks: Background tasks for async operations
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+            The created source connection
 
         Parameters
         ----------
         name : str
+            Name of the source connection
 
-        source_short_name : str
+        short_name : str
 
-        redirect_url : str
+        description : typing.Optional[str]
 
-        client_id : str
+        config_fields : typing.Optional[ConfigValues]
 
-        client_secret : str
+        collection : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        auth_fields : typing.Optional[ConfigValues]
+
+        sync_immediately : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -134,26 +172,23 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.create_white_label(
+        client.source_connections.create_source_connection(
             name="name",
-            source_short_name="source_short_name",
-            redirect_url="redirect_url",
-            client_id="client_id",
-            client_secret="client_secret",
+            short_name="short_name",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels",
+            "source-connections",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
-            },
-            headers={
-                "content-type": "application/json",
+                "description": description,
+                "config_fields": config_fields,
+                "short_name": short_name,
+                "collection": collection,
+                "cron_schedule": cron_schedule,
+                "auth_fields": auth_fields,
+                "sync_immediately": sync_immediately,
             },
             request_options=request_options,
             omit=OMIT,
@@ -161,9 +196,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -182,32 +217,37 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    def get_source_connection(
+        self,
+        source_connection_id: str,
+        *,
+        show_auth_fields: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SourceConnection:
         """
-        Get a specific white label integration.
+        Get a specific source connection by ID.
 
         Args:
-        -----
             db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
+            source_connection_id: The ID of the source connection
+            show_auth_fields: Whether to show the auth fields, default is False
+            user: The current user
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+            The source connection
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
+
+        show_auth_fields : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -218,21 +258,24 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.get_white_label(
-            white_label_id="white_label_id",
+        client.source_connections.get_source_connection(
+            source_connection_id="source_connection_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="GET",
+            params={
+                "show_auth_fields": show_auth_fields,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -251,48 +294,53 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def update_white_label(
+    def update_source_connection(
         self,
-        white_label_id: str,
+        source_connection_id: str,
         *,
         name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        auth_fields: typing.Optional[ConfigValues] = OMIT,
+        config_fields: typing.Optional[ConfigValues] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        connection_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> SourceConnection:
         """
-        Update a white label integration.
+        Update a source connection.
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
+            source_connection_id: The ID of the source connection to update
+            source_connection_in: The updated source connection data
+            user: The current user
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+            The updated source connection
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
 
         name : typing.Optional[str]
+            Name of the source connection
 
-        redirect_url : typing.Optional[str]
+        description : typing.Optional[str]
 
-        client_id : typing.Optional[str]
+        auth_fields : typing.Optional[ConfigValues]
 
-        client_secret : typing.Optional[str]
+        config_fields : typing.Optional[ConfigValues]
+
+        cron_schedule : typing.Optional[str]
+
+        connection_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -303,18 +351,20 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.update_white_label(
-            white_label_id="white_label_id",
+        client.source_connections.update_source_connection(
+            source_connection_id="source_connection_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="PUT",
             json={
                 "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "auth_fields": auth_fields,
+                "config_fields": config_fields,
+                "cron_schedule": cron_schedule,
+                "connection_id": connection_id,
             },
             headers={
                 "content-type": "application/json",
@@ -325,9 +375,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -346,32 +396,37 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    def delete_source_connection(
+        self,
+        source_connection_id: str,
+        *,
+        delete_data: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SourceConnection:
         """
-        Delete a white label integration.
+        Delete a source connection and all related components.
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
+            source_connection_id: The ID of the source connection to delete
+            delete_data: Whether to delete the associated data in destinations
+            user: The current user
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+            The deleted source connection
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
+
+        delete_data : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -382,21 +437,24 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.delete_white_label(
-            white_label_id="white_label_id",
+        client.source_connections.delete_source_connection(
+            source_connection_id="source_connection_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -415,32 +473,31 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    def run_source_connection(
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceConnectionJob:
         """
-        List all syncs for a specific white label.
+        Trigger a sync run for a source connection.
 
         Args:
-        -----
-            white_label_id: The ID of the white label to list syncs for
             db: The database session
-            current_user: The current user
+            source_connection_id: The ID of the source connection to run
+            user: The current user
+            background_tasks: Background tasks for async operations
 
         Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+            The created sync job
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
+        SourceConnectionJob
             Successful Response
 
         Examples
@@ -451,21 +508,88 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             token="YOUR_TOKEN",
         )
-        client.white_labels.list_white_label_syncs(
-            white_label_id="white_label_id",
+        client.source_connections.run_source_connection(
+            source_connection_id="source_connection_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
+            f"source-connections/{jsonable_encoder(source_connection_id)}/run",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SourceConnectionJob,
+                    parse_obj_as(
+                        type_=SourceConnectionJob,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def list_source_connection_jobs(
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionJob]:
+        """
+        List all sync jobs for a source connection.
+
+        Args:
+            db: The database session
+            source_connection_id: The ID of the source connection
+            user: The current user
+
+        Returns:
+            A list of sync jobs
+
+        Parameters
+        ----------
+        source_connection_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SourceConnectionJob]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+        client.source_connections.list_source_connection_jobs(
+            source_connection_id="source_connection_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"source-connections/{jsonable_encoder(source_connection_id)}/jobs",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Sync],
+                    typing.List[SourceConnectionJob],
                     parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
+                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -485,33 +609,46 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncWhiteLabelsClient:
+class AsyncSourceConnectionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def list_white_labels(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[WhiteLabel]:
+    async def list_source_connections(
+        self,
+        *,
+        collection: typing.Optional[str] = None,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[SourceConnectionListItem]:
         """
-        List all white labels for the current user's organization.
+        List all source connections for the current user.
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
+            collection: The collection to filter by
+            skip: The number of connections to skip
+            limit: The number of connections to return
+            user: The current user
 
         Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+            A list of source connection list items with essential information
 
         Parameters
         ----------
+        collection : typing.Optional[str]
+            Filter by collection
+
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        typing.List[SourceConnectionListItem]
             Successful Response
 
         Examples
@@ -527,22 +664,27 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_labels()
+            await client.source_connections.list_source_connections()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "source-connections",
             method="GET",
+            params={
+                "collection": collection,
+                "skip": skip,
+                "limit": limit,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    typing.List[SourceConnectionListItem],
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=typing.List[SourceConnectionListItem],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -561,47 +703,63 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def create_white_label(
+    async def create_source_connection(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        short_name: str,
+        description: typing.Optional[str] = OMIT,
+        config_fields: typing.Optional[ConfigValues] = OMIT,
+        collection: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        auth_fields: typing.Optional[ConfigValues] = OMIT,
+        sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> SourceConnection:
         """
-        Create new white label integration.
+        Create a new source connection.
+
+        This endpoint creates:
+        1. An integration credential with the provided auth fields
+        2. A collection if not provided
+        3. The source connection
+        4. A sync configuration and DAG
+        5. A sync job if immediate execution is requested
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
+            source_connection_in: The source connection to create
+            user: The current user
+            background_tasks: Background tasks for async operations
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+            The created source connection
 
         Parameters
         ----------
         name : str
+            Name of the source connection
 
-        source_short_name : str
+        short_name : str
 
-        redirect_url : str
+        description : typing.Optional[str]
 
-        client_id : str
+        config_fields : typing.Optional[ConfigValues]
 
-        client_secret : str
+        collection : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        auth_fields : typing.Optional[ConfigValues]
+
+        sync_immediately : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -617,29 +775,26 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.create_white_label(
+            await client.source_connections.create_source_connection(
                 name="name",
-                source_short_name="source_short_name",
-                redirect_url="redirect_url",
-                client_id="client_id",
-                client_secret="client_secret",
+                short_name="short_name",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels",
+            "source-connections",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
-            },
-            headers={
-                "content-type": "application/json",
+                "description": description,
+                "config_fields": config_fields,
+                "short_name": short_name,
+                "collection": collection,
+                "cron_schedule": cron_schedule,
+                "auth_fields": auth_fields,
+                "sync_immediately": sync_immediately,
             },
             request_options=request_options,
             omit=OMIT,
@@ -647,9 +802,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -668,32 +823,37 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    async def get_source_connection(
+        self,
+        source_connection_id: str,
+        *,
+        show_auth_fields: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SourceConnection:
         """
-        Get a specific white label integration.
+        Get a specific source connection by ID.
 
         Args:
-        -----
             db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
+            source_connection_id: The ID of the source connection
+            show_auth_fields: Whether to show the auth fields, default is False
+            user: The current user
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+            The source connection
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
+
+        show_auth_fields : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -709,24 +869,27 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.get_white_label(
-                white_label_id="white_label_id",
+            await client.source_connections.get_source_connection(
+                source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="GET",
+            params={
+                "show_auth_fields": show_auth_fields,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -745,48 +908,53 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def update_white_label(
+    async def update_source_connection(
         self,
-        white_label_id: str,
+        source_connection_id: str,
         *,
         name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        auth_fields: typing.Optional[ConfigValues] = OMIT,
+        config_fields: typing.Optional[ConfigValues] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        connection_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> SourceConnection:
         """
-        Update a white label integration.
+        Update a source connection.
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
+            source_connection_id: The ID of the source connection to update
+            source_connection_in: The updated source connection data
+            user: The current user
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+            The updated source connection
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
 
         name : typing.Optional[str]
+            Name of the source connection
 
-        redirect_url : typing.Optional[str]
+        description : typing.Optional[str]
 
-        client_id : typing.Optional[str]
+        auth_fields : typing.Optional[ConfigValues]
 
-        client_secret : typing.Optional[str]
+        config_fields : typing.Optional[ConfigValues]
+
+        cron_schedule : typing.Optional[str]
+
+        connection_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -802,21 +970,23 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.update_white_label(
-                white_label_id="white_label_id",
+            await client.source_connections.update_source_connection(
+                source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="PUT",
             json={
                 "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "auth_fields": auth_fields,
+                "config_fields": config_fields,
+                "cron_schedule": cron_schedule,
+                "connection_id": connection_id,
             },
             headers={
                 "content-type": "application/json",
@@ -827,9 +997,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -848,32 +1018,37 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    async def delete_source_connection(
+        self,
+        source_connection_id: str,
+        *,
+        delete_data: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SourceConnection:
         """
-        Delete a white label integration.
+        Delete a source connection and all related components.
 
         Args:
-        -----
             db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
+            source_connection_id: The ID of the source connection to delete
+            delete_data: Whether to delete the associated data in destinations
+            user: The current user
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+            The deleted source connection
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
+
+        delete_data : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        SourceConnection
             Successful Response
 
         Examples
@@ -889,24 +1064,27 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.delete_white_label(
-                white_label_id="white_label_id",
+            await client.source_connections.delete_source_connection(
+                source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    SourceConnection,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -925,32 +1103,31 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    async def run_source_connection(
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceConnectionJob:
         """
-        List all syncs for a specific white label.
+        Trigger a sync run for a source connection.
 
         Args:
-        -----
-            white_label_id: The ID of the white label to list syncs for
             db: The database session
-            current_user: The current user
+            source_connection_id: The ID of the source connection to run
+            user: The current user
+            background_tasks: Background tasks for async operations
 
         Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+            The created sync job
 
         Parameters
         ----------
-        white_label_id : str
+        source_connection_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
+        SourceConnectionJob
             Successful Response
 
         Examples
@@ -966,24 +1143,99 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_label_syncs(
-                white_label_id="white_label_id",
+            await client.source_connections.run_source_connection(
+                source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
+            f"source-connections/{jsonable_encoder(source_connection_id)}/run",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SourceConnectionJob,
+                    parse_obj_as(
+                        type_=SourceConnectionJob,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def list_source_connection_jobs(
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionJob]:
+        """
+        List all sync jobs for a source connection.
+
+        Args:
+            db: The database session
+            source_connection_id: The ID of the source connection
+            user: The current user
+
+        Returns:
+            A list of sync jobs
+
+        Parameters
+        ----------
+        source_connection_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SourceConnectionJob]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.source_connections.list_source_connection_jobs(
+                source_connection_id="source_connection_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"source-connections/{jsonable_encoder(source_connection_id)}/jobs",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Sync],
+                    typing.List[SourceConnectionJob],
                     parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
+                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )

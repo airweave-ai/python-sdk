@@ -2,20 +2,20 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
-from ..core.pydantic_utilities import IS_PYDANTIC_V2
+import datetime as dt
 import pydantic
+from ..core.pydantic_utilities import IS_PYDANTIC_V2
 
 
-class User(UniversalBaseModel):
+class ApiKeyCreate(UniversalBaseModel):
     """
-    Schema for User.
+    Schema for creating an APIKey object.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
-    id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    expiration_date: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Expiration date for the API key, defaults to 180 days from now
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

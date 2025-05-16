@@ -6,16 +6,18 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class User(UniversalBaseModel):
+class TransformerCreate(UniversalBaseModel):
     """
-    Schema for User.
+    Schema for creating a transformer.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
-    id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    name: str
+    description: typing.Optional[str] = None
+    method_name: str
+    module_name: str
+    input_entity_definition_ids: typing.List[str]
+    output_entity_definition_ids: typing.List[str]
+    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
