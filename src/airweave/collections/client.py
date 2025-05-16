@@ -10,6 +10,8 @@ from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
 from ..core.jsonable_encoder import jsonable_encoder
+from ..types.response_type import ResponseType
+from ..types.search_response import SearchResponse
 from ..types.source_connection_job import SourceConnectionJob
 from ..core.client_wrapper import AsyncClientWrapper
 
@@ -281,6 +283,91 @@ class CollectionsClient:
                     Collection,
                     parse_obj_as(
                         type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def search_collection(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        response_type: typing.Optional[ResponseType] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchResponse:
+        """
+        Search within a collection identified by readable ID.
+
+        Args:
+            readable_id: The readable ID of the collection to search
+            query: The search query
+            response_type: Type of response (raw results or AI completion)
+            db: The database session
+            current_user: The current user
+
+        Returns:
+            dict: Search results or AI completion response
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query
+
+        response_type : typing.Optional[ResponseType]
+            Type of response: raw search results or AI completion
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchResponse
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+        client.collections.search_collection(
+            readable_id="readable_id",
+            query="query",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="GET",
+            params={
+                "query": query,
+                "response_type": response_type,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SearchResponse,
+                    parse_obj_as(
+                        type_=SearchResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -664,6 +751,99 @@ class AsyncCollectionsClient:
                     Collection,
                     parse_obj_as(
                         type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def search_collection(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        response_type: typing.Optional[ResponseType] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchResponse:
+        """
+        Search within a collection identified by readable ID.
+
+        Args:
+            readable_id: The readable ID of the collection to search
+            query: The search query
+            response_type: Type of response (raw results or AI completion)
+            db: The database session
+            current_user: The current user
+
+        Returns:
+            dict: Search results or AI completion response
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query
+
+        response_type : typing.Optional[ResponseType]
+            Type of response: raw search results or AI completion
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.collections.search_collection(
+                readable_id="readable_id",
+                query="query",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="GET",
+            params={
+                "query": query,
+                "response_type": response_type,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SearchResponse,
+                    parse_obj_as(
+                        type_=SearchResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

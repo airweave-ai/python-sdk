@@ -75,7 +75,7 @@ from .types import (
     WhiteLabel,
 )
 from .errors import UnprocessableEntityError
-from . import collections, connections, source_connections, sources, white_labels
+from . import collections, source_connections, sources, white_labels
 from .client import AirweaveSDK, AsyncAirweaveSDK
 from .environment import AirweaveSDKEnvironment
 from .version import __version__
@@ -159,7 +159,6 @@ __all__ = [
     "WhiteLabel",
     "__version__",
     "collections",
-    "connections",
     "source_connections",
     "sources",
     "white_labels",

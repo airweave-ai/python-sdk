@@ -467,6 +467,104 @@ client.collections.delete_collection(
 </dl>
 </details>
 
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search_collection</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search within a collection identified by readable ID.
+
+Args:
+    readable_id: The readable ID of the collection to search
+    query: The search query
+    response_type: Type of response (raw results or AI completion)
+    db: The database session
+    current_user: The current user
+
+Returns:
+    dict: Search results or AI completion response
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+    token="YOUR_TOKEN",
+)
+client.collections.search_collection(
+    readable_id="readable_id",
+    query="query",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — Search query
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**response_type:** `typing.Optional[ResponseType]` — Type of response: raw search results or AI completion
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.collections.<a href="src/airweave/collections/client.py">refresh_all_source_connections</a>(...)</code></summary>
 <dl>
 <dd>
@@ -531,158 +629,6 @@ client.collections.refresh_all_source_connections(
     
 </dd>
 </dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-## Connections
-<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">get_connection</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get a specific connection.
-
-Args:
------
-    connection_id: The ID of the connection to get.
-    db: The database session.
-    user: The current user.
-
-Returns:
--------
-    schemas.Connection: The connection.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
-)
-client.connections.get_connection(
-    connection_id="connection_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**connection_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">list_all_connected_integrations</a>()</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get all active connections for the current user across all integration types.
-
-Args:
------
-    db: The database session.
-    user: The current user.
-
-Returns:
--------
-    list[schemas.Connection]: The list of connections.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
-)
-client.connections.list_all_connected_integrations()
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
 
 <dl>
 <dd>
