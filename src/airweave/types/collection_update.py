@@ -2,20 +2,19 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
-from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
+from ..core.pydantic_utilities import IS_PYDANTIC_V2
 
 
-class User(UniversalBaseModel):
+class CollectionUpdate(UniversalBaseModel):
     """
-    Schema for User.
+    Schema for updating a collection.
     """
 
-    email: str
-    full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
-    id: str
-    permissions: typing.Optional[typing.List[str]] = None
+    name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Display name for the collection
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

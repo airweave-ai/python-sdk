@@ -3,45 +3,33 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.api_key import ApiKey
+from ..types.collection import Collection
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
-import datetime as dt
-from ..types.api_key_with_plain_key import ApiKeyWithPlainKey
 from ..core.jsonable_encoder import jsonable_encoder
+from ..types.source_connection_job import SourceConnectionJob
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class ApiKeysClient:
+class CollectionsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read_api_keys(
+    def list_collections(
         self,
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[ApiKey]:
+    ) -> typing.List[Collection]:
         """
-        Retrieve all API keys for the current user.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            skip (int): Number of records to skip for pagination.
-            limit (int): Maximum number of records to return.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            List[schemas.APIKey]: A list of API keys.
+        List all collections for the current user's organization.
 
         Parameters
         ----------
@@ -54,7 +42,7 @@ class ApiKeysClient:
 
         Returns
         -------
-        typing.List[ApiKey]
+        typing.List[Collection]
             Successful Response
 
         Examples
@@ -63,11 +51,12 @@ class ApiKeysClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
-        client.api_keys.read_api_keys()
+        client.collections.list_collections()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "api_keys/",
+            "collections",
             method="GET",
             params={
                 "skip": skip,
@@ -78,9 +67,9 @@ class ApiKeysClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[ApiKey],
+                    typing.List[Collection],
                     parse_obj_as(
-                        type_=typing.List[ApiKey],  # type: ignore
+                        type_=typing.List[Collection],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -99,38 +88,30 @@ class ApiKeysClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def create_api_key(
+    def create_collection(
         self,
         *,
-        expiration_date: typing.Optional[dt.datetime] = OMIT,
+        name: str,
+        readable_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> ApiKeyWithPlainKey:
+    ) -> Collection:
         """
-        Create a new API key for the current user.
-
-        Returns a temporary plain key for the user to store securely.
-        This is not stored in the database.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            api_key_in (schemas.APIKeyCreate): The API key creation data.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.APIKeyWithPlainKey: The created API key object, including the key.
+        Create a new collection.
 
         Parameters
         ----------
-        expiration_date : typing.Optional[dt.datetime]
+        name : str
+            Display name for the collection
+
+        readable_id : typing.Optional[str]
+            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        ApiKeyWithPlainKey
+        Collection
             Successful Response
 
         Examples
@@ -139,14 +120,18 @@ class ApiKeysClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
-        client.api_keys.create_api_key()
+        client.collections.create_collection(
+            name="name",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "api_keys/",
+            "collections",
             method="POST",
             json={
-                "expiration_date": expiration_date,
+                "name": name,
+                "readable_id": readable_id,
             },
             headers={
                 "content-type": "application/json",
@@ -157,9 +142,9 @@ class ApiKeysClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    ApiKeyWithPlainKey,
+                    Collection,
                     parse_obj_as(
-                        type_=ApiKeyWithPlainKey,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -178,34 +163,22 @@ class ApiKeysClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def delete_api_key(self, *, id: str, request_options: typing.Optional[RequestOptions] = None) -> ApiKey:
+    def get_collection(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> Collection:
         """
-        Delete an API key.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            id (UUID): The ID of the API key.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.APIKey: The revoked API key object.
-
-        Raises:
-        ------
-            HTTPException: If the API key is not found.
+        Get a specific collection by its readable ID.
 
         Parameters
         ----------
-        id : str
+        readable_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        ApiKey
+        Collection
             Successful Response
 
         Examples
@@ -214,95 +187,168 @@ class ApiKeysClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
-        client.api_keys.delete_api_key(
-            id="id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "api_keys/",
-            method="DELETE",
-            params={
-                "id": id,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    ApiKey,
-                    parse_obj_as(
-                        type_=ApiKey,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def read_api_key(self, id: str, *, request_options: typing.Optional[RequestOptions] = None) -> ApiKey:
-        """
-        Retrieve an API key by ID.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            id (UUID): The ID of the API key.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.APIKey: The API key object.
-
-        Raises:
-        ------
-            HTTPException: If the API key is not found.
-
-        Parameters
-        ----------
-        id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        ApiKey
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.api_keys.read_api_key(
-            id="id",
+        client.collections.get_collection(
+            readable_id="readable_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"api_keys/{jsonable_encoder(id)}",
+            f"collections/{jsonable_encoder(readable_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    ApiKey,
+                    Collection,
                     parse_obj_as(
-                        type_=ApiKey,  # type: ignore
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def delete_collection(
+        self,
+        readable_id: str,
+        *,
+        delete_data: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Collection:
+        """
+        Delete a collection by its readable ID.
+
+        Args:
+            readable_id: The readable ID of the collection to delete
+            delete_data: Whether to delete the data in destinations
+            db: The database session
+            current_user: The current user
+
+        Returns:
+            The deleted collection
+
+        Parameters
+        ----------
+        readable_id : str
+
+        delete_data : typing.Optional[bool]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Collection
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+        client.collections.delete_collection(
+            readable_id="readable_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}",
+            method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Collection,
+                    parse_obj_as(
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def refresh_all_source_connections(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionJob]:
+        """
+        Start sync jobs for all source connections in the collection.
+
+        Args:
+            readable_id: The readable ID of the collection
+            db: The database session
+            current_user: The current user
+            background_tasks: Background tasks for async operations
+
+        Returns:
+            A list of created sync jobs
+
+        Parameters
+        ----------
+        readable_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SourceConnectionJob]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+        client.collections.refresh_all_source_connections(
+            readable_id="readable_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/refresh_all",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SourceConnectionJob],
+                    parse_obj_as(
+                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -322,30 +368,19 @@ class ApiKeysClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncApiKeysClient:
+class AsyncCollectionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read_api_keys(
+    async def list_collections(
         self,
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[ApiKey]:
+    ) -> typing.List[Collection]:
         """
-        Retrieve all API keys for the current user.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            skip (int): Number of records to skip for pagination.
-            limit (int): Maximum number of records to return.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            List[schemas.APIKey]: A list of API keys.
+        List all collections for the current user's organization.
 
         Parameters
         ----------
@@ -358,7 +393,7 @@ class AsyncApiKeysClient:
 
         Returns
         -------
-        typing.List[ApiKey]
+        typing.List[Collection]
             Successful Response
 
         Examples
@@ -369,17 +404,18 @@ class AsyncApiKeysClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
 
 
         async def main() -> None:
-            await client.api_keys.read_api_keys()
+            await client.collections.list_collections()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "api_keys/",
+            "collections",
             method="GET",
             params={
                 "skip": skip,
@@ -390,9 +426,9 @@ class AsyncApiKeysClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[ApiKey],
+                    typing.List[Collection],
                     parse_obj_as(
-                        type_=typing.List[ApiKey],  # type: ignore
+                        type_=typing.List[Collection],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -411,38 +447,30 @@ class AsyncApiKeysClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def create_api_key(
+    async def create_collection(
         self,
         *,
-        expiration_date: typing.Optional[dt.datetime] = OMIT,
+        name: str,
+        readable_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> ApiKeyWithPlainKey:
+    ) -> Collection:
         """
-        Create a new API key for the current user.
-
-        Returns a temporary plain key for the user to store securely.
-        This is not stored in the database.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            api_key_in (schemas.APIKeyCreate): The API key creation data.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.APIKeyWithPlainKey: The created API key object, including the key.
+        Create a new collection.
 
         Parameters
         ----------
-        expiration_date : typing.Optional[dt.datetime]
+        name : str
+            Display name for the collection
+
+        readable_id : typing.Optional[str]
+            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        ApiKeyWithPlainKey
+        Collection
             Successful Response
 
         Examples
@@ -453,20 +481,24 @@ class AsyncApiKeysClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
 
 
         async def main() -> None:
-            await client.api_keys.create_api_key()
+            await client.collections.create_collection(
+                name="name",
+            )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "api_keys/",
+            "collections",
             method="POST",
             json={
-                "expiration_date": expiration_date,
+                "name": name,
+                "readable_id": readable_id,
             },
             headers={
                 "content-type": "application/json",
@@ -477,9 +509,9 @@ class AsyncApiKeysClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    ApiKeyWithPlainKey,
+                    Collection,
                     parse_obj_as(
-                        type_=ApiKeyWithPlainKey,  # type: ignore
+                        type_=Collection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -498,34 +530,22 @@ class AsyncApiKeysClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def delete_api_key(self, *, id: str, request_options: typing.Optional[RequestOptions] = None) -> ApiKey:
+    async def get_collection(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> Collection:
         """
-        Delete an API key.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            id (UUID): The ID of the API key.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.APIKey: The revoked API key object.
-
-        Raises:
-        ------
-            HTTPException: If the API key is not found.
+        Get a specific collection by its readable ID.
 
         Parameters
         ----------
-        id : str
+        readable_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        ApiKey
+        Collection
             Successful Response
 
         Examples
@@ -536,109 +556,190 @@ class AsyncApiKeysClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
         )
 
 
         async def main() -> None:
-            await client.api_keys.delete_api_key(
-                id="id",
+            await client.collections.get_collection(
+                readable_id="readable_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "api_keys/",
-            method="DELETE",
-            params={
-                "id": id,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    ApiKey,
-                    parse_obj_as(
-                        type_=ApiKey,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def read_api_key(self, id: str, *, request_options: typing.Optional[RequestOptions] = None) -> ApiKey:
-        """
-        Retrieve an API key by ID.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            id (UUID): The ID of the API key.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.APIKey: The API key object.
-
-        Raises:
-        ------
-            HTTPException: If the API key is not found.
-
-        Parameters
-        ----------
-        id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        ApiKey
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.api_keys.read_api_key(
-                id="id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"api_keys/{jsonable_encoder(id)}",
+            f"collections/{jsonable_encoder(readable_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    ApiKey,
+                    Collection,
                     parse_obj_as(
-                        type_=ApiKey,  # type: ignore
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def delete_collection(
+        self,
+        readable_id: str,
+        *,
+        delete_data: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Collection:
+        """
+        Delete a collection by its readable ID.
+
+        Args:
+            readable_id: The readable ID of the collection to delete
+            delete_data: Whether to delete the data in destinations
+            db: The database session
+            current_user: The current user
+
+        Returns:
+            The deleted collection
+
+        Parameters
+        ----------
+        readable_id : str
+
+        delete_data : typing.Optional[bool]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Collection
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.collections.delete_collection(
+                readable_id="readable_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}",
+            method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Collection,
+                    parse_obj_as(
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def refresh_all_source_connections(
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionJob]:
+        """
+        Start sync jobs for all source connections in the collection.
+
+        Args:
+            readable_id: The readable ID of the collection
+            db: The database session
+            current_user: The current user
+            background_tasks: Background tasks for async operations
+
+        Returns:
+            A list of created sync jobs
+
+        Parameters
+        ----------
+        readable_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SourceConnectionJob]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.collections.refresh_all_source_connections(
+                readable_id="readable_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/refresh_all",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SourceConnectionJob],
+                    parse_obj_as(
+                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )

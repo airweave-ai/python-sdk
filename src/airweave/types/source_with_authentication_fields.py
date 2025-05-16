@@ -9,23 +9,25 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class EmbeddingModelWithConfigFields(UniversalBaseModel):
+class SourceWithAuthenticationFields(UniversalBaseModel):
     """
-    Schema for EmbeddingModel with auth config.
+    Schema for Source with auth config.
     """
 
     name: str
-    short_name: str
     description: typing.Optional[str] = None
-    provider: str
-    model_name: typing.Optional[str] = None
-    model_version: typing.Optional[str] = None
     auth_type: typing.Optional[AuthType] = None
     auth_config_class: typing.Optional[str] = None
+    short_name: str
+    class_name: str
+    output_entity_definition_ids: typing.Optional[typing.List[str]] = None
+    organization_id: typing.Optional[str] = None
+    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    labels: typing.Optional[typing.List[str]] = None
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime
-    config_fields: typing.Optional[Fields] = None
+    auth_fields: typing.Optional[Fields] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

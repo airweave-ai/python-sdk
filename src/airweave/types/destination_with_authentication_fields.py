@@ -9,7 +9,7 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class DestinationWithConfigFields(UniversalBaseModel):
+class DestinationWithAuthenticationFields(UniversalBaseModel):
     """
     Schema for Destination with auth config.
     """
@@ -27,7 +27,7 @@ class DestinationWithConfigFields(UniversalBaseModel):
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime
-    config_fields: typing.Optional[Fields] = None
+    auth_fields: typing.Optional[Fields] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

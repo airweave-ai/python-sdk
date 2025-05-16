@@ -4,20 +4,16 @@ import typing
 from .environment import AirweaveSDKEnvironment
 import httpx
 from .core.client_wrapper import SyncClientWrapper
-from .api_keys.client import ApiKeysClient
 from .sources.client import SourcesClient
-from .embedding_models.client import EmbeddingModelsClient
+from .collections.client import CollectionsClient
 from .connections.client import ConnectionsClient
-from .sync.client import SyncClient
-from .search.client import SearchClient
+from .source_connections.client import SourceConnectionsClient
 from .white_labels.client import WhiteLabelsClient
 from .core.client_wrapper import AsyncClientWrapper
-from .api_keys.client import AsyncApiKeysClient
 from .sources.client import AsyncSourcesClient
-from .embedding_models.client import AsyncEmbeddingModelsClient
+from .collections.client import AsyncCollectionsClient
 from .connections.client import AsyncConnectionsClient
-from .sync.client import AsyncSyncClient
-from .search.client import AsyncSearchClient
+from .source_connections.client import AsyncSourceConnectionsClient
 from .white_labels.client import AsyncWhiteLabelsClient
 
 
@@ -40,6 +36,7 @@ class AirweaveSDK:
 
 
     api_key : typing.Optional[str]
+    token : typing.Union[str, typing.Callable[[], str]]
     timeout : typing.Optional[float]
         The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
 
@@ -55,6 +52,7 @@ class AirweaveSDK:
 
     client = AirweaveSDK(
         api_key="YOUR_API_KEY",
+        token="YOUR_TOKEN",
     )
     """
 
@@ -64,6 +62,7 @@ class AirweaveSDK:
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
         api_key: typing.Optional[str] = None,
+        token: typing.Union[str, typing.Callable[[], str]],
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
@@ -72,6 +71,7 @@ class AirweaveSDK:
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
             api_key=api_key,
+            token=token,
             httpx_client=httpx_client
             if httpx_client is not None
             else httpx.Client(timeout=_defaulted_timeout, follow_redirects=follow_redirects)
@@ -79,12 +79,10 @@ class AirweaveSDK:
             else httpx.Client(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
-        self.api_keys = ApiKeysClient(client_wrapper=self._client_wrapper)
         self.sources = SourcesClient(client_wrapper=self._client_wrapper)
-        self.embedding_models = EmbeddingModelsClient(client_wrapper=self._client_wrapper)
+        self.collections = CollectionsClient(client_wrapper=self._client_wrapper)
         self.connections = ConnectionsClient(client_wrapper=self._client_wrapper)
-        self.sync = SyncClient(client_wrapper=self._client_wrapper)
-        self.search = SearchClient(client_wrapper=self._client_wrapper)
+        self.source_connections = SourceConnectionsClient(client_wrapper=self._client_wrapper)
         self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
 
 
@@ -107,6 +105,7 @@ class AsyncAirweaveSDK:
 
 
     api_key : typing.Optional[str]
+    token : typing.Union[str, typing.Callable[[], str]]
     timeout : typing.Optional[float]
         The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
 
@@ -122,6 +121,7 @@ class AsyncAirweaveSDK:
 
     client = AsyncAirweaveSDK(
         api_key="YOUR_API_KEY",
+        token="YOUR_TOKEN",
     )
     """
 
@@ -131,6 +131,7 @@ class AsyncAirweaveSDK:
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
         api_key: typing.Optional[str] = None,
+        token: typing.Union[str, typing.Callable[[], str]],
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
@@ -139,6 +140,7 @@ class AsyncAirweaveSDK:
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
             api_key=api_key,
+            token=token,
             httpx_client=httpx_client
             if httpx_client is not None
             else httpx.AsyncClient(timeout=_defaulted_timeout, follow_redirects=follow_redirects)
@@ -146,12 +148,10 @@ class AsyncAirweaveSDK:
             else httpx.AsyncClient(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
-        self.api_keys = AsyncApiKeysClient(client_wrapper=self._client_wrapper)
         self.sources = AsyncSourcesClient(client_wrapper=self._client_wrapper)
-        self.embedding_models = AsyncEmbeddingModelsClient(client_wrapper=self._client_wrapper)
+        self.collections = AsyncCollectionsClient(client_wrapper=self._client_wrapper)
         self.connections = AsyncConnectionsClient(client_wrapper=self._client_wrapper)
-        self.sync = AsyncSyncClient(client_wrapper=self._client_wrapper)
-        self.search = AsyncSearchClient(client_wrapper=self._client_wrapper)
+        self.source_connections = AsyncSourceConnectionsClient(client_wrapper=self._client_wrapper)
         self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
 
 
