@@ -2,26 +2,22 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
-import datetime as dt
+from .dag_node_create import DagNodeCreate
+from .dag_edge_create import DagEdgeCreate
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class ApiKeyWithPlainKey(UniversalBaseModel):
+class SyncDagUpdate(UniversalBaseModel):
     """
-    Schema for APIKey with plain key.
+    Schema for updating a sync DAG definition.
     """
 
-    id: str
-    key_prefix: str
-    organization: typing.Optional[str] = None
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    last_used_date: typing.Optional[dt.datetime] = None
-    expiration_date: dt.datetime
-    created_by_email: str
-    modified_by_email: str
-    plain_key: str
+    name: str
+    description: typing.Optional[str] = None
+    sync_id: str
+    nodes: typing.Optional[typing.List[DagNodeCreate]] = None
+    edges: typing.Optional[typing.List[DagEdgeCreate]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

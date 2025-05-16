@@ -74,7 +74,7 @@ class SyncClient:
         client.sync.list_syncs()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "sync",
+            "sync/",
             method="GET",
             params={
                 "skip": skip,
@@ -186,7 +186,7 @@ class SyncClient:
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "sync",
+            "sync/",
             method="POST",
             json={
                 "name": name,
@@ -237,7 +237,6 @@ class SyncClient:
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
-        status: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SyncJob]:
         """
@@ -248,7 +247,6 @@ class SyncClient:
             db: The database session
             skip: The number of jobs to skip
             limit: The number of jobs to return
-            status: Filter by job status
             user: The current user
 
         Returns:
@@ -260,9 +258,6 @@ class SyncClient:
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
-
-        status : typing.Optional[typing.Union[str, typing.Sequence[str]]]
-            Filter by job status
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -287,7 +282,6 @@ class SyncClient:
             params={
                 "skip": skip,
                 "limit": limit,
-                "status": status,
             },
             request_options=request_options,
         )
@@ -781,8 +775,7 @@ class SyncClient:
         Args:
         -----
             job_id: The ID of the job to subscribe to
-            request: The request object
-            db: The database session
+            user: The current user
 
         Returns:
         --------
@@ -958,7 +951,7 @@ class AsyncSyncClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "sync",
+            "sync/",
             method="GET",
             params={
                 "skip": skip,
@@ -1078,7 +1071,7 @@ class AsyncSyncClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "sync",
+            "sync/",
             method="POST",
             json={
                 "name": name,
@@ -1129,7 +1122,6 @@ class AsyncSyncClient:
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
-        status: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SyncJob]:
         """
@@ -1140,7 +1132,6 @@ class AsyncSyncClient:
             db: The database session
             skip: The number of jobs to skip
             limit: The number of jobs to return
-            status: Filter by job status
             user: The current user
 
         Returns:
@@ -1152,9 +1143,6 @@ class AsyncSyncClient:
         skip : typing.Optional[int]
 
         limit : typing.Optional[int]
-
-        status : typing.Optional[typing.Union[str, typing.Sequence[str]]]
-            Filter by job status
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1187,7 +1175,6 @@ class AsyncSyncClient:
             params={
                 "skip": skip,
                 "limit": limit,
-                "status": status,
             },
             request_options=request_options,
         )
@@ -1729,8 +1716,7 @@ class AsyncSyncClient:
         Args:
         -----
             job_id: The ID of the job to subscribe to
-            request: The request object
-            db: The database session
+            user: The current user
 
         Returns:
         --------

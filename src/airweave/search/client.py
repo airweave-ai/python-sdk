@@ -2,7 +2,6 @@
 
 from ..core.client_wrapper import SyncClientWrapper
 import typing
-from ..types.response_type import ResponseType
 from ..core.request_options import RequestOptions
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
@@ -17,13 +16,8 @@ class SearchClient:
         self._client_wrapper = client_wrapper
 
     def search(
-        self,
-        *,
-        sync_id: str,
-        query: str,
-        response_type: typing.Optional[ResponseType] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.Dict[str, typing.Optional[typing.Any]]:
+        self, *, sync_id: str, query: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[typing.Dict[str, typing.Optional[typing.Any]]]:
         """
         Search for documents within a specific sync.
 
@@ -32,12 +26,11 @@ class SearchClient:
             db: The database session
             sync_id: The ID of the sync to search within
             query: The search query text
-            response_type: Type of response (raw results or AI completion)
             user: The current user
 
         Returns:
         --------
-            dict: A dictionary containing search results or AI completion
+            list[dict]: A list of search results
 
         Parameters
         ----------
@@ -47,15 +40,12 @@ class SearchClient:
         query : str
             Search query text
 
-        response_type : typing.Optional[ResponseType]
-            Type of response: raw search results or AI completion
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.Dict[str, typing.Optional[typing.Any]]
+        typing.List[typing.Dict[str, typing.Optional[typing.Any]]]
             Successful Response
 
         Examples
@@ -71,21 +61,20 @@ class SearchClient:
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "search",
+            "search/",
             method="GET",
             params={
                 "sync_id": sync_id,
                 "query": query,
-                "response_type": response_type,
             },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.Dict[str, typing.Optional[typing.Any]],
+                    typing.List[typing.Dict[str, typing.Optional[typing.Any]]],
                     parse_obj_as(
-                        type_=typing.Dict[str, typing.Optional[typing.Any]],  # type: ignore
+                        type_=typing.List[typing.Dict[str, typing.Optional[typing.Any]]],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -110,13 +99,8 @@ class AsyncSearchClient:
         self._client_wrapper = client_wrapper
 
     async def search(
-        self,
-        *,
-        sync_id: str,
-        query: str,
-        response_type: typing.Optional[ResponseType] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.Dict[str, typing.Optional[typing.Any]]:
+        self, *, sync_id: str, query: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[typing.Dict[str, typing.Optional[typing.Any]]]:
         """
         Search for documents within a specific sync.
 
@@ -125,12 +109,11 @@ class AsyncSearchClient:
             db: The database session
             sync_id: The ID of the sync to search within
             query: The search query text
-            response_type: Type of response (raw results or AI completion)
             user: The current user
 
         Returns:
         --------
-            dict: A dictionary containing search results or AI completion
+            list[dict]: A list of search results
 
         Parameters
         ----------
@@ -140,15 +123,12 @@ class AsyncSearchClient:
         query : str
             Search query text
 
-        response_type : typing.Optional[ResponseType]
-            Type of response: raw search results or AI completion
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.Dict[str, typing.Optional[typing.Any]]
+        typing.List[typing.Dict[str, typing.Optional[typing.Any]]]
             Successful Response
 
         Examples
@@ -172,21 +152,20 @@ class AsyncSearchClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "search",
+            "search/",
             method="GET",
             params={
                 "sync_id": sync_id,
                 "query": query,
-                "response_type": response_type,
             },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.Dict[str, typing.Optional[typing.Any]],
+                    typing.List[typing.Dict[str, typing.Optional[typing.Any]]],
                     parse_obj_as(
-                        type_=typing.Dict[str, typing.Optional[typing.Any]],  # type: ignore
+                        type_=typing.List[typing.Dict[str, typing.Optional[typing.Any]]],  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -9,7 +9,7 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class EmbeddingModelWithAuthenticationFields(UniversalBaseModel):
+class EmbeddingModelWithConfigFields(UniversalBaseModel):
     """
     Schema for EmbeddingModel with auth config.
     """
@@ -25,7 +25,7 @@ class EmbeddingModelWithAuthenticationFields(UniversalBaseModel):
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime
-    auth_fields: typing.Optional[Fields] = None
+    config_fields: typing.Optional[Fields] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

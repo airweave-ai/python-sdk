@@ -13,7 +13,7 @@ class User(UniversalBaseModel):
 
     email: str
     full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
+    organization_id: str
     id: str
     permissions: typing.Optional[typing.List[str]] = None
 

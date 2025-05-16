@@ -3,7 +3,7 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.source_with_authentication_fields import SourceWithAuthenticationFields
+from ..types.source_with_config_fields import SourceWithConfigFields
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
@@ -20,7 +20,7 @@ class SourcesClient:
 
     def read_source(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithAuthenticationFields:
+    ) -> SourceWithConfigFields:
         """
         Get source by id.
 
@@ -43,7 +43,7 @@ class SourcesClient:
 
         Returns
         -------
-        SourceWithAuthenticationFields
+        SourceWithConfigFields
             Successful Response
 
         Examples
@@ -65,9 +65,9 @@ class SourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithAuthenticationFields,
+                    SourceWithConfigFields,
                     parse_obj_as(
-                        type_=SourceWithAuthenticationFields,  # type: ignore
+                        type_=SourceWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -154,7 +154,7 @@ class AsyncSourcesClient:
 
     async def read_source(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithAuthenticationFields:
+    ) -> SourceWithConfigFields:
         """
         Get source by id.
 
@@ -177,7 +177,7 @@ class AsyncSourcesClient:
 
         Returns
         -------
-        SourceWithAuthenticationFields
+        SourceWithConfigFields
             Successful Response
 
         Examples
@@ -207,9 +207,9 @@ class AsyncSourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithAuthenticationFields,
+                    SourceWithConfigFields,
                     parse_obj_as(
-                        type_=SourceWithAuthenticationFields,  # type: ignore
+                        type_=SourceWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

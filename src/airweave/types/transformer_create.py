@@ -2,32 +2,22 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
-from .auth_type import AuthType
-import datetime as dt
-from .fields import Fields
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class DestinationWithAuthenticationFields(UniversalBaseModel):
+class TransformerCreate(UniversalBaseModel):
     """
-    Schema for Destination with auth config.
+    Schema for creating a transformer.
     """
 
     name: str
     description: typing.Optional[str] = None
-    short_name: str
-    class_name: str
-    auth_type: typing.Optional[AuthType] = None
-    auth_config_class: typing.Optional[str] = None
-    input_entity_definition_ids: typing.Optional[typing.List[str]] = None
-    organization_id: typing.Optional[str] = None
+    method_name: str
+    module_name: str
+    input_entity_definition_ids: typing.List[str]
+    output_entity_definition_ids: typing.List[str]
     config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
-    labels: typing.Optional[typing.List[str]] = None
-    id: str
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    auth_fields: typing.Optional[Fields] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

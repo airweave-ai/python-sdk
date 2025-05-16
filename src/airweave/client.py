@@ -5,30 +5,20 @@ from .environment import AirweaveSDKEnvironment
 import httpx
 from .core.client_wrapper import SyncClientWrapper
 from .api_keys.client import ApiKeysClient
-from .users.client import UsersClient
 from .sources.client import SourcesClient
 from .embedding_models.client import EmbeddingModelsClient
 from .connections.client import ConnectionsClient
 from .sync.client import SyncClient
 from .search.client import SearchClient
 from .white_labels.client import WhiteLabelsClient
-from .chat.client import ChatClient
-from .dag.client import DagClient
-from .entities.client import EntitiesClient
-from .transformers.client import TransformersClient
 from .core.client_wrapper import AsyncClientWrapper
 from .api_keys.client import AsyncApiKeysClient
-from .users.client import AsyncUsersClient
 from .sources.client import AsyncSourcesClient
 from .embedding_models.client import AsyncEmbeddingModelsClient
 from .connections.client import AsyncConnectionsClient
 from .sync.client import AsyncSyncClient
 from .search.client import AsyncSearchClient
 from .white_labels.client import AsyncWhiteLabelsClient
-from .chat.client import AsyncChatClient
-from .dag.client import AsyncDagClient
-from .entities.client import AsyncEntitiesClient
-from .transformers.client import AsyncTransformersClient
 
 
 class AirweaveSDK:
@@ -90,17 +80,12 @@ class AirweaveSDK:
             timeout=_defaulted_timeout,
         )
         self.api_keys = ApiKeysClient(client_wrapper=self._client_wrapper)
-        self.users = UsersClient(client_wrapper=self._client_wrapper)
         self.sources = SourcesClient(client_wrapper=self._client_wrapper)
         self.embedding_models = EmbeddingModelsClient(client_wrapper=self._client_wrapper)
         self.connections = ConnectionsClient(client_wrapper=self._client_wrapper)
         self.sync = SyncClient(client_wrapper=self._client_wrapper)
         self.search = SearchClient(client_wrapper=self._client_wrapper)
         self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
-        self.chat = ChatClient(client_wrapper=self._client_wrapper)
-        self.dag = DagClient(client_wrapper=self._client_wrapper)
-        self.entities = EntitiesClient(client_wrapper=self._client_wrapper)
-        self.transformers = TransformersClient(client_wrapper=self._client_wrapper)
 
 
 class AsyncAirweaveSDK:
@@ -162,17 +147,12 @@ class AsyncAirweaveSDK:
             timeout=_defaulted_timeout,
         )
         self.api_keys = AsyncApiKeysClient(client_wrapper=self._client_wrapper)
-        self.users = AsyncUsersClient(client_wrapper=self._client_wrapper)
         self.sources = AsyncSourcesClient(client_wrapper=self._client_wrapper)
         self.embedding_models = AsyncEmbeddingModelsClient(client_wrapper=self._client_wrapper)
         self.connections = AsyncConnectionsClient(client_wrapper=self._client_wrapper)
         self.sync = AsyncSyncClient(client_wrapper=self._client_wrapper)
         self.search = AsyncSearchClient(client_wrapper=self._client_wrapper)
         self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
-        self.chat = AsyncChatClient(client_wrapper=self._client_wrapper)
-        self.dag = AsyncDagClient(client_wrapper=self._client_wrapper)
-        self.entities = AsyncEntitiesClient(client_wrapper=self._client_wrapper)
-        self.transformers = AsyncTransformersClient(client_wrapper=self._client_wrapper)
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:

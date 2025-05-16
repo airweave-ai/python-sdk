@@ -67,7 +67,7 @@ class ApiKeysClient:
         client.api_keys.read_api_keys()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "api-keys",
+            "api_keys/",
             method="GET",
             params={
                 "skip": skip,
@@ -124,7 +124,6 @@ class ApiKeysClient:
         Parameters
         ----------
         expiration_date : typing.Optional[dt.datetime]
-            Expiration date for the API key, defaults to 180 days from now
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -144,7 +143,7 @@ class ApiKeysClient:
         client.api_keys.create_api_key()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "api-keys",
+            "api_keys/",
             method="POST",
             json={
                 "expiration_date": expiration_date,
@@ -221,7 +220,7 @@ class ApiKeysClient:
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "api-keys",
+            "api_keys/",
             method="DELETE",
             params={
                 "id": id,
@@ -294,7 +293,7 @@ class ApiKeysClient:
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"api-keys/{jsonable_encoder(id)}",
+            f"api_keys/{jsonable_encoder(id)}",
             method="GET",
             request_options=request_options,
         )
@@ -380,7 +379,7 @@ class AsyncApiKeysClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "api-keys",
+            "api_keys/",
             method="GET",
             params={
                 "skip": skip,
@@ -437,7 +436,6 @@ class AsyncApiKeysClient:
         Parameters
         ----------
         expiration_date : typing.Optional[dt.datetime]
-            Expiration date for the API key, defaults to 180 days from now
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -465,7 +463,7 @@ class AsyncApiKeysClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "api-keys",
+            "api_keys/",
             method="POST",
             json={
                 "expiration_date": expiration_date,
@@ -550,7 +548,7 @@ class AsyncApiKeysClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "api-keys",
+            "api_keys/",
             method="DELETE",
             params={
                 "id": id,
@@ -631,7 +629,7 @@ class AsyncApiKeysClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"api-keys/{jsonable_encoder(id)}",
+            f"api_keys/{jsonable_encoder(id)}",
             method="GET",
             request_options=request_options,
         )
