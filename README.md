@@ -24,7 +24,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.collections.create_collection(
     name="name",
@@ -42,7 +41,6 @@ from airweave import AsyncAirweaveSDK
 
 client = AsyncAirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 
 

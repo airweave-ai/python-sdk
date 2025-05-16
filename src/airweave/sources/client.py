@@ -52,7 +52,6 @@ class SourcesClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.sources.read_source(
             short_name="short_name",
@@ -116,7 +115,6 @@ class SourcesClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.sources.read_sources()
         """
@@ -190,7 +188,6 @@ class AsyncSourcesClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -262,7 +259,6 @@ class AsyncSourcesClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 

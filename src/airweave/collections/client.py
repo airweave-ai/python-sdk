@@ -53,7 +53,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.collections.list_collections()
         """
@@ -122,7 +121,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.collections.create_collection(
             name="name",
@@ -189,7 +187,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.collections.get_collection(
             readable_id="readable_id",
@@ -263,7 +260,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.collections.delete_collection(
             readable_id="readable_id",
@@ -346,7 +342,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.collections.search_collection(
             readable_id="readable_id",
@@ -419,7 +414,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.collections.refresh_all_source_connections(
             readable_id="readable_id",
@@ -491,7 +485,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -568,7 +561,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -643,7 +635,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -725,7 +716,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -816,7 +806,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -897,7 +886,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 

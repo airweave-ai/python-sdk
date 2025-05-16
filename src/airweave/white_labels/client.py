@@ -50,7 +50,6 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.white_labels.list_white_labels()
         """
@@ -132,7 +131,6 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.white_labels.create_white_label(
             name="name",
@@ -216,7 +214,6 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.white_labels.get_white_label(
             white_label_id="white_label_id",
@@ -301,7 +298,6 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.white_labels.update_white_label(
             white_label_id="white_label_id",
@@ -380,7 +376,6 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.white_labels.delete_white_label(
             white_label_id="white_label_id",
@@ -449,7 +444,6 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
         client.white_labels.list_white_label_syncs(
             white_label_id="white_label_id",
@@ -522,7 +516,6 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -612,7 +605,6 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -704,7 +696,6 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -797,7 +788,6 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -884,7 +874,6 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 
@@ -961,7 +950,6 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            token="YOUR_TOKEN",
         )
 
 

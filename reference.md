@@ -41,7 +41,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.sources.read_source(
     short_name="short_name",
@@ -121,7 +120,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.sources.read_sources()
 
@@ -183,7 +181,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.collections.list_collections()
 
@@ -260,7 +257,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.collections.create_collection(
     name="name",
@@ -339,7 +335,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.collections.get_collection(
     readable_id="readable_id",
@@ -419,7 +414,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.collections.delete_collection(
     readable_id="readable_id",
@@ -508,7 +502,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.collections.search_collection(
     readable_id="readable_id",
@@ -605,7 +598,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.collections.refresh_all_source_connections(
     readable_id="readable_id",
@@ -687,7 +679,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.source_connections.list_source_connections()
 
@@ -788,7 +779,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.source_connections.create_source_connection(
     name="name",
@@ -925,7 +915,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.source_connections.get_source_connection(
     source_connection_id="source_connection_id",
@@ -1013,7 +1002,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.source_connections.update_source_connection(
     source_connection_id="source_connection_id",
@@ -1141,7 +1129,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.source_connections.delete_source_connection(
     source_connection_id="source_connection_id",
@@ -1229,7 +1216,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.source_connections.run_source_connection(
     source_connection_id="source_connection_id",
@@ -1308,7 +1294,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.source_connections.list_source_connection_jobs(
     source_connection_id="source_connection_id",
@@ -1389,7 +1374,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.list_white_labels()
 
@@ -1460,7 +1444,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.create_white_label(
     name="name",
@@ -1577,7 +1560,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.get_white_label(
     white_label_id="white_label_id",
@@ -1659,7 +1641,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.update_white_label(
     white_label_id="white_label_id",
@@ -1772,7 +1753,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.delete_white_label(
     white_label_id="white_label_id",
@@ -1853,7 +1833,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.list_white_label_syncs(
     white_label_id="white_label_id",
