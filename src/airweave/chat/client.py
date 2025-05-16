@@ -3,37 +3,36 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.white_label import WhiteLabel
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
+from ..types.chat import Chat
 from ..core.jsonable_encoder import jsonable_encoder
-from ..types.connection import Connection
-from ..types.sync import Sync
+from ..types.chat_message import ChatMessage
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class WhiteLabelsClient:
+class ChatClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_white_labels(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[WhiteLabel]:
+    def openai_key_set(self, *, request_options: typing.Optional[RequestOptions] = None) -> bool:
         """
-        List all white labels for the current user's organization.
+        Check if the OpenAI API key is set for the current user.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
+        ----
+            db: The database session.
+            user: The current user.
 
         Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        -------
+            bool: True if the OpenAI API key is set, False otherwise.
 
         Parameters
         ----------
@@ -42,7 +41,7 @@ class WhiteLabelsClient:
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        bool
             Successful Response
 
         Examples
@@ -52,19 +51,19 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.list_white_labels()
+        client.chat.openai_key_set()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "chat/openai_key_set",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    bool,
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=bool,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -83,47 +82,127 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def create_white_label(
+    def list_chats(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[Chat]:
+        """
+        List all chats for the current user.
+
+        Args:
+        ----
+            db: The database session.
+            skip: The number of chats to skip.
+            limit: The number of chats to return.
+            user: The current user.
+
+        Returns:
+        -------
+            list[schemas.Chat]: The list of chats.
+
+        Parameters
+        ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[Chat]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.chat.list_chats()
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "chat/",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[Chat],
+                    parse_obj_as(
+                        type_=typing.List[Chat],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def create_chat(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        sync_id: str,
+        description: typing.Optional[str] = OMIT,
+        model_name: typing.Optional[str] = OMIT,
+        model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Chat:
         """
-        Create new white label integration.
+        Create a new chat.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
+        ----
+            db: The database session.
+            chat_in: The chat creation data.
+            user: The current user.
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        -------
+            schemas.Chat: The created chat.
 
         Parameters
         ----------
         name : str
 
-        source_short_name : str
+        sync_id : str
 
-        redirect_url : str
+        description : typing.Optional[str]
 
-        client_id : str
+        model_name : typing.Optional[str]
 
-        client_secret : str
+        model_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        search_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Chat
             Successful Response
 
         Examples
@@ -133,23 +212,21 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.create_white_label(
+        client.chat.create_chat(
             name="name",
-            source_short_name="source_short_name",
-            redirect_url="redirect_url",
-            client_id="client_id",
-            client_secret="client_secret",
+            sync_id="sync_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels/",
+            "chat/",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "sync_id": sync_id,
+                "description": description,
+                "model_name": model_name,
+                "model_settings": model_settings,
+                "search_settings": search_settings,
             },
             headers={
                 "content-type": "application/json",
@@ -160,9 +237,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Chat,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Chat,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -181,32 +258,30 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    def get_chat(self, chat_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Chat:
         """
-        Get a specific white label integration.
+        Get a specific chat by ID.
 
         Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
+        ----
+            db: The database session.
+            chat_id: The ID of the chat to get.
+            user: The current user.
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+        -------
+            schemas.Chat: The chat.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Chat
             Successful Response
 
         Examples
@@ -216,21 +291,21 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.get_white_label(
-            white_label_id="white_label_id",
+        client.chat.get_chat(
+            chat_id="chat_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"chat/{jsonable_encoder(chat_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Chat,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Chat,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -249,48 +324,48 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def update_white_label(
+    def update_chat(
         self,
-        white_label_id: str,
+        chat_id: str,
         *,
         name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Chat:
         """
-        Update a white label integration.
+        Update a chat.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
+        ----
+            db: The database session.
+            chat_id: The ID of the chat to update.
+            chat_in: The chat update data.
+            user: The current user.
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+        -------
+            schemas.Chat: The updated chat.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         name : typing.Optional[str]
 
-        redirect_url : typing.Optional[str]
+        description : typing.Optional[str]
 
-        client_id : typing.Optional[str]
+        model_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
 
-        client_secret : typing.Optional[str]
+        search_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Chat
             Successful Response
 
         Examples
@@ -300,18 +375,18 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.update_white_label(
-            white_label_id="white_label_id",
+        client.chat.update_chat(
+            chat_id="chat_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"chat/{jsonable_encoder(chat_id)}",
             method="PUT",
             json={
                 "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "model_settings": model_settings,
+                "search_settings": search_settings,
             },
             headers={
                 "content-type": "application/json",
@@ -322,9 +397,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Chat,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Chat,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -343,33 +418,26 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    def delete_chat(self, chat_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
         """
-        Delete a white label integration.
+        Archive a chat.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+        ----
+            db: The database session.
+            chat_id: The ID of the chat to archive.
+            user: The current user.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
-            Successful Response
+        None
 
         Examples
         --------
@@ -378,24 +446,18 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.delete_white_label(
-            white_label_id="white_label_id",
+        client.chat.delete_chat(
+            chat_id="chat_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"chat/{jsonable_encoder(chat_id)}",
             method="DELETE",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
+                return
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     typing.cast(
@@ -411,32 +473,42 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get_white_label_oauth_2_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> str:
+    def send_message(
+        self,
+        chat_id: str,
+        *,
+        content: str,
+        role: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ChatMessage:
         """
-        Generate the OAuth2 authorization URL by delegating to oauth2_service.
+        Send a message to a chat.
 
         Args:
         -----
-            db: The database session
-            white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
+            db: The database session.
+            chat_id: The ID of the chat to send the message to.
+            message: The message to send.
+            user: The current user.
 
         Returns:
-        --------
-            str: The OAuth2 authorization URL
+        -------
+            schemas.ChatMessage: The sent message.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
+
+        content : str
+
+        role : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        str
+        ChatMessage
             Successful Response
 
         Examples
@@ -446,95 +518,30 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.get_white_label_oauth_2_auth_url(
-            white_label_id="white_label_id",
+        client.chat.send_message(
+            chat_id="chat_id",
+            content="content",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    str,
-                    parse_obj_as(
-                        type_=str,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def exchange_white_label_oauth_2_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Exchange OAuth2 code for tokens and create connection.
-
-        Args:
-        -----
-            white_label_id: The ID of the white label to exchange the code for
-            code: The OAuth2 code
-            db: The database session
-            user: The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The created connection
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.white_labels.exchange_white_label_oauth_2_code(
-            white_label_id="white_label_id",
-            request="string",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/code",
+            f"chat/{jsonable_encoder(chat_id)}/message",
             method="POST",
-            json=request,
+            json={
+                "content": content,
+                "role": role,
+            },
+            headers={
+                "content-type": "application/json",
+            },
             request_options=request_options,
             omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    ChatMessage,
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=ChatMessage,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -553,33 +560,30 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    def stream_chat_response(self, chat_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
         """
-        List all syncs for a specific white label.
+        Stream an AI response for a chat message.
 
         Args:
         -----
-            white_label_id: The ID of the white label to list syncs for
-            db: The database session
-            current_user: The current user
+            db: The database session.
+            chat_id: The ID of the chat to stream the response for.
+            user: The current user.
 
         Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+        -------
+            StreamingResponse: The streaming response.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
-            Successful Response
+        None
 
         Examples
         --------
@@ -588,24 +592,18 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.list_white_label_syncs(
-            white_label_id="white_label_id",
+        client.chat.stream_chat_response(
+            chat_id="chat_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
+            f"chat/{jsonable_encoder(chat_id)}/stream",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[Sync],
-                    parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
+                return
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     typing.cast(
@@ -622,24 +620,22 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncWhiteLabelsClient:
+class AsyncChatClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def list_white_labels(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[WhiteLabel]:
+    async def openai_key_set(self, *, request_options: typing.Optional[RequestOptions] = None) -> bool:
         """
-        List all white labels for the current user's organization.
+        Check if the OpenAI API key is set for the current user.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
+        ----
+            db: The database session.
+            user: The current user.
 
         Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        -------
+            bool: True if the OpenAI API key is set, False otherwise.
 
         Parameters
         ----------
@@ -648,7 +644,7 @@ class AsyncWhiteLabelsClient:
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        bool
             Successful Response
 
         Examples
@@ -663,22 +659,22 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_labels()
+            await client.chat.openai_key_set()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "chat/openai_key_set",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    bool,
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=bool,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -697,47 +693,135 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def create_white_label(
+    async def list_chats(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[Chat]:
+        """
+        List all chats for the current user.
+
+        Args:
+        ----
+            db: The database session.
+            skip: The number of chats to skip.
+            limit: The number of chats to return.
+            user: The current user.
+
+        Returns:
+        -------
+            list[schemas.Chat]: The list of chats.
+
+        Parameters
+        ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[Chat]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.chat.list_chats()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "chat/",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[Chat],
+                    parse_obj_as(
+                        type_=typing.List[Chat],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def create_chat(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        sync_id: str,
+        description: typing.Optional[str] = OMIT,
+        model_name: typing.Optional[str] = OMIT,
+        model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Chat:
         """
-        Create new white label integration.
+        Create a new chat.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
+        ----
+            db: The database session.
+            chat_in: The chat creation data.
+            user: The current user.
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        -------
+            schemas.Chat: The created chat.
 
         Parameters
         ----------
         name : str
 
-        source_short_name : str
+        sync_id : str
 
-        redirect_url : str
+        description : typing.Optional[str]
 
-        client_id : str
+        model_name : typing.Optional[str]
 
-        client_secret : str
+        model_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        search_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Chat
             Successful Response
 
         Examples
@@ -752,26 +836,24 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.create_white_label(
+            await client.chat.create_chat(
                 name="name",
-                source_short_name="source_short_name",
-                redirect_url="redirect_url",
-                client_id="client_id",
-                client_secret="client_secret",
+                sync_id="sync_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels/",
+            "chat/",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "sync_id": sync_id,
+                "description": description,
+                "model_name": model_name,
+                "model_settings": model_settings,
+                "search_settings": search_settings,
             },
             headers={
                 "content-type": "application/json",
@@ -782,9 +864,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Chat,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Chat,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -803,32 +885,30 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    async def get_chat(self, chat_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Chat:
         """
-        Get a specific white label integration.
+        Get a specific chat by ID.
 
         Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
+        ----
+            db: The database session.
+            chat_id: The ID of the chat to get.
+            user: The current user.
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+        -------
+            schemas.Chat: The chat.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Chat
             Successful Response
 
         Examples
@@ -843,24 +923,24 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.get_white_label(
-                white_label_id="white_label_id",
+            await client.chat.get_chat(
+                chat_id="chat_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"chat/{jsonable_encoder(chat_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Chat,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Chat,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -879,48 +959,48 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def update_white_label(
+    async def update_chat(
         self,
-        white_label_id: str,
+        chat_id: str,
         *,
         name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> Chat:
         """
-        Update a white label integration.
+        Update a chat.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
+        ----
+            db: The database session.
+            chat_id: The ID of the chat to update.
+            chat_in: The chat update data.
+            user: The current user.
 
         Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+        -------
+            schemas.Chat: The updated chat.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         name : typing.Optional[str]
 
-        redirect_url : typing.Optional[str]
+        description : typing.Optional[str]
 
-        client_id : typing.Optional[str]
+        model_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
 
-        client_secret : typing.Optional[str]
+        search_settings : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        Chat
             Successful Response
 
         Examples
@@ -935,21 +1015,21 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.update_white_label(
-                white_label_id="white_label_id",
+            await client.chat.update_chat(
+                chat_id="chat_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"chat/{jsonable_encoder(chat_id)}",
             method="PUT",
             json={
                 "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "model_settings": model_settings,
+                "search_settings": search_settings,
             },
             headers={
                 "content-type": "application/json",
@@ -960,9 +1040,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    Chat,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=Chat,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -981,33 +1061,26 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    async def delete_chat(self, chat_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
         """
-        Delete a white label integration.
+        Archive a chat.
 
         Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+        ----
+            db: The database session.
+            chat_id: The ID of the chat to archive.
+            user: The current user.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
-            Successful Response
+        None
 
         Examples
         --------
@@ -1021,27 +1094,21 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.delete_white_label(
-                white_label_id="white_label_id",
+            await client.chat.delete_chat(
+                chat_id="chat_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"chat/{jsonable_encoder(chat_id)}",
             method="DELETE",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
+                return
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     typing.cast(
@@ -1057,32 +1124,42 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get_white_label_oauth_2_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> str:
+    async def send_message(
+        self,
+        chat_id: str,
+        *,
+        content: str,
+        role: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ChatMessage:
         """
-        Generate the OAuth2 authorization URL by delegating to oauth2_service.
+        Send a message to a chat.
 
         Args:
         -----
-            db: The database session
-            white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
+            db: The database session.
+            chat_id: The ID of the chat to send the message to.
+            message: The message to send.
+            user: The current user.
 
         Returns:
-        --------
-            str: The OAuth2 authorization URL
+        -------
+            schemas.ChatMessage: The sent message.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
+
+        content : str
+
+        role : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        str
+        ChatMessage
             Successful Response
 
         Examples
@@ -1097,106 +1174,33 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.get_white_label_oauth_2_auth_url(
-                white_label_id="white_label_id",
+            await client.chat.send_message(
+                chat_id="chat_id",
+                content="content",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    str,
-                    parse_obj_as(
-                        type_=str,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def exchange_white_label_oauth_2_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Exchange OAuth2 code for tokens and create connection.
-
-        Args:
-        -----
-            white_label_id: The ID of the white label to exchange the code for
-            code: The OAuth2 code
-            db: The database session
-            user: The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The created connection
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.white_labels.exchange_white_label_oauth_2_code(
-                white_label_id="white_label_id",
-                request="string",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/code",
+            f"chat/{jsonable_encoder(chat_id)}/message",
             method="POST",
-            json=request,
+            json={
+                "content": content,
+                "role": role,
+            },
+            headers={
+                "content-type": "application/json",
+            },
             request_options=request_options,
             omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    ChatMessage,
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=ChatMessage,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1215,33 +1219,32 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    async def stream_chat_response(
+        self, chat_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> None:
         """
-        List all syncs for a specific white label.
+        Stream an AI response for a chat message.
 
         Args:
         -----
-            white_label_id: The ID of the white label to list syncs for
-            db: The database session
-            current_user: The current user
+            db: The database session.
+            chat_id: The ID of the chat to stream the response for.
+            user: The current user.
 
         Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+        -------
+            StreamingResponse: The streaming response.
 
         Parameters
         ----------
-        white_label_id : str
+        chat_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
-            Successful Response
+        None
 
         Examples
         --------
@@ -1255,27 +1258,21 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_label_syncs(
-                white_label_id="white_label_id",
+            await client.chat.stream_chat_response(
+                chat_id="chat_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
+            f"chat/{jsonable_encoder(chat_id)}/stream",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[Sync],
-                    parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
+                return
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     typing.cast(

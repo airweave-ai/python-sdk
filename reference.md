@@ -1,4 +1,475 @@
 # Reference
+## Health
+<details><summary><code>client.health.<a href="src/airweave/health/client.py">health_check</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Check if the API is healthy.
+
+Returns:
+--------
+    dict: A dictionary containing the status of the API.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.health.health_check()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## ApiKeys
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">read_api_keys</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve all API keys for the current user.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    skip (int): Number of records to skip for pagination.
+    limit (int): Maximum number of records to return.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    List[schemas.APIKey]: A list of API keys.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.read_api_keys()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**skip:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">create_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new API key for the current user.
+
+Returns a temporary plain key for the user to store securely.
+This is not stored in the database.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    api_key_in (schemas.APIKeyCreate): The API key creation data.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKeyWithPlainKey: The created API key object, including the key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.create_api_key()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**expiration_date:** `typing.Optional[dt.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">delete_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete an API key.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    id (UUID): The ID of the API key.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKey: The revoked API key object.
+
+Raises:
+------
+    HTTPException: If the API key is not found.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.delete_api_key(
+    id="id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.api_keys.<a href="src/airweave/api_keys/client.py">read_api_key</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve an API key by ID.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    id (UUID): The ID of the API key.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    schemas.APIKey: The API key object.
+
+Raises:
+------
+    HTTPException: If the API key is not found.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.api_keys.read_api_key(
+    id="id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Users
+<details><summary><code>client.users.<a href="src/airweave/users/client.py">read_user</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get current user.
+
+Args:
+----
+    current_user (User): The current user.
+
+Returns:
+-------
+    schemas.User: The user object.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.users.read_user()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Sources
 <details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read_source</a>(...)</code></summary>
 <dl>
@@ -41,7 +512,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.sources.read_source(
     short_name="short_name",
@@ -121,7 +591,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.sources.read_sources()
 
@@ -151,8 +620,8 @@ client.sources.read_sources()
 </dl>
 </details>
 
-## Collections
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">list_collections</a>(...)</code></summary>
+## Destinations
+<details><summary><code>client.destinations.<a href="src/airweave/destinations/client.py">list_destinations</a>()</code></summary>
 <dl>
 <dd>
 
@@ -164,243 +633,16 @@ client.sources.read_sources()
 <dl>
 <dd>
 
-List all collections for the current user's organization.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
-)
-client.collections.list_collections()
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**skip:** `typing.Optional[int]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `typing.Optional[int]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">create_collection</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Create a new collection.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
-)
-client.collections.create_collection(
-    name="name",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**name:** `str` — Display name for the collection
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**readable_id:** `typing.Optional[str]` — Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">get_collection</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get a specific collection by its readable ID.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
-)
-client.collections.get_collection(
-    readable_id="readable_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**readable_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">delete_collection</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Delete a collection by its readable ID.
+Get all available destinations.
 
 Args:
-    readable_id: The readable ID of the collection to delete
-    delete_data: Whether to delete the data in destinations
+-----
     db: The database session
-    current_user: The current user
+    user: The current user
 
 Returns:
-    The deleted collection
+--------
+    List[schemas.Destination]: A list of destinations
 </dd>
 </dl>
 </dd>
@@ -419,10 +661,79 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
-client.collections.delete_collection(
-    readable_id="readable_id",
+client.destinations.list_destinations()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.destinations.<a href="src/airweave/destinations/client.py">read_destination</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get destination by short name.
+
+Args:
+-----
+    db: The database session
+    short_name: The short name of the destination
+    user: The current user
+
+Returns:
+--------
+    destination (schemas.Destination): The destination
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.destinations.read_destination(
+    short_name="short_name",
 )
 
 ```
@@ -439,15 +750,7 @@ client.collections.delete_collection(
 <dl>
 <dd>
 
-**readable_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**delete_data:** `typing.Optional[bool]` 
+**short_name:** `str` 
     
 </dd>
 </dl>
@@ -467,7 +770,8 @@ client.collections.delete_collection(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">refresh_all_source_connections</a>(...)</code></summary>
+## EmbeddingModels
+<details><summary><code>client.embedding_models.<a href="src/airweave/embedding_models/client.py">read_embedding_model</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -479,16 +783,17 @@ client.collections.delete_collection(
 <dl>
 <dd>
 
-Start sync jobs for all source connections in the collection.
+Get embedding model by id.
 
 Args:
-    readable_id: The readable ID of the collection
-    db: The database session
-    current_user: The current user
-    background_tasks: Background tasks for async operations
+----
+    db (AsyncSession): The database session.
+    short_name (str): The short name of the embedding model.
+    user (schemas.User): The current user.
 
 Returns:
-    A list of created sync jobs
+-------
+    schemas.EmbeddingModel: The embedding model object.
 </dd>
 </dl>
 </dd>
@@ -507,10 +812,9 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
-client.collections.refresh_all_source_connections(
-    readable_id="readable_id",
+client.embedding_models.read_embedding_model(
+    short_name="short_name",
 )
 
 ```
@@ -527,10 +831,79 @@ client.collections.refresh_all_source_connections(
 <dl>
 <dd>
 
-**readable_id:** `str` 
+**short_name:** `str` 
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.embedding_models.<a href="src/airweave/embedding_models/client.py">read_embedding_models</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get all embedding models.
+
+Args:
+----
+    db (AsyncSession): The database session.
+    user (schemas.User): The current user.
+
+Returns:
+-------
+    list[schemas.EmbeddingModel]: The list of embedding models.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.embedding_models.read_embedding_models()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
 
 <dl>
 <dd>
@@ -589,7 +962,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.connections.get_connection(
     connection_id="connection_id",
@@ -669,7 +1041,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.connections.list_all_connected_integrations()
 
@@ -699,8 +1070,7 @@ client.connections.list_all_connected_integrations()
 </dl>
 </details>
 
-## SourceConnections
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list_source_connections</a>(...)</code></summary>
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">list_connected_integrations</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -712,17 +1082,17 @@ client.connections.list_all_connected_integrations()
 <dl>
 <dd>
 
-List all source connections for the current user.
+Get all integrations of specified type connected to the current user.
 
 Args:
-    db: The database session
-    collection: The collection to filter by
-    skip: The number of connections to skip
-    limit: The number of connections to return
-    user: The current user
+-----
+    integration_type (IntegrationType): The type of integration to get connections for.
+    db (AsyncSession): The database session.
+    user (schemas.User): The current user.
 
 Returns:
-    A list of source connection list items with essential information
+-------
+    list[schemas.Connection]: The list of connections.
 </dd>
 </dl>
 </dd>
@@ -741,9 +1111,10 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
-client.source_connections.list_source_connections()
+client.connections.list_connected_integrations(
+    integration_type="source",
+)
 
 ```
 </dd>
@@ -759,10 +1130,1137 @@ client.source_connections.list_source_connections()
 <dl>
 <dd>
 
-**collection:** `typing.Optional[str]` — Filter by collection
+**integration_type:** `IntegrationType` 
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">connect_integration</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Connect to a source, destination, or embedding model.
+
+Expects a POST body with:
+```json
+{
+    "name": "required connection name",
+    ... other config fields specific to the integration type ...
+}
+```
+
+Args:
+-----
+    db: The database session.
+    integration_type: The type of integration to connect to.
+    short_name: The short name of the integration to connect to.
+    name: The name of the connection.
+    config_fields: The config fields for the integration.
+    user: The current user.
+
+Returns:
+-------
+    schemas.Connection: The connection.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.connect_integration(
+    integration_type="source",
+    short_name="short_name",
+    config_fields={"key": "value"},
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**integration_type:** `IntegrationType` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**short_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**config_fields:** `typing.Dict[str, typing.Optional[typing.Any]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">get_connection_credentials</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the credentials for a connection.
+
+Args:
+-----
+    connection_id (UUID): The ID of the connection to get credentials for
+    db (AsyncSession): The database session
+    user (schemas.User): The current user
+
+Returns:
+-------
+    decrypted_credentials (dict): The credentials for the connection
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.get_connection_credentials(
+    connection_id="connection_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">delete_connection</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete a connection.
+
+Deletes the connection and integration credential.
+
+Args:
+-----
+    db (AsyncSession): The database session
+    connection_id (UUID): The ID of the connection to delete
+    user (schemas.User): The current user
+
+Returns:
+--------
+    connection (schemas.Connection): The deleted connection
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.delete_connection(
+    connection_id="connection_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">disconnect_source_connection</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Disconnect from a source connection.
+
+Args:
+-----
+    db (AsyncSession): The database session
+    connection_id (UUID): The ID of the connection to disconnect
+    user (schemas.User): The current user
+
+Returns:
+--------
+    connection (schemas.Connection): The disconnected connection
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.disconnect_source_connection(
+    connection_id="connection_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">get_oauth_2_auth_url</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the OAuth2 authorization URL for a source.
+
+Args:
+-----
+    short_name: The short name of the source
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.get_oauth_2_auth_url(
+    short_name="short_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**short_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">send_oauth_2_code</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Send the OAuth2 authorization code for a source.
+
+This will:
+1. Get the OAuth2 settings for the source
+2. Exchange the authorization code for a token
+3. Create an integration credential with the token
+
+Args:
+-----
+    db: The database session
+    short_name: The short name of the source
+    code: The authorization code
+    user: The current user
+
+Returns:
+--------
+    connection (schemas.Connection): The created connection
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.send_oauth_2_code(
+    short_name="short_name",
+    code="code",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**short_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**code:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">send_oauth_2_white_label_code</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Exchange the OAuth2 authorization code for a white label integration.
+
+Args:
+-----
+    db: The database session
+    white_label_id: The ID of the white label integration
+    code: The authorization code
+    user: The current user
+    background_tasks: The background tasks
+
+Returns:
+--------
+    connection (schemas.Connection): The created connection
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.send_oauth_2_white_label_code(
+    white_label_id="white_label_id",
+    request="string",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**white_label_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">get_oauth_2_white_label_auth_url</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the OAuth2 authorization URL for a white label integration.
+
+Args:
+-----
+    db: The database session
+    white_label_id: The ID of the white label integration
+    user: The current user
+
+Returns:
+--------
+    str: The OAuth2 authorization URL
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.get_oauth_2_white_label_auth_url(
+    white_label_id="white_label_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**white_label_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.connections.<a href="src/airweave/connections/client.py">connect_slack_with_token</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Connect to Slack using a direct API token (for local development only).
+
+Args:
+-----
+    db: The database session.
+    token: The Slack API token.
+    name: The name of the connection.
+    user: The current user.
+
+Returns:
+-------
+    schemas.Connection: The connection.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.connections.connect_slack_with_token(
+    token="token",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**token:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Sync
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">list_syncs</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all syncs for the current user.
+
+Args:
+-----
+    db: The database session
+    skip: The number of syncs to skip
+    limit: The number of syncs to return
+    with_source_connection: Whether to include the source connection in the response
+    user: The current user
+
+Returns:
+--------
+    list[schemas.Sync] | list[schemas.SyncWithSourceConnection]: A list of syncs
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.list_syncs()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**skip:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**with_source_connection:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">create_sync</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new sync configuration.
+
+Args:
+-----
+    db: The database session
+    sync_in: The sync to create
+    user: The current user
+    background_tasks: The background tasks
+
+Returns:
+--------
+    sync (schemas.Sync): The created sync
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.create_sync(
+    name="name",
+    source_connection_id="source_connection_id",
+    destination_connection_ids=["destination_connection_ids"],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**source_connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**destination_connection_ids:** `typing.Sequence[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**embedding_model_connection_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cron_schedule:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**next_scheduled_run:** `typing.Optional[dt.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**white_label_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**white_label_user_identifier:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sync_metadata:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[SyncStatus]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**run_immediately:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">list_all_jobs</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all sync jobs across all syncs.
+
+Args:
+-----
+    db: The database session
+    skip: The number of jobs to skip
+    limit: The number of jobs to return
+    user: The current user
+
+Returns:
+--------
+    list[schemas.SyncJob]: A list of all sync jobs
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.list_all_jobs()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
 
 <dl>
 <dd>
@@ -795,7 +2293,7 @@ client.source_connections.list_source_connections()
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">create_source_connection</a>(...)</code></summary>
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">get_sync</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -807,23 +2305,17 @@ client.source_connections.list_source_connections()
 <dl>
 <dd>
 
-Create a new source connection.
-
-This endpoint creates:
-1. An integration credential with the provided auth fields
-2. A collection if not provided
-3. The source connection
-4. A sync configuration and DAG
-5. A sync job if immediate execution is requested
+Get a specific sync by ID.
 
 Args:
+-----
     db: The database session
-    source_connection_in: The source connection to create
+    sync_id: The ID of the sync to get
     user: The current user
-    background_tasks: Background tasks for async operations
 
 Returns:
-    The created source connection
+--------
+    sync (schemas.Sync): The sync
 </dd>
 </dl>
 </dd>
@@ -842,11 +2334,9 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
-client.source_connections.create_source_connection(
-    name="name",
-    short_name="short_name",
+client.sync.get_sync(
+    sync_id="sync_id",
 )
 
 ```
@@ -863,63 +2353,7 @@ client.source_connections.create_source_connection(
 <dl>
 <dd>
 
-**name:** `str` — Name of the source connection
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**short_name:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**config_fields:** `typing.Optional[ConfigValues]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**collection:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**cron_schedule:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**auth_fields:** `typing.Optional[ConfigValues]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sync_immediately:** `typing.Optional[bool]` 
+**sync_id:** `str` 
     
 </dd>
 </dl>
@@ -939,7 +2373,7 @@ client.source_connections.create_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">get_source_connection</a>(...)</code></summary>
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">delete_sync</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -951,16 +2385,18 @@ client.source_connections.create_source_connection(
 <dl>
 <dd>
 
-Get a specific source connection by ID.
+Delete a sync configuration and optionally its associated data.
 
 Args:
+-----
     db: The database session
-    source_connection_id: The ID of the source connection
-    show_auth_fields: Whether to show the auth fields, default is False
+    sync_id: The ID of the sync to delete
+    delete_data: Whether to delete the data associated with the sync
     user: The current user
 
 Returns:
-    The source connection
+--------
+    sync (schemas.Sync): The deleted sync
 </dd>
 </dl>
 </dd>
@@ -979,98 +2415,9 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
-client.source_connections.get_source_connection(
-    source_connection_id="source_connection_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**source_connection_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**show_auth_fields:** `typing.Optional[bool]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">update_source_connection</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Update a source connection.
-
-Args:
-    db: The database session
-    source_connection_id: The ID of the source connection to update
-    source_connection_in: The updated source connection data
-    user: The current user
-
-Returns:
-    The updated source connection
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
-)
-client.source_connections.update_source_connection(
-    source_connection_id="source_connection_id",
+client.sync.delete_sync(
+    sync_id="sync_id",
 )
 
 ```
@@ -1087,135 +2434,7 @@ client.source_connections.update_source_connection(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**name:** `typing.Optional[str]` — Name of the source connection
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**auth_fields:** `typing.Optional[ConfigValues]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**config_fields:** `typing.Optional[ConfigValues]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**cron_schedule:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**connection_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">delete_source_connection</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Delete a source connection and all related components.
-
-Args:
-    db: The database session
-    source_connection_id: The ID of the source connection to delete
-    delete_data: Whether to delete the associated data in destinations
-    user: The current user
-
-Returns:
-    The deleted source connection
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
-)
-client.source_connections.delete_source_connection(
-    source_connection_id="source_connection_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**source_connection_id:** `str` 
+**sync_id:** `str` 
     
 </dd>
 </dl>
@@ -1243,7 +2462,7 @@ client.source_connections.delete_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">run_source_connection</a>(...)</code></summary>
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">update_sync</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1255,16 +2474,18 @@ client.source_connections.delete_source_connection(
 <dl>
 <dd>
 
-Trigger a sync run for a source connection.
+Update a sync configuration.
 
 Args:
+-----
     db: The database session
-    source_connection_id: The ID of the source connection to run
+    sync_id: The ID of the sync to update
+    sync_update: The sync update data
     user: The current user
-    background_tasks: Background tasks for async operations
 
 Returns:
-    The created sync job
+--------
+    sync (schemas.Sync): The updated sync
 </dd>
 </dl>
 </dd>
@@ -1283,10 +2504,9 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
-client.source_connections.run_source_connection(
-    source_connection_id="source_connection_id",
+client.sync.update_sync(
+    sync_id="sync_id",
 )
 
 ```
@@ -1303,7 +2523,63 @@ client.source_connections.run_source_connection(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cron_schedule:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**next_scheduled_run:** `typing.Optional[dt.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**white_label_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**white_label_user_identifier:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sync_metadata:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[SyncStatus]` 
     
 </dd>
 </dl>
@@ -1323,7 +2599,7 @@ client.source_connections.run_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list_source_connection_jobs</a>(...)</code></summary>
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">run_sync</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1335,15 +2611,18 @@ client.source_connections.run_source_connection(
 <dl>
 <dd>
 
-List all sync jobs for a source connection.
+Trigger a sync run.
 
 Args:
+-----
     db: The database session
-    source_connection_id: The ID of the source connection
+    sync_id: The ID of the sync to run
     user: The current user
+    background_tasks: The background tasks
 
 Returns:
-    A list of sync jobs
+--------
+    sync_job (schemas.SyncJob): The sync job
 </dd>
 </dl>
 </dd>
@@ -1362,10 +2641,9 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
-client.source_connections.list_source_connection_jobs(
-    source_connection_id="source_connection_id",
+client.sync.run_sync(
+    sync_id="sync_id",
 )
 
 ```
@@ -1382,7 +2660,417 @@ client.source_connections.list_source_connection_jobs(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">list_sync_jobs</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all jobs for a specific sync.
+
+Args:
+-----
+    db: The database session
+    sync_id: The ID of the sync to list jobs for
+    user: The current user
+
+Returns:
+--------
+    list[schemas.SyncJob]: A list of sync jobs
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.list_sync_jobs(
+    sync_id="sync_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">get_sync_job</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get details of a specific sync job.
+
+Args:
+-----
+    db: The database session
+    sync_id: The ID of the sync to list jobs for
+    job_id: The ID of the job to get
+    user: The current user
+
+Returns:
+--------
+    sync_job (schemas.SyncJob): The sync job
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.get_sync_job(
+    sync_id="sync_id",
+    job_id="job_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**job_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">subscribe_sync_job</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Server-Sent Events (SSE) endpoint to subscribe to a sync job's progress.
+
+Args:
+-----
+    job_id: The ID of the job to subscribe to
+    user: The current user
+
+Returns:
+--------
+    StreamingResponse: The streaming response
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.subscribe_sync_job(
+    job_id="job_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**job_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.sync.<a href="src/airweave/sync/client.py">get_sync_dag</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the DAG for a specific sync.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.sync.get_sync_dag(
+    sync_id="sync_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Search
+<details><summary><code>client.search.<a href="src/airweave/search/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search for documents within a specific sync.
+
+Args:
+-----
+    db: The database session
+    sync_id: The ID of the sync to search within
+    query: The search query text
+    user: The current user
+
+Returns:
+--------
+    list[dict]: A list of search results
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.search.search(
+    sync_id="sync_id",
+    query="query",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` — The ID of the sync to search within
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — Search query text
     
 </dd>
 </dl>
@@ -1443,7 +3131,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.list_white_labels()
 
@@ -1514,7 +3201,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.create_white_label(
     name="name",
@@ -1631,7 +3317,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.get_white_label(
     white_label_id="white_label_id",
@@ -1713,7 +3398,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.update_white_label(
     white_label_id="white_label_id",
@@ -1826,7 +3510,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.delete_white_label(
     white_label_id="white_label_id",
@@ -1847,6 +3530,176 @@ client.white_labels.delete_white_label(
 <dd>
 
 **white_label_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate the OAuth2 authorization URL by delegating to oauth2_service.
+
+Args:
+-----
+    db: The database session
+    white_label_id: The ID of the white label to get the auth URL for
+    user: The current user
+
+Returns:
+--------
+    str: The OAuth2 authorization URL
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.white_labels.get_white_label_oauth_2_auth_url(
+    white_label_id="white_label_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**white_label_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Exchange OAuth2 code for tokens and create connection.
+
+Args:
+-----
+    white_label_id: The ID of the white label to exchange the code for
+    code: The OAuth2 code
+    db: The database session
+    user: The current user
+
+Returns:
+--------
+    connection (schemas.Connection): The created connection
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.white_labels.exchange_white_label_oauth_2_code(
+    white_label_id="white_label_id",
+    request="string",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**white_label_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `str` 
     
 </dd>
 </dl>
@@ -1907,7 +3760,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    token="YOUR_TOKEN",
 )
 client.white_labels.list_white_label_syncs(
     white_label_id="white_label_id",
@@ -1928,6 +3780,2311 @@ client.white_labels.list_white_label_syncs(
 <dd>
 
 **white_label_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Chat
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">openai_key_set</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Check if the OpenAI API key is set for the current user.
+
+Args:
+----
+    db: The database session.
+    user: The current user.
+
+Returns:
+-------
+    bool: True if the OpenAI API key is set, False otherwise.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.openai_key_set()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">list_chats</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all chats for the current user.
+
+Args:
+----
+    db: The database session.
+    skip: The number of chats to skip.
+    limit: The number of chats to return.
+    user: The current user.
+
+Returns:
+-------
+    list[schemas.Chat]: The list of chats.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.list_chats()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**skip:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">create_chat</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new chat.
+
+Args:
+----
+    db: The database session.
+    chat_in: The chat creation data.
+    user: The current user.
+
+Returns:
+-------
+    schemas.Chat: The created chat.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.create_chat(
+    name="name",
+    sync_id="sync_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**model_name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**model_settings:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search_settings:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">get_chat</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a specific chat by ID.
+
+Args:
+----
+    db: The database session.
+    chat_id: The ID of the chat to get.
+    user: The current user.
+
+Returns:
+-------
+    schemas.Chat: The chat.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.get_chat(
+    chat_id="chat_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**chat_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">update_chat</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a chat.
+
+Args:
+----
+    db: The database session.
+    chat_id: The ID of the chat to update.
+    chat_in: The chat update data.
+    user: The current user.
+
+Returns:
+-------
+    schemas.Chat: The updated chat.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.update_chat(
+    chat_id="chat_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**chat_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**model_settings:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search_settings:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">delete_chat</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Archive a chat.
+
+Args:
+----
+    db: The database session.
+    chat_id: The ID of the chat to archive.
+    user: The current user.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.delete_chat(
+    chat_id="chat_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**chat_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">send_message</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Send a message to a chat.
+
+Args:
+-----
+    db: The database session.
+    chat_id: The ID of the chat to send the message to.
+    message: The message to send.
+    user: The current user.
+
+Returns:
+-------
+    schemas.ChatMessage: The sent message.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.send_message(
+    chat_id="chat_id",
+    content="content",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**chat_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**role:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="src/airweave/chat/client.py">stream_chat_response</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Stream an AI response for a chat message.
+
+Args:
+-----
+    db: The database session.
+    chat_id: The ID of the chat to stream the response for.
+    user: The current user.
+
+Returns:
+-------
+    StreamingResponse: The streaming response.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.chat.stream_chat_response(
+    chat_id="chat_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**chat_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Dag
+<details><summary><code>client.dag.<a href="src/airweave/dag/client.py">get_sync_dag</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the DAG definition for a sync.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.dag.get_sync_dag(
+    sync_id="sync_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.dag.<a href="src/airweave/dag/client.py">create_sync_dag</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new DAG definition for a sync.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK, DagEdgeCreate, DagNodeCreate
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.dag.create_sync_dag(
+    sync_id="sync_id",
+    name="name",
+    sync_dag_create_sync_id="sync_id",
+    nodes=[
+        DagNodeCreate(
+            type="source",
+            name="name",
+        )
+    ],
+    edges=[
+        DagEdgeCreate(
+            from_node_id="from_node_id",
+            to_node_id="to_node_id",
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sync_dag_create_sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**nodes:** `typing.Sequence[DagNodeCreate]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**edges:** `typing.Sequence[DagEdgeCreate]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.dag.<a href="src/airweave/dag/client.py">update_sync_dag</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a DAG definition for a sync.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.dag.update_sync_dag(
+    sync_id="sync_id",
+    name="name",
+    sync_dag_update_sync_id="sync_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sync_dag_update_sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**nodes:** `typing.Optional[typing.Sequence[DagNodeCreate]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**edges:** `typing.Optional[typing.Sequence[DagEdgeCreate]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.dag.<a href="src/airweave/dag/client.py">initialize_dag</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Initialize a new DAG with source, entities, and destination.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.dag.initialize_dag(
+    sync_id="sync_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sync_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Entities
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">list_entity_definitions</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all entity definitions for the current user's organization.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.list_entity_definitions()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">create_entity_definition</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new entity definition.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.create_entity_definition(
+    name="name",
+    type="file",
+    entity_schema=["entity_schema"],
+    module_name="module_name",
+    class_name="class_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `EntityType` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**entity_schema:** `EntityDefinitionCreateEntitySchema` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**module_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**class_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parent_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">update_entity_definition</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update an entity definition.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.update_entity_definition(
+    definition_id="definition_id",
+    name="name",
+    type="file",
+    entity_schema=["entity_schema"],
+    module_name="module_name",
+    class_name="class_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**definition_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `EntityType` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**entity_schema:** `EntityDefinitionUpdateEntitySchema` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**module_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**class_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parent_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">list_entity_relations</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all entity relations for the current user's organization.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.list_entity_relations()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">create_entity_relation</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new entity relation.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.create_entity_relation(
+    name="name",
+    from_entity_id="from_entity_id",
+    to_entity_id="to_entity_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**from_entity_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**to_entity_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">update_entity_relation</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update an entity relation.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.update_entity_relation(
+    relation_id="relation_id",
+    name="name",
+    from_entity_id="from_entity_id",
+    to_entity_id="to_entity_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**relation_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**from_entity_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**to_entity_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">get_entity_definitions_by_ids</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get multiple entity definitions by their IDs.
+
+Args:
+    ids: List of entity definition IDs to fetch
+    db: Database session
+    current_user: Current authenticated user
+
+Returns:
+    List of entity definitions matching the provided IDs
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.get_entity_definitions_by_ids(
+    request=["string"],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `typing.Sequence[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/airweave/entities/client.py">get_entity_definitions_by_source_short_name</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get all entity definitions for a given source.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.entities.get_entity_definitions_by_source_short_name(
+    source_short_name="source_short_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**source_short_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Transformers
+<details><summary><code>client.transformers.<a href="src/airweave/transformers/client.py">list_transformers</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all transformers for the current user's organization.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.transformers.list_transformers()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transformers.<a href="src/airweave/transformers/client.py">create_transformer</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new transformer.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.transformers.create_transformer(
+    name="name",
+    method_name="method_name",
+    module_name="module_name",
+    input_entity_definition_ids=["input_entity_definition_ids"],
+    output_entity_definition_ids=["output_entity_definition_ids"],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**method_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**module_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**input_entity_definition_ids:** `typing.Sequence[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**output_entity_definition_ids:** `typing.Sequence[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**config_schema:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.transformers.<a href="src/airweave/transformers/client.py">update_transformer</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a transformer.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.transformers.update_transformer(
+    transformer_id="transformer_id",
+    name="name",
+    method_name="method_name",
+    module_name="module_name",
+    input_entity_definition_ids=["input_entity_definition_ids"],
+    output_entity_definition_ids=["output_entity_definition_ids"],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**transformer_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**method_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**module_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**input_entity_definition_ids:** `typing.Sequence[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**output_entity_definition_ids:** `typing.Sequence[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**config_schema:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## CursorDevelopment
+<details><summary><code>client.cursor_development.<a href="src/airweave/cursor_development/client.py">check_connection_status</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Check if a source connection exists for the given short_name.
+
+Args:
+-----
+    db: The database session
+    short_name: The short name of the source to check
+    user: The admin user
+
+Returns:
+--------
+    List[schemas.Connection]: List of source connections for the given short_name
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.cursor_development.check_connection_status(
+    short_name="short_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**short_name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.cursor_development.<a href="src/airweave/cursor_development/client.py">test_sync</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Run a sync for a specific source by short_name.
+
+This endpoint is used for testing source integrations during development.
+It finds the first available source connection for the given short_name and
+runs a sync on it.
+
+Args:
+-----
+    db: The database session
+    short_name: The short name of the source to sync
+    background_tasks: The background tasks
+    user: The admin user
+
+Returns:
+--------
+    schemas.SyncJob: The created sync job
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.cursor_development.test_sync(
+    short_name="short_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**short_name:** `str` 
     
 </dd>
 </dl>

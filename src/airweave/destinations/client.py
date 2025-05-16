@@ -3,92 +3,24 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.source_with_config_fields import SourceWithConfigFields
-from ..core.jsonable_encoder import jsonable_encoder
+from ..types.destination import Destination
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
-from ..types.source import Source
+from ..types.destination_with_config_fields import DestinationWithConfigFields
+from ..core.jsonable_encoder import jsonable_encoder
 from ..core.client_wrapper import AsyncClientWrapper
 
 
-class SourcesClient:
+class DestinationsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read_source(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    def list_destinations(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Destination]:
         """
-        Get source by id.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.Source: The source object.
-
-        Parameters
-        ----------
-        short_name : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceWithConfigFields
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.sources.read_source(
-            short_name="short_name",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceWithConfigFields,
-                    parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
-        """
-        Get all sources for the current user.
+        Get all available destinations.
 
         Args:
         -----
@@ -97,7 +29,7 @@ class SourcesClient:
 
         Returns:
         --------
-            list[schemas.Source]: The list of sources.
+            List[schemas.Destination]: A list of destinations
 
         Parameters
         ----------
@@ -106,7 +38,7 @@ class SourcesClient:
 
         Returns
         -------
-        typing.List[Source]
+        typing.List[Destination]
             Successful Response
 
         Examples
@@ -116,19 +48,87 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read_sources()
+        client.destinations.list_destinations()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "sources/list",
+            "destinations/list",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Source],
+                    typing.List[Destination],
                     parse_obj_as(
-                        type_=typing.List[Source],  # type: ignore
+                        type_=typing.List[Destination],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def read_destination(
+        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> DestinationWithConfigFields:
+        """
+        Get destination by short name.
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the destination
+            user: The current user
+
+        Returns:
+        --------
+            destination (schemas.Destination): The destination
+
+        Parameters
+        ----------
+        short_name : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DestinationWithConfigFields
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.destinations.read_destination(
+            short_name="short_name",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"destinations/detail/{jsonable_encoder(short_name)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    DestinationWithConfigFields,
+                    parse_obj_as(
+                        type_=DestinationWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -148,36 +148,33 @@ class SourcesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncSourcesClient:
+class AsyncDestinationsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read_source(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    async def list_destinations(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[Destination]:
         """
-        Get source by id.
+        Get all available destinations.
 
         Args:
-        ----
-            db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
-            user (schemas.User): The current user.
+        -----
+            db: The database session
+            user: The current user
 
         Returns:
-        -------
-            schemas.Source: The source object.
+        --------
+            List[schemas.Destination]: A list of destinations
 
         Parameters
         ----------
-        short_name : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        SourceWithConfigFields
+        typing.List[Destination]
             Successful Response
 
         Examples
@@ -192,7 +189,81 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_source(
+            await client.destinations.list_destinations()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "destinations/list",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[Destination],
+                    parse_obj_as(
+                        type_=typing.List[Destination],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def read_destination(
+        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> DestinationWithConfigFields:
+        """
+        Get destination by short name.
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the destination
+            user: The current user
+
+        Returns:
+        --------
+            destination (schemas.Destination): The destination
+
+        Parameters
+        ----------
+        short_name : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DestinationWithConfigFields
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.destinations.read_destination(
                 short_name="short_name",
             )
 
@@ -200,85 +271,16 @@ class AsyncSourcesClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
+            f"destinations/detail/{jsonable_encoder(short_name)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithConfigFields,
+                    DestinationWithConfigFields,
                     parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
-        """
-        Get all sources for the current user.
-
-        Args:
-        -----
-            db: The database session
-            user: The current user
-
-        Returns:
-        --------
-            list[schemas.Source]: The list of sources.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[Source]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.sources.read_sources()
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "sources/list",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[Source],
-                    parse_obj_as(
-                        type_=typing.List[Source],  # type: ignore
+                        type_=DestinationWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

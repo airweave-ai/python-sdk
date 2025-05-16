@@ -4,17 +4,37 @@ import typing
 from .environment import AirweaveSDKEnvironment
 import httpx
 from .core.client_wrapper import SyncClientWrapper
+from .health.client import HealthClient
+from .api_keys.client import ApiKeysClient
+from .users.client import UsersClient
 from .sources.client import SourcesClient
-from .collections.client import CollectionsClient
+from .destinations.client import DestinationsClient
+from .embedding_models.client import EmbeddingModelsClient
 from .connections.client import ConnectionsClient
-from .source_connections.client import SourceConnectionsClient
+from .sync.client import SyncClient
+from .search.client import SearchClient
 from .white_labels.client import WhiteLabelsClient
+from .chat.client import ChatClient
+from .dag.client import DagClient
+from .entities.client import EntitiesClient
+from .transformers.client import TransformersClient
+from .cursor_development.client import CursorDevelopmentClient
 from .core.client_wrapper import AsyncClientWrapper
+from .health.client import AsyncHealthClient
+from .api_keys.client import AsyncApiKeysClient
+from .users.client import AsyncUsersClient
 from .sources.client import AsyncSourcesClient
-from .collections.client import AsyncCollectionsClient
+from .destinations.client import AsyncDestinationsClient
+from .embedding_models.client import AsyncEmbeddingModelsClient
 from .connections.client import AsyncConnectionsClient
-from .source_connections.client import AsyncSourceConnectionsClient
+from .sync.client import AsyncSyncClient
+from .search.client import AsyncSearchClient
 from .white_labels.client import AsyncWhiteLabelsClient
+from .chat.client import AsyncChatClient
+from .dag.client import AsyncDagClient
+from .entities.client import AsyncEntitiesClient
+from .transformers.client import AsyncTransformersClient
+from .cursor_development.client import AsyncCursorDevelopmentClient
 
 
 class AirweaveSDK:
@@ -36,7 +56,6 @@ class AirweaveSDK:
 
 
     api_key : typing.Optional[str]
-    token : typing.Union[str, typing.Callable[[], str]]
     timeout : typing.Optional[float]
         The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
 
@@ -52,7 +71,6 @@ class AirweaveSDK:
 
     client = AirweaveSDK(
         api_key="YOUR_API_KEY",
-        token="YOUR_TOKEN",
     )
     """
 
@@ -62,7 +80,6 @@ class AirweaveSDK:
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
         api_key: typing.Optional[str] = None,
-        token: typing.Union[str, typing.Callable[[], str]],
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
@@ -71,7 +88,6 @@ class AirweaveSDK:
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
             api_key=api_key,
-            token=token,
             httpx_client=httpx_client
             if httpx_client is not None
             else httpx.Client(timeout=_defaulted_timeout, follow_redirects=follow_redirects)
@@ -79,11 +95,21 @@ class AirweaveSDK:
             else httpx.Client(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
+        self.health = HealthClient(client_wrapper=self._client_wrapper)
+        self.api_keys = ApiKeysClient(client_wrapper=self._client_wrapper)
+        self.users = UsersClient(client_wrapper=self._client_wrapper)
         self.sources = SourcesClient(client_wrapper=self._client_wrapper)
-        self.collections = CollectionsClient(client_wrapper=self._client_wrapper)
+        self.destinations = DestinationsClient(client_wrapper=self._client_wrapper)
+        self.embedding_models = EmbeddingModelsClient(client_wrapper=self._client_wrapper)
         self.connections = ConnectionsClient(client_wrapper=self._client_wrapper)
-        self.source_connections = SourceConnectionsClient(client_wrapper=self._client_wrapper)
+        self.sync = SyncClient(client_wrapper=self._client_wrapper)
+        self.search = SearchClient(client_wrapper=self._client_wrapper)
         self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
+        self.chat = ChatClient(client_wrapper=self._client_wrapper)
+        self.dag = DagClient(client_wrapper=self._client_wrapper)
+        self.entities = EntitiesClient(client_wrapper=self._client_wrapper)
+        self.transformers = TransformersClient(client_wrapper=self._client_wrapper)
+        self.cursor_development = CursorDevelopmentClient(client_wrapper=self._client_wrapper)
 
 
 class AsyncAirweaveSDK:
@@ -105,7 +131,6 @@ class AsyncAirweaveSDK:
 
 
     api_key : typing.Optional[str]
-    token : typing.Union[str, typing.Callable[[], str]]
     timeout : typing.Optional[float]
         The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
 
@@ -121,7 +146,6 @@ class AsyncAirweaveSDK:
 
     client = AsyncAirweaveSDK(
         api_key="YOUR_API_KEY",
-        token="YOUR_TOKEN",
     )
     """
 
@@ -131,7 +155,6 @@ class AsyncAirweaveSDK:
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
         api_key: typing.Optional[str] = None,
-        token: typing.Union[str, typing.Callable[[], str]],
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
@@ -140,7 +163,6 @@ class AsyncAirweaveSDK:
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
             api_key=api_key,
-            token=token,
             httpx_client=httpx_client
             if httpx_client is not None
             else httpx.AsyncClient(timeout=_defaulted_timeout, follow_redirects=follow_redirects)
@@ -148,11 +170,21 @@ class AsyncAirweaveSDK:
             else httpx.AsyncClient(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
+        self.health = AsyncHealthClient(client_wrapper=self._client_wrapper)
+        self.api_keys = AsyncApiKeysClient(client_wrapper=self._client_wrapper)
+        self.users = AsyncUsersClient(client_wrapper=self._client_wrapper)
         self.sources = AsyncSourcesClient(client_wrapper=self._client_wrapper)
-        self.collections = AsyncCollectionsClient(client_wrapper=self._client_wrapper)
+        self.destinations = AsyncDestinationsClient(client_wrapper=self._client_wrapper)
+        self.embedding_models = AsyncEmbeddingModelsClient(client_wrapper=self._client_wrapper)
         self.connections = AsyncConnectionsClient(client_wrapper=self._client_wrapper)
-        self.source_connections = AsyncSourceConnectionsClient(client_wrapper=self._client_wrapper)
+        self.sync = AsyncSyncClient(client_wrapper=self._client_wrapper)
+        self.search = AsyncSearchClient(client_wrapper=self._client_wrapper)
         self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
+        self.chat = AsyncChatClient(client_wrapper=self._client_wrapper)
+        self.dag = AsyncDagClient(client_wrapper=self._client_wrapper)
+        self.entities = AsyncEntitiesClient(client_wrapper=self._client_wrapper)
+        self.transformers = AsyncTransformersClient(client_wrapper=self._client_wrapper)
+        self.cursor_development = AsyncCursorDevelopmentClient(client_wrapper=self._client_wrapper)
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:

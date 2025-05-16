@@ -3,37 +3,33 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.white_label import WhiteLabel
+from ..types.entity_definition import EntityDefinition
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
+from ..types.entity_type import EntityType
+from .types.entity_definition_create_entity_schema import EntityDefinitionCreateEntitySchema
+from ..core.serialization import convert_and_respect_annotation_metadata
+from .types.entity_definition_update_entity_schema import EntityDefinitionUpdateEntitySchema
 from ..core.jsonable_encoder import jsonable_encoder
-from ..types.connection import Connection
-from ..types.sync import Sync
+from ..types.entity_relation import EntityRelation
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class WhiteLabelsClient:
+class EntitiesClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_white_labels(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[WhiteLabel]:
+    def list_entity_definitions(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EntityDefinition]:
         """
-        List all white labels for the current user's organization.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-
-        Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        List all entity definitions for the current user's organization.
 
         Parameters
         ----------
@@ -42,7 +38,7 @@ class WhiteLabelsClient:
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        typing.List[EntityDefinition]
             Successful Response
 
         Examples
@@ -52,19 +48,19 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.list_white_labels()
+        client.entities.list_entity_definitions()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "entities/definitions/",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    typing.List[EntityDefinition],
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=typing.List[EntityDefinition],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -83,47 +79,43 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def create_white_label(
+    def create_entity_definition(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        type: EntityType,
+        entity_schema: EntityDefinitionCreateEntitySchema,
+        module_name: str,
+        class_name: str,
+        description: typing.Optional[str] = OMIT,
+        parent_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> EntityDefinition:
         """
-        Create new white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        Create a new entity definition.
 
         Parameters
         ----------
         name : str
 
-        source_short_name : str
+        type : EntityType
 
-        redirect_url : str
+        entity_schema : EntityDefinitionCreateEntitySchema
 
-        client_id : str
+        module_name : str
 
-        client_secret : str
+        class_name : str
+
+        description : typing.Optional[str]
+
+        parent_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        EntityDefinition
             Successful Response
 
         Examples
@@ -133,23 +125,27 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.create_white_label(
+        client.entities.create_entity_definition(
             name="name",
-            source_short_name="source_short_name",
-            redirect_url="redirect_url",
-            client_id="client_id",
-            client_secret="client_secret",
+            type="file",
+            entity_schema=["entity_schema"],
+            module_name="module_name",
+            class_name="class_name",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "white_labels/",
+            "entities/definitions/",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "type": type,
+                "entity_schema": convert_and_respect_annotation_metadata(
+                    object_=entity_schema, annotation=EntityDefinitionCreateEntitySchema, direction="write"
+                ),
+                "parent_id": parent_id,
+                "module_name": module_name,
+                "class_name": class_name,
             },
             headers={
                 "content-type": "application/json",
@@ -160,9 +156,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    EntityDefinition,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=EntityDefinition,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -181,116 +177,46 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
-        """
-        Get a specific white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        WhiteLabel
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.white_labels.get_white_label(
-            white_label_id="white_label_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def update_white_label(
+    def update_entity_definition(
         self,
-        white_label_id: str,
+        definition_id: str,
         *,
-        name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        name: str,
+        type: EntityType,
+        entity_schema: EntityDefinitionUpdateEntitySchema,
+        module_name: str,
+        class_name: str,
+        description: typing.Optional[str] = OMIT,
+        parent_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> EntityDefinition:
         """
-        Update a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+        Update an entity definition.
 
         Parameters
         ----------
-        white_label_id : str
+        definition_id : str
 
-        name : typing.Optional[str]
+        name : str
 
-        redirect_url : typing.Optional[str]
+        type : EntityType
 
-        client_id : typing.Optional[str]
+        entity_schema : EntityDefinitionUpdateEntitySchema
 
-        client_secret : typing.Optional[str]
+        module_name : str
+
+        class_name : str
+
+        description : typing.Optional[str]
+
+        parent_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        EntityDefinition
             Successful Response
 
         Examples
@@ -300,18 +226,28 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.update_white_label(
-            white_label_id="white_label_id",
+        client.entities.update_entity_definition(
+            definition_id="definition_id",
+            name="name",
+            type="file",
+            entity_schema=["entity_schema"],
+            module_name="module_name",
+            class_name="class_name",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"entities/definitions/{jsonable_encoder(definition_id)}",
             method="PUT",
             json={
                 "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "type": type,
+                "entity_schema": convert_and_respect_annotation_metadata(
+                    object_=entity_schema, annotation=EntityDefinitionUpdateEntitySchema, direction="write"
+                ),
+                "parent_id": parent_id,
+                "module_name": module_name,
+                "class_name": class_name,
             },
             headers={
                 "content-type": "application/json",
@@ -322,9 +258,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    EntityDefinition,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=EntityDefinition,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -343,32 +279,20 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    def list_entity_relations(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EntityRelation]:
         """
-        Delete a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+        List all entity relations for the current user's organization.
 
         Parameters
         ----------
-        white_label_id : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        typing.List[EntityRelation]
             Successful Response
 
         Examples
@@ -378,89 +302,19 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.delete_white_label(
-            white_label_id="white_label_id",
-        )
+        client.entities.list_entity_relations()
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
-            method="DELETE",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def get_white_label_oauth_2_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> str:
-        """
-        Generate the OAuth2 authorization URL by delegating to oauth2_service.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
-
-        Returns:
-        --------
-            str: The OAuth2 authorization URL
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        str
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.white_labels.get_white_label_oauth_2_auth_url(
-            white_label_id="white_label_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
+            "entities/relations/",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    str,
+                    typing.List[EntityRelation],
                     parse_obj_as(
-                        type_=str,  # type: ignore
+                        type_=typing.List[EntityRelation],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -479,35 +333,34 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def exchange_white_label_oauth_2_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
+    def create_entity_relation(
+        self,
+        *,
+        name: str,
+        from_entity_id: str,
+        to_entity_id: str,
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EntityRelation:
         """
-        Exchange OAuth2 code for tokens and create connection.
-
-        Args:
-        -----
-            white_label_id: The ID of the white label to exchange the code for
-            code: The OAuth2 code
-            db: The database session
-            user: The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The created connection
+        Create a new entity relation.
 
         Parameters
         ----------
-        white_label_id : str
+        name : str
 
-        request : str
+        from_entity_id : str
+
+        to_entity_id : str
+
+        description : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        Connection
+        EntityRelation
             Successful Response
 
         Examples
@@ -517,13 +370,176 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.exchange_white_label_oauth_2_code(
-            white_label_id="white_label_id",
-            request="string",
+        client.entities.create_entity_relation(
+            name="name",
+            from_entity_id="from_entity_id",
+            to_entity_id="to_entity_id",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/code",
+            "entities/relations/",
+            method="POST",
+            json={
+                "name": name,
+                "description": description,
+                "from_entity_id": from_entity_id,
+                "to_entity_id": to_entity_id,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EntityRelation,
+                    parse_obj_as(
+                        type_=EntityRelation,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def update_entity_relation(
+        self,
+        relation_id: str,
+        *,
+        name: str,
+        from_entity_id: str,
+        to_entity_id: str,
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EntityRelation:
+        """
+        Update an entity relation.
+
+        Parameters
+        ----------
+        relation_id : str
+
+        name : str
+
+        from_entity_id : str
+
+        to_entity_id : str
+
+        description : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EntityRelation
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.entities.update_entity_relation(
+            relation_id="relation_id",
+            name="name",
+            from_entity_id="from_entity_id",
+            to_entity_id="to_entity_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"entities/relations/{jsonable_encoder(relation_id)}",
+            method="PUT",
+            json={
+                "name": name,
+                "description": description,
+                "from_entity_id": from_entity_id,
+                "to_entity_id": to_entity_id,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EntityRelation,
+                    parse_obj_as(
+                        type_=EntityRelation,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def get_entity_definitions_by_ids(
+        self, *, request: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EntityDefinition]:
+        """
+        Get multiple entity definitions by their IDs.
+
+        Args:
+            ids: List of entity definition IDs to fetch
+            db: Database session
+            current_user: Current authenticated user
+
+        Returns:
+            List of entity definitions matching the provided IDs
+
+        Parameters
+        ----------
+        request : typing.Sequence[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[EntityDefinition]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.entities.get_entity_definitions_by_ids(
+            request=["string"],
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "entities/definitions/by-ids/",
             method="POST",
             json=request,
             request_options=request_options,
@@ -532,9 +548,9 @@ class WhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    typing.List[EntityDefinition],
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=typing.List[EntityDefinition],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -553,32 +569,22 @@ class WhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    def get_entity_definitions_by_source_short_name(
+        self, *, source_short_name: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EntityDefinition]:
         """
-        List all syncs for a specific white label.
-
-        Args:
-        -----
-            white_label_id: The ID of the white label to list syncs for
-            db: The database session
-            current_user: The current user
-
-        Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+        Get all entity definitions for a given source.
 
         Parameters
         ----------
-        white_label_id : str
+        source_short_name : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
+        typing.List[EntityDefinition]
             Successful Response
 
         Examples
@@ -588,21 +594,24 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.list_white_label_syncs(
-            white_label_id="white_label_id",
+        client.entities.get_entity_definitions_by_source_short_name(
+            source_short_name="source_short_name",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
+            "entities/definitions/by-source/",
             method="GET",
+            params={
+                "source_short_name": source_short_name,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Sync],
+                    typing.List[EntityDefinition],
                     parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
+                        type_=typing.List[EntityDefinition],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -622,24 +631,15 @@ class WhiteLabelsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncWhiteLabelsClient:
+class AsyncEntitiesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def list_white_labels(
+    async def list_entity_definitions(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[WhiteLabel]:
+    ) -> typing.List[EntityDefinition]:
         """
-        List all white labels for the current user's organization.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-
-        Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        List all entity definitions for the current user's organization.
 
         Parameters
         ----------
@@ -648,7 +648,7 @@ class AsyncWhiteLabelsClient:
 
         Returns
         -------
-        typing.List[WhiteLabel]
+        typing.List[EntityDefinition]
             Successful Response
 
         Examples
@@ -663,22 +663,22 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_labels()
+            await client.entities.list_entity_definitions()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels/list",
+            "entities/definitions/",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[WhiteLabel],
+                    typing.List[EntityDefinition],
                     parse_obj_as(
-                        type_=typing.List[WhiteLabel],  # type: ignore
+                        type_=typing.List[EntityDefinition],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -697,47 +697,43 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def create_white_label(
+    async def create_entity_definition(
         self,
         *,
         name: str,
-        source_short_name: str,
-        redirect_url: str,
-        client_id: str,
-        client_secret: str,
+        type: EntityType,
+        entity_schema: EntityDefinitionCreateEntitySchema,
+        module_name: str,
+        class_name: str,
+        description: typing.Optional[str] = OMIT,
+        parent_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> EntityDefinition:
         """
-        Create new white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_in: The white label to create
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        Create a new entity definition.
 
         Parameters
         ----------
         name : str
 
-        source_short_name : str
+        type : EntityType
 
-        redirect_url : str
+        entity_schema : EntityDefinitionCreateEntitySchema
 
-        client_id : str
+        module_name : str
 
-        client_secret : str
+        class_name : str
+
+        description : typing.Optional[str]
+
+        parent_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        EntityDefinition
             Successful Response
 
         Examples
@@ -752,26 +748,30 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.create_white_label(
+            await client.entities.create_entity_definition(
                 name="name",
-                source_short_name="source_short_name",
-                redirect_url="redirect_url",
-                client_id="client_id",
-                client_secret="client_secret",
+                type="file",
+                entity_schema=["entity_schema"],
+                module_name="module_name",
+                class_name="class_name",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "white_labels/",
+            "entities/definitions/",
             method="POST",
             json={
                 "name": name,
-                "source_short_name": source_short_name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "type": type,
+                "entity_schema": convert_and_respect_annotation_metadata(
+                    object_=entity_schema, annotation=EntityDefinitionCreateEntitySchema, direction="write"
+                ),
+                "parent_id": parent_id,
+                "module_name": module_name,
+                "class_name": class_name,
             },
             headers={
                 "content-type": "application/json",
@@ -782,9 +782,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    EntityDefinition,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=EntityDefinition,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -803,124 +803,46 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
-        """
-        Get a specific white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            current_user: The current user
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        WhiteLabel
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.white_labels.get_white_label(
-                white_label_id="white_label_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def update_white_label(
+    async def update_entity_definition(
         self,
-        white_label_id: str,
+        definition_id: str,
         *,
-        name: typing.Optional[str] = OMIT,
-        redirect_url: typing.Optional[str] = OMIT,
-        client_id: typing.Optional[str] = OMIT,
-        client_secret: typing.Optional[str] = OMIT,
+        name: str,
+        type: EntityType,
+        entity_schema: EntityDefinitionUpdateEntitySchema,
+        module_name: str,
+        class_name: str,
+        description: typing.Optional[str] = OMIT,
+        parent_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WhiteLabel:
+    ) -> EntityDefinition:
         """
-        Update a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+        Update an entity definition.
 
         Parameters
         ----------
-        white_label_id : str
+        definition_id : str
 
-        name : typing.Optional[str]
+        name : str
 
-        redirect_url : typing.Optional[str]
+        type : EntityType
 
-        client_id : typing.Optional[str]
+        entity_schema : EntityDefinitionUpdateEntitySchema
 
-        client_secret : typing.Optional[str]
+        module_name : str
+
+        class_name : str
+
+        description : typing.Optional[str]
+
+        parent_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        EntityDefinition
             Successful Response
 
         Examples
@@ -935,21 +857,31 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.update_white_label(
-                white_label_id="white_label_id",
+            await client.entities.update_entity_definition(
+                definition_id="definition_id",
+                name="name",
+                type="file",
+                entity_schema=["entity_schema"],
+                module_name="module_name",
+                class_name="class_name",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
+            f"entities/definitions/{jsonable_encoder(definition_id)}",
             method="PUT",
             json={
                 "name": name,
-                "redirect_url": redirect_url,
-                "client_id": client_id,
-                "client_secret": client_secret,
+                "description": description,
+                "type": type,
+                "entity_schema": convert_and_respect_annotation_metadata(
+                    object_=entity_schema, annotation=EntityDefinitionUpdateEntitySchema, direction="write"
+                ),
+                "parent_id": parent_id,
+                "module_name": module_name,
+                "class_name": class_name,
             },
             headers={
                 "content-type": "application/json",
@@ -960,9 +892,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    WhiteLabel,
+                    EntityDefinition,
                     parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
+                        type_=EntityDefinition,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -981,32 +913,20 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def delete_white_label(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> WhiteLabel:
+    async def list_entity_relations(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EntityRelation]:
         """
-        Delete a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            current_user: The current user
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+        List all entity relations for the current user's organization.
 
         Parameters
         ----------
-        white_label_id : str
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        WhiteLabel
+        typing.List[EntityRelation]
             Successful Response
 
         Examples
@@ -1021,100 +941,22 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.delete_white_label(
-                white_label_id="white_label_id",
-            )
+            await client.entities.list_entity_relations()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}",
-            method="DELETE",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    WhiteLabel,
-                    parse_obj_as(
-                        type_=WhiteLabel,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def get_white_label_oauth_2_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> str:
-        """
-        Generate the OAuth2 authorization URL by delegating to oauth2_service.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
-
-        Returns:
-        --------
-            str: The OAuth2 authorization URL
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        str
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.white_labels.get_white_label_oauth_2_auth_url(
-                white_label_id="white_label_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
+            "entities/relations/",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    str,
+                    typing.List[EntityRelation],
                     parse_obj_as(
-                        type_=str,  # type: ignore
+                        type_=typing.List[EntityRelation],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1133,35 +975,34 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def exchange_white_label_oauth_2_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
+    async def create_entity_relation(
+        self,
+        *,
+        name: str,
+        from_entity_id: str,
+        to_entity_id: str,
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EntityRelation:
         """
-        Exchange OAuth2 code for tokens and create connection.
-
-        Args:
-        -----
-            white_label_id: The ID of the white label to exchange the code for
-            code: The OAuth2 code
-            db: The database session
-            user: The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The created connection
+        Create a new entity relation.
 
         Parameters
         ----------
-        white_label_id : str
+        name : str
 
-        request : str
+        from_entity_id : str
+
+        to_entity_id : str
+
+        description : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        Connection
+        EntityRelation
             Successful Response
 
         Examples
@@ -1176,16 +1017,195 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.exchange_white_label_oauth_2_code(
-                white_label_id="white_label_id",
-                request="string",
+            await client.entities.create_entity_relation(
+                name="name",
+                from_entity_id="from_entity_id",
+                to_entity_id="to_entity_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/oauth2/code",
+            "entities/relations/",
+            method="POST",
+            json={
+                "name": name,
+                "description": description,
+                "from_entity_id": from_entity_id,
+                "to_entity_id": to_entity_id,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EntityRelation,
+                    parse_obj_as(
+                        type_=EntityRelation,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def update_entity_relation(
+        self,
+        relation_id: str,
+        *,
+        name: str,
+        from_entity_id: str,
+        to_entity_id: str,
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EntityRelation:
+        """
+        Update an entity relation.
+
+        Parameters
+        ----------
+        relation_id : str
+
+        name : str
+
+        from_entity_id : str
+
+        to_entity_id : str
+
+        description : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EntityRelation
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.entities.update_entity_relation(
+                relation_id="relation_id",
+                name="name",
+                from_entity_id="from_entity_id",
+                to_entity_id="to_entity_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"entities/relations/{jsonable_encoder(relation_id)}",
+            method="PUT",
+            json={
+                "name": name,
+                "description": description,
+                "from_entity_id": from_entity_id,
+                "to_entity_id": to_entity_id,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EntityRelation,
+                    parse_obj_as(
+                        type_=EntityRelation,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def get_entity_definitions_by_ids(
+        self, *, request: typing.Sequence[str], request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EntityDefinition]:
+        """
+        Get multiple entity definitions by their IDs.
+
+        Args:
+            ids: List of entity definition IDs to fetch
+            db: Database session
+            current_user: Current authenticated user
+
+        Returns:
+            List of entity definitions matching the provided IDs
+
+        Parameters
+        ----------
+        request : typing.Sequence[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[EntityDefinition]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.entities.get_entity_definitions_by_ids(
+                request=["string"],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "entities/definitions/by-ids/",
             method="POST",
             json=request,
             request_options=request_options,
@@ -1194,9 +1214,9 @@ class AsyncWhiteLabelsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    typing.List[EntityDefinition],
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=typing.List[EntityDefinition],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1215,32 +1235,22 @@ class AsyncWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def list_white_label_syncs(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Sync]:
+    async def get_entity_definitions_by_source_short_name(
+        self, *, source_short_name: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EntityDefinition]:
         """
-        List all syncs for a specific white label.
-
-        Args:
-        -----
-            white_label_id: The ID of the white label to list syncs for
-            db: The database session
-            current_user: The current user
-
-        Returns:
-        --------
-            list[schemas.Sync]: A list of syncs
+        Get all entity definitions for a given source.
 
         Parameters
         ----------
-        white_label_id : str
+        source_short_name : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Sync]
+        typing.List[EntityDefinition]
             Successful Response
 
         Examples
@@ -1255,24 +1265,27 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.list_white_label_syncs(
-                white_label_id="white_label_id",
+            await client.entities.get_entity_definitions_by_source_short_name(
+                source_short_name="source_short_name",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"white_labels/{jsonable_encoder(white_label_id)}/syncs",
+            "entities/definitions/by-source/",
             method="GET",
+            params={
+                "source_short_name": source_short_name,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Sync],
+                    typing.List[EntityDefinition],
                     parse_obj_as(
-                        type_=typing.List[Sync],  # type: ignore
+                        type_=typing.List[EntityDefinition],  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -3,36 +3,36 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.source_with_config_fields import SourceWithConfigFields
+from ..types.embedding_model_with_config_fields import EmbeddingModelWithConfigFields
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
-from ..types.source import Source
+from ..types.embedding_model import EmbeddingModel
 from ..core.client_wrapper import AsyncClientWrapper
 
 
-class SourcesClient:
+class EmbeddingModelsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read_source(
+    def read_embedding_model(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    ) -> EmbeddingModelWithConfigFields:
         """
-        Get source by id.
+        Get embedding model by id.
 
         Args:
         ----
             db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
+            short_name (str): The short name of the embedding model.
             user (schemas.User): The current user.
 
         Returns:
         -------
-            schemas.Source: The source object.
+            schemas.EmbeddingModel: The embedding model object.
 
         Parameters
         ----------
@@ -43,7 +43,7 @@ class SourcesClient:
 
         Returns
         -------
-        SourceWithConfigFields
+        EmbeddingModelWithConfigFields
             Successful Response
 
         Examples
@@ -53,21 +53,21 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read_source(
+        client.embedding_models.read_embedding_model(
             short_name="short_name",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
+            f"embedding_models/detail/{jsonable_encoder(short_name)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithConfigFields,
+                    EmbeddingModelWithConfigFields,
                     parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
+                        type_=EmbeddingModelWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -86,18 +86,20 @@ class SourcesClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
+    def read_embedding_models(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EmbeddingModel]:
         """
-        Get all sources for the current user.
+        Get all embedding models.
 
         Args:
-        -----
-            db: The database session
-            user: The current user
+        ----
+            db (AsyncSession): The database session.
+            user (schemas.User): The current user.
 
         Returns:
-        --------
-            list[schemas.Source]: The list of sources.
+        -------
+            list[schemas.EmbeddingModel]: The list of embedding models.
 
         Parameters
         ----------
@@ -106,7 +108,7 @@ class SourcesClient:
 
         Returns
         -------
-        typing.List[Source]
+        typing.List[EmbeddingModel]
             Successful Response
 
         Examples
@@ -116,19 +118,19 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read_sources()
+        client.embedding_models.read_embedding_models()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "sources/list",
+            "embedding_models/list",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Source],
+                    typing.List[EmbeddingModel],
                     parse_obj_as(
-                        type_=typing.List[Source],  # type: ignore
+                        type_=typing.List[EmbeddingModel],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -148,25 +150,25 @@ class SourcesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncSourcesClient:
+class AsyncEmbeddingModelsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read_source(
+    async def read_embedding_model(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    ) -> EmbeddingModelWithConfigFields:
         """
-        Get source by id.
+        Get embedding model by id.
 
         Args:
         ----
             db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
+            short_name (str): The short name of the embedding model.
             user (schemas.User): The current user.
 
         Returns:
         -------
-            schemas.Source: The source object.
+            schemas.EmbeddingModel: The embedding model object.
 
         Parameters
         ----------
@@ -177,7 +179,7 @@ class AsyncSourcesClient:
 
         Returns
         -------
-        SourceWithConfigFields
+        EmbeddingModelWithConfigFields
             Successful Response
 
         Examples
@@ -192,7 +194,7 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_source(
+            await client.embedding_models.read_embedding_model(
                 short_name="short_name",
             )
 
@@ -200,16 +202,16 @@ class AsyncSourcesClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
+            f"embedding_models/detail/{jsonable_encoder(short_name)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithConfigFields,
+                    EmbeddingModelWithConfigFields,
                     parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
+                        type_=EmbeddingModelWithConfigFields,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -228,18 +230,20 @@ class AsyncSourcesClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
+    async def read_embedding_models(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[EmbeddingModel]:
         """
-        Get all sources for the current user.
+        Get all embedding models.
 
         Args:
-        -----
-            db: The database session
-            user: The current user
+        ----
+            db (AsyncSession): The database session.
+            user (schemas.User): The current user.
 
         Returns:
-        --------
-            list[schemas.Source]: The list of sources.
+        -------
+            list[schemas.EmbeddingModel]: The list of embedding models.
 
         Parameters
         ----------
@@ -248,7 +252,7 @@ class AsyncSourcesClient:
 
         Returns
         -------
-        typing.List[Source]
+        typing.List[EmbeddingModel]
             Successful Response
 
         Examples
@@ -263,22 +267,22 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_sources()
+            await client.embedding_models.read_embedding_models()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "sources/list",
+            "embedding_models/list",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Source],
+                    typing.List[EmbeddingModel],
                     parse_obj_as(
-                        type_=typing.List[Source],  # type: ignore
+                        type_=typing.List[EmbeddingModel],  # type: ignore
                         object_=_response.json(),
                     ),
                 )

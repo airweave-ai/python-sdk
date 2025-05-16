@@ -3,110 +3,47 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.source_with_config_fields import SourceWithConfigFields
+from ..types.connection import Connection
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
-from ..types.source import Source
+from ..types.sync_job import SyncJob
 from ..core.client_wrapper import AsyncClientWrapper
 
 
-class SourcesClient:
+class CursorDevelopmentClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read_source(
+    def check_connection_status(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    ) -> typing.List[Connection]:
         """
-        Get source by id.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            schemas.Source: The source object.
-
-        Parameters
-        ----------
-        short_name : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceWithConfigFields
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.sources.read_source(
-            short_name="short_name",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceWithConfigFields,
-                    parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
-        """
-        Get all sources for the current user.
+        Check if a source connection exists for the given short_name.
 
         Args:
         -----
             db: The database session
-            user: The current user
+            short_name: The short name of the source to check
+            user: The admin user
 
         Returns:
         --------
-            list[schemas.Source]: The list of sources.
+            List[schemas.Connection]: List of source connections for the given short_name
 
         Parameters
         ----------
+        short_name : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Source]
+        typing.List[Connection]
             Successful Response
 
         Examples
@@ -116,19 +53,92 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read_sources()
+        client.cursor_development.check_connection_status(
+            short_name="short_name",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "sources/list",
+            f"cursor-dev/connections/status/{jsonable_encoder(short_name)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Source],
+                    typing.List[Connection],
                     parse_obj_as(
-                        type_=typing.List[Source],  # type: ignore
+                        type_=typing.List[Connection],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def test_sync(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncJob:
+        """
+        Run a sync for a specific source by short_name.
+
+        This endpoint is used for testing source integrations during development.
+        It finds the first available source connection for the given short_name and
+        runs a sync on it.
+
+        Args:
+        -----
+            db: The database session
+            short_name: The short name of the source to sync
+            background_tasks: The background tasks
+            user: The admin user
+
+        Returns:
+        --------
+            schemas.SyncJob: The created sync job
+
+        Parameters
+        ----------
+        short_name : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncJob
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.cursor_development.test_sync(
+            short_name="short_name",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"cursor-dev/test-sync/{jsonable_encoder(short_name)}",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncJob,
+                    parse_obj_as(
+                        type_=SyncJob,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -148,25 +158,25 @@ class SourcesClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncSourcesClient:
+class AsyncCursorDevelopmentClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read_source(
+    async def check_connection_status(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithConfigFields:
+    ) -> typing.List[Connection]:
         """
-        Get source by id.
+        Check if a source connection exists for the given short_name.
 
         Args:
-        ----
-            db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
-            user (schemas.User): The current user.
+        -----
+            db: The database session
+            short_name: The short name of the source to check
+            user: The admin user
 
         Returns:
-        -------
-            schemas.Source: The source object.
+        --------
+            List[schemas.Connection]: List of source connections for the given short_name
 
         Parameters
         ----------
@@ -177,7 +187,7 @@ class AsyncSourcesClient:
 
         Returns
         -------
-        SourceWithConfigFields
+        typing.List[Connection]
             Successful Response
 
         Examples
@@ -192,7 +202,7 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_source(
+            await client.cursor_development.check_connection_status(
                 short_name="short_name",
             )
 
@@ -200,16 +210,16 @@ class AsyncSourcesClient:
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
+            f"cursor-dev/connections/status/{jsonable_encoder(short_name)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithConfigFields,
+                    typing.List[Connection],
                     parse_obj_as(
-                        type_=SourceWithConfigFields,  # type: ignore
+                        type_=typing.List[Connection],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -228,27 +238,35 @@ class AsyncSourcesClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
+    async def test_sync(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncJob:
         """
-        Get all sources for the current user.
+        Run a sync for a specific source by short_name.
+
+        This endpoint is used for testing source integrations during development.
+        It finds the first available source connection for the given short_name and
+        runs a sync on it.
 
         Args:
         -----
             db: The database session
-            user: The current user
+            short_name: The short name of the source to sync
+            background_tasks: The background tasks
+            user: The admin user
 
         Returns:
         --------
-            list[schemas.Source]: The list of sources.
+            schemas.SyncJob: The created sync job
 
         Parameters
         ----------
+        short_name : str
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[Source]
+        SyncJob
             Successful Response
 
         Examples
@@ -263,22 +281,24 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_sources()
+            await client.cursor_development.test_sync(
+                short_name="short_name",
+            )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "sources/list",
-            method="GET",
+            f"cursor-dev/test-sync/{jsonable_encoder(short_name)}",
+            method="POST",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    typing.List[Source],
+                    SyncJob,
                     parse_obj_as(
-                        type_=typing.List[Source],  # type: ignore
+                        type_=SyncJob,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

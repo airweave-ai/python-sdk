@@ -3,627 +3,65 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.connection import Connection
-from ..core.jsonable_encoder import jsonable_encoder
+from .types.list_syncs_sync_get_response import ListSyncsSyncGetResponse
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
-from ..types.integration_type import IntegrationType
+import datetime as dt
+from ..types.sync_status import SyncStatus
+from ..types.sync import Sync
+from ..types.sync_job import SyncJob
+from ..core.jsonable_encoder import jsonable_encoder
+from ..types.sync_dag import SyncDag
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class ConnectionsClient:
+class SyncClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def get_connection(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Get a specific connection.
-
-        Args:
-        -----
-            connection_id: The ID of the connection to get.
-            db: The database session.
-            user: The current user.
-
-        Returns:
-        -------
-            schemas.Connection: The connection.
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.get_connection(
-            connection_id="connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"connections/detail/{jsonable_encoder(connection_id)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def list_all_connected_integrations(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Connection]:
-        """
-        Get all active connections for the current user across all integration types.
-
-        Args:
-        -----
-            db: The database session.
-            user: The current user.
-
-        Returns:
-        -------
-            list[schemas.Connection]: The list of connections.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[Connection]
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.list_all_connected_integrations()
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "connections/list",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[Connection],
-                    parse_obj_as(
-                        type_=typing.List[Connection],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def list_connected_integrations(
-        self, integration_type: IntegrationType, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Connection]:
-        """
-        Get all integrations of specified type connected to the current user.
-
-        Args:
-        -----
-            integration_type (IntegrationType): The type of integration to get connections for.
-            db (AsyncSession): The database session.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            list[schemas.Connection]: The list of connections.
-
-        Parameters
-        ----------
-        integration_type : IntegrationType
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[Connection]
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.list_connected_integrations(
-            integration_type="source",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"connections/list/{jsonable_encoder(integration_type)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[Connection],
-                    parse_obj_as(
-                        type_=typing.List[Connection],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def connect_integration(
+    def list_syncs(
         self,
-        integration_type: IntegrationType,
-        short_name: str,
         *,
-        config_fields: typing.Dict[str, typing.Optional[typing.Any]],
-        name: typing.Optional[str] = OMIT,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        with_source_connection: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> Connection:
+    ) -> ListSyncsSyncGetResponse:
         """
-        Connect to a source, destination, or embedding model.
-
-        Expects a POST body with:
-        ```json
-        {
-            "name": "required connection name",
-            ... other config fields specific to the integration type ...
-        }
-        ```
-
-        Args:
-        -----
-            db: The database session.
-            integration_type: The type of integration to connect to.
-            short_name: The short name of the integration to connect to.
-            name: The name of the connection.
-            config_fields: The config fields for the integration.
-            user: The current user.
-
-        Returns:
-        -------
-            schemas.Connection: The connection.
-
-        Parameters
-        ----------
-        integration_type : IntegrationType
-
-        short_name : str
-
-        config_fields : typing.Dict[str, typing.Optional[typing.Any]]
-
-        name : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.connect_integration(
-            integration_type="source",
-            short_name="short_name",
-            config_fields={"key": "value"},
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"connections/connect/{jsonable_encoder(integration_type)}/{jsonable_encoder(short_name)}",
-            method="POST",
-            json={
-                "name": name,
-                "config_fields": config_fields,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def get_connection_credentials(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.Dict[str, typing.Optional[typing.Any]]:
-        """
-        Get the credentials for a connection.
-
-        Args:
-        -----
-            connection_id (UUID): The ID of the connection to get credentials for
-            db (AsyncSession): The database session
-            user (schemas.User): The current user
-
-        Returns:
-        -------
-            decrypted_credentials (dict): The credentials for the connection
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.Dict[str, typing.Optional[typing.Any]]
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.get_connection_credentials(
-            connection_id="connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"connections/credentials/{jsonable_encoder(connection_id)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.Dict[str, typing.Optional[typing.Any]],
-                    parse_obj_as(
-                        type_=typing.Dict[str, typing.Optional[typing.Any]],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def delete_connection(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Delete a connection.
-
-        Deletes the connection and integration credential.
-
-        Args:
-        -----
-            db (AsyncSession): The database session
-            connection_id (UUID): The ID of the connection to delete
-            user (schemas.User): The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The deleted connection
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.delete_connection(
-            connection_id="connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"connections/delete/source/{jsonable_encoder(connection_id)}",
-            method="DELETE",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def disconnect_source_connection(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Disconnect from a source connection.
-
-        Args:
-        -----
-            db (AsyncSession): The database session
-            connection_id (UUID): The ID of the connection to disconnect
-            user (schemas.User): The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The disconnected connection
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.disconnect_source_connection(
-            connection_id="connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"connections/disconnect/source/{jsonable_encoder(connection_id)}",
-            method="PUT",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def get_oauth_2_auth_url(self, *, short_name: str, request_options: typing.Optional[RequestOptions] = None) -> str:
-        """
-        Get the OAuth2 authorization URL for a source.
-
-        Args:
-        -----
-            short_name: The short name of the source
-
-        Parameters
-        ----------
-        short_name : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        str
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.get_oauth_2_auth_url(
-            short_name="short_name",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "connections/oauth2/source/auth_url",
-            method="GET",
-            params={
-                "short_name": short_name,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    str,
-                    parse_obj_as(
-                        type_=str,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def send_oauth_2_code(
-        self, *, short_name: str, code: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Send the OAuth2 authorization code for a source.
-
-        This will:
-        1. Get the OAuth2 settings for the source
-        2. Exchange the authorization code for a token
-        3. Create an integration credential with the token
+        List all syncs for the current user.
 
         Args:
         -----
             db: The database session
-            short_name: The short name of the source
-            code: The authorization code
+            skip: The number of syncs to skip
+            limit: The number of syncs to return
+            with_source_connection: Whether to include the source connection in the response
             user: The current user
 
         Returns:
         --------
-            connection (schemas.Connection): The created connection
+            list[schemas.Sync] | list[schemas.SyncWithSourceConnection]: A list of syncs
 
         Parameters
         ----------
-        short_name : str
+        skip : typing.Optional[int]
 
-        code : str
+        limit : typing.Optional[int]
+
+        with_source_connection : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        Connection
+        ListSyncsSyncGetResponse
             Successful Response
 
         Examples
@@ -633,30 +71,24 @@ class ConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.connections.send_oauth_2_code(
-            short_name="short_name",
-            code="code",
-        )
+        client.sync.list_syncs()
         """
         _response = self._client_wrapper.httpx_client.request(
-            "connections/oauth2/source/code",
-            method="POST",
-            json={
-                "short_name": short_name,
-                "code": code,
-            },
-            headers={
-                "content-type": "application/json",
+            "sync/",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+                "with_source_connection": with_source_connection,
             },
             request_options=request_options,
-            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    ListSyncsSyncGetResponse,
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=ListSyncsSyncGetResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -675,36 +107,69 @@ class ConnectionsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def send_oauth_2_white_label_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
+    def create_sync(
+        self,
+        *,
+        name: str,
+        source_connection_id: str,
+        destination_connection_ids: typing.Sequence[str],
+        embedding_model_connection_id: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
+        white_label_user_identifier: typing.Optional[str] = OMIT,
+        sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
+        run_immediately: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
         """
-        Exchange the OAuth2 authorization code for a white label integration.
+        Create a new sync configuration.
 
         Args:
         -----
             db: The database session
-            white_label_id: The ID of the white label integration
-            code: The authorization code
+            sync_in: The sync to create
             user: The current user
             background_tasks: The background tasks
 
         Returns:
         --------
-            connection (schemas.Connection): The created connection
+            sync (schemas.Sync): The created sync
 
         Parameters
         ----------
-        white_label_id : str
+        name : str
 
-        request : str
+        source_connection_id : str
+
+        destination_connection_ids : typing.Sequence[str]
+
+        embedding_model_connection_id : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        next_scheduled_run : typing.Optional[dt.datetime]
+
+        white_label_id : typing.Optional[str]
+
+        white_label_user_identifier : typing.Optional[str]
+
+        sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
+
+        run_immediately : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        Connection
+        Sync
             Successful Response
 
         Examples
@@ -714,158 +179,28 @@ class ConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.connections.send_oauth_2_white_label_code(
-            white_label_id="white_label_id",
-            request="string",
+        client.sync.create_sync(
+            name="name",
+            source_connection_id="source_connection_id",
+            destination_connection_ids=["destination_connection_ids"],
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/code",
-            method="POST",
-            json=request,
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def get_oauth_2_white_label_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> str:
-        """
-        Get the OAuth2 authorization URL for a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label integration
-            user: The current user
-
-        Returns:
-        --------
-            str: The OAuth2 authorization URL
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        str
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.get_oauth_2_white_label_auth_url(
-            white_label_id="white_label_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/auth_url",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    str,
-                    parse_obj_as(
-                        type_=str,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def connect_slack_with_token(
-        self, *, token: str, name: typing.Optional[str] = OMIT, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Connect to Slack using a direct API token (for local development only).
-
-        Args:
-        -----
-            db: The database session.
-            token: The Slack API token.
-            name: The name of the connection.
-            user: The current user.
-
-        Returns:
-        -------
-            schemas.Connection: The connection.
-
-        Parameters
-        ----------
-        token : str
-
-        name : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.connections.connect_slack_with_token(
-            token="token",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "connections/direct-token/slack",
+            "sync/",
             method="POST",
             json={
-                "token": token,
                 "name": name,
+                "source_connection_id": source_connection_id,
+                "embedding_model_connection_id": embedding_model_connection_id,
+                "destination_connection_ids": destination_connection_ids,
+                "description": description,
+                "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
+                "white_label_id": white_label_id,
+                "white_label_user_identifier": white_label_user_identifier,
+                "sync_metadata": sync_metadata,
+                "status": status,
+                "run_immediately": run_immediately,
             },
             headers={
                 "content-type": "application/json",
@@ -876,9 +211,666 @@ class ConnectionsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    Sync,
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def list_all_jobs(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[SyncJob]:
+        """
+        List all sync jobs across all syncs.
+
+        Args:
+        -----
+            db: The database session
+            skip: The number of jobs to skip
+            limit: The number of jobs to return
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of all sync jobs
+
+        Parameters
+        ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SyncJob]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.list_all_jobs()
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "sync/jobs",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SyncJob],
+                    parse_obj_as(
+                        type_=typing.List[SyncJob],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def get_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Sync:
+        """
+        Get a specific sync by ID.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to get
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.get_sync(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def delete_sync(
+        self,
+        sync_id: str,
+        *,
+        delete_data: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
+        """
+        Delete a sync configuration and optionally its associated data.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to delete
+            delete_data: Whether to delete the data associated with the sync
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The deleted sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        delete_data : typing.Optional[bool]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.delete_sync(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def update_sync(
+        self,
+        sync_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
+        white_label_user_identifier: typing.Optional[str] = OMIT,
+        sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
+        """
+        Update a sync configuration.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to update
+            sync_update: The sync update data
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The updated sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        name : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        next_scheduled_run : typing.Optional[dt.datetime]
+
+        white_label_id : typing.Optional[str]
+
+        white_label_user_identifier : typing.Optional[str]
+
+        sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.update_sync(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
+                "white_label_id": white_label_id,
+                "white_label_user_identifier": white_label_user_identifier,
+                "sync_metadata": sync_metadata,
+                "status": status,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def run_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncJob:
+        """
+        Trigger a sync run.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to run
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncJob
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.run_sync(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/run",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncJob,
+                    parse_obj_as(
+                        type_=SyncJob,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def list_sync_jobs(
+        self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SyncJob]:
+        """
+        List all jobs for a specific sync.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of sync jobs
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SyncJob]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.list_sync_jobs(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/jobs",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SyncJob],
+                    parse_obj_as(
+                        type_=typing.List[SyncJob],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def get_sync_job(
+        self, sync_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SyncJob:
+        """
+        Get details of a specific sync job.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            job_id: The ID of the job to get
+            user: The current user
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
+
+        Parameters
+        ----------
+        sync_id : str
+
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncJob
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.get_sync_job(
+            sync_id="sync_id",
+            job_id="job_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/job/{jsonable_encoder(job_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncJob,
+                    parse_obj_as(
+                        type_=SyncJob,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def subscribe_sync_job(
+        self, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.Optional[typing.Any]:
+        """
+        Server-Sent Events (SSE) endpoint to subscribe to a sync job's progress.
+
+        Args:
+        -----
+            job_id: The ID of the job to subscribe to
+            user: The current user
+
+        Returns:
+        --------
+            StreamingResponse: The streaming response
+
+        Parameters
+        ----------
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.Optional[typing.Any]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.subscribe_sync_job(
+            job_id="job_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/job/{jsonable_encoder(job_id)}/subscribe",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.Optional[typing.Any],
+                    parse_obj_as(
+                        type_=typing.Optional[typing.Any],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def get_sync_dag(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncDag:
+        """
+        Get the DAG for a specific sync.
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncDag
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sync.get_sync_dag(
+            sync_id="sync_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/dag",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncDag,
+                    parse_obj_as(
+                        type_=SyncDag,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -898,679 +890,47 @@ class ConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
 
-class AsyncConnectionsClient:
+class AsyncSyncClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def get_connection(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Get a specific connection.
-
-        Args:
-        -----
-            connection_id: The ID of the connection to get.
-            db: The database session.
-            user: The current user.
-
-        Returns:
-        -------
-            schemas.Connection: The connection.
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.get_connection(
-                connection_id="connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"connections/detail/{jsonable_encoder(connection_id)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def list_all_connected_integrations(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Connection]:
-        """
-        Get all active connections for the current user across all integration types.
-
-        Args:
-        -----
-            db: The database session.
-            user: The current user.
-
-        Returns:
-        -------
-            list[schemas.Connection]: The list of connections.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[Connection]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.list_all_connected_integrations()
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "connections/list",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[Connection],
-                    parse_obj_as(
-                        type_=typing.List[Connection],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def list_connected_integrations(
-        self, integration_type: IntegrationType, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[Connection]:
-        """
-        Get all integrations of specified type connected to the current user.
-
-        Args:
-        -----
-            integration_type (IntegrationType): The type of integration to get connections for.
-            db (AsyncSession): The database session.
-            user (schemas.User): The current user.
-
-        Returns:
-        -------
-            list[schemas.Connection]: The list of connections.
-
-        Parameters
-        ----------
-        integration_type : IntegrationType
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[Connection]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.list_connected_integrations(
-                integration_type="source",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"connections/list/{jsonable_encoder(integration_type)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[Connection],
-                    parse_obj_as(
-                        type_=typing.List[Connection],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def connect_integration(
+    async def list_syncs(
         self,
-        integration_type: IntegrationType,
-        short_name: str,
         *,
-        config_fields: typing.Dict[str, typing.Optional[typing.Any]],
-        name: typing.Optional[str] = OMIT,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        with_source_connection: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> Connection:
+    ) -> ListSyncsSyncGetResponse:
         """
-        Connect to a source, destination, or embedding model.
-
-        Expects a POST body with:
-        ```json
-        {
-            "name": "required connection name",
-            ... other config fields specific to the integration type ...
-        }
-        ```
-
-        Args:
-        -----
-            db: The database session.
-            integration_type: The type of integration to connect to.
-            short_name: The short name of the integration to connect to.
-            name: The name of the connection.
-            config_fields: The config fields for the integration.
-            user: The current user.
-
-        Returns:
-        -------
-            schemas.Connection: The connection.
-
-        Parameters
-        ----------
-        integration_type : IntegrationType
-
-        short_name : str
-
-        config_fields : typing.Dict[str, typing.Optional[typing.Any]]
-
-        name : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.connect_integration(
-                integration_type="source",
-                short_name="short_name",
-                config_fields={"key": "value"},
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"connections/connect/{jsonable_encoder(integration_type)}/{jsonable_encoder(short_name)}",
-            method="POST",
-            json={
-                "name": name,
-                "config_fields": config_fields,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def get_connection_credentials(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.Dict[str, typing.Optional[typing.Any]]:
-        """
-        Get the credentials for a connection.
-
-        Args:
-        -----
-            connection_id (UUID): The ID of the connection to get credentials for
-            db (AsyncSession): The database session
-            user (schemas.User): The current user
-
-        Returns:
-        -------
-            decrypted_credentials (dict): The credentials for the connection
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.Dict[str, typing.Optional[typing.Any]]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.get_connection_credentials(
-                connection_id="connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"connections/credentials/{jsonable_encoder(connection_id)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.Dict[str, typing.Optional[typing.Any]],
-                    parse_obj_as(
-                        type_=typing.Dict[str, typing.Optional[typing.Any]],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def delete_connection(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Delete a connection.
-
-        Deletes the connection and integration credential.
-
-        Args:
-        -----
-            db (AsyncSession): The database session
-            connection_id (UUID): The ID of the connection to delete
-            user (schemas.User): The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The deleted connection
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.delete_connection(
-                connection_id="connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"connections/delete/source/{jsonable_encoder(connection_id)}",
-            method="DELETE",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def disconnect_source_connection(
-        self, connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Disconnect from a source connection.
-
-        Args:
-        -----
-            db (AsyncSession): The database session
-            connection_id (UUID): The ID of the connection to disconnect
-            user (schemas.User): The current user
-
-        Returns:
-        --------
-            connection (schemas.Connection): The disconnected connection
-
-        Parameters
-        ----------
-        connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.disconnect_source_connection(
-                connection_id="connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"connections/disconnect/source/{jsonable_encoder(connection_id)}",
-            method="PUT",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def get_oauth_2_auth_url(
-        self, *, short_name: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> str:
-        """
-        Get the OAuth2 authorization URL for a source.
-
-        Args:
-        -----
-            short_name: The short name of the source
-
-        Parameters
-        ----------
-        short_name : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        str
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.get_oauth_2_auth_url(
-                short_name="short_name",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "connections/oauth2/source/auth_url",
-            method="GET",
-            params={
-                "short_name": short_name,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    str,
-                    parse_obj_as(
-                        type_=str,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def send_oauth_2_code(
-        self, *, short_name: str, code: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Send the OAuth2 authorization code for a source.
-
-        This will:
-        1. Get the OAuth2 settings for the source
-        2. Exchange the authorization code for a token
-        3. Create an integration credential with the token
+        List all syncs for the current user.
 
         Args:
         -----
             db: The database session
-            short_name: The short name of the source
-            code: The authorization code
+            skip: The number of syncs to skip
+            limit: The number of syncs to return
+            with_source_connection: Whether to include the source connection in the response
             user: The current user
 
         Returns:
         --------
-            connection (schemas.Connection): The created connection
+            list[schemas.Sync] | list[schemas.SyncWithSourceConnection]: A list of syncs
 
         Parameters
         ----------
-        short_name : str
+        skip : typing.Optional[int]
 
-        code : str
+        limit : typing.Optional[int]
+
+        with_source_connection : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        Connection
+        ListSyncsSyncGetResponse
             Successful Response
 
         Examples
@@ -1585,33 +945,27 @@ class AsyncConnectionsClient:
 
 
         async def main() -> None:
-            await client.connections.send_oauth_2_code(
-                short_name="short_name",
-                code="code",
-            )
+            await client.sync.list_syncs()
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "connections/oauth2/source/code",
-            method="POST",
-            json={
-                "short_name": short_name,
-                "code": code,
-            },
-            headers={
-                "content-type": "application/json",
+            "sync/",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+                "with_source_connection": with_source_connection,
             },
             request_options=request_options,
-            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    ListSyncsSyncGetResponse,
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=ListSyncsSyncGetResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1630,36 +984,69 @@ class AsyncConnectionsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def send_oauth_2_white_label_code(
-        self, white_label_id: str, *, request: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
+    async def create_sync(
+        self,
+        *,
+        name: str,
+        source_connection_id: str,
+        destination_connection_ids: typing.Sequence[str],
+        embedding_model_connection_id: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
+        white_label_user_identifier: typing.Optional[str] = OMIT,
+        sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
+        run_immediately: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
         """
-        Exchange the OAuth2 authorization code for a white label integration.
+        Create a new sync configuration.
 
         Args:
         -----
             db: The database session
-            white_label_id: The ID of the white label integration
-            code: The authorization code
+            sync_in: The sync to create
             user: The current user
             background_tasks: The background tasks
 
         Returns:
         --------
-            connection (schemas.Connection): The created connection
+            sync (schemas.Sync): The created sync
 
         Parameters
         ----------
-        white_label_id : str
+        name : str
 
-        request : str
+        source_connection_id : str
+
+        destination_connection_ids : typing.Sequence[str]
+
+        embedding_model_connection_id : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        next_scheduled_run : typing.Optional[dt.datetime]
+
+        white_label_id : typing.Optional[str]
+
+        white_label_user_identifier : typing.Optional[str]
+
+        sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
+
+        run_immediately : typing.Optional[bool]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        Connection
+        Sync
             Successful Response
 
         Examples
@@ -1674,177 +1061,31 @@ class AsyncConnectionsClient:
 
 
         async def main() -> None:
-            await client.connections.send_oauth_2_white_label_code(
-                white_label_id="white_label_id",
-                request="string",
+            await client.sync.create_sync(
+                name="name",
+                source_connection_id="source_connection_id",
+                destination_connection_ids=["destination_connection_ids"],
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/code",
-            method="POST",
-            json=request,
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    Connection,
-                    parse_obj_as(
-                        type_=Connection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def get_oauth_2_white_label_auth_url(
-        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> str:
-        """
-        Get the OAuth2 authorization URL for a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label integration
-            user: The current user
-
-        Returns:
-        --------
-            str: The OAuth2 authorization URL
-
-        Parameters
-        ----------
-        white_label_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        str
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.get_oauth_2_white_label_auth_url(
-                white_label_id="white_label_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"connections/oauth2/white-label/{jsonable_encoder(white_label_id)}/auth_url",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    str,
-                    parse_obj_as(
-                        type_=str,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def connect_slack_with_token(
-        self, *, token: str, name: typing.Optional[str] = OMIT, request_options: typing.Optional[RequestOptions] = None
-    ) -> Connection:
-        """
-        Connect to Slack using a direct API token (for local development only).
-
-        Args:
-        -----
-            db: The database session.
-            token: The Slack API token.
-            name: The name of the connection.
-            user: The current user.
-
-        Returns:
-        -------
-            schemas.Connection: The connection.
-
-        Parameters
-        ----------
-        token : str
-
-        name : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Connection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.connections.connect_slack_with_token(
-                token="token",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "connections/direct-token/slack",
+            "sync/",
             method="POST",
             json={
-                "token": token,
                 "name": name,
+                "source_connection_id": source_connection_id,
+                "embedding_model_connection_id": embedding_model_connection_id,
+                "destination_connection_ids": destination_connection_ids,
+                "description": description,
+                "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
+                "white_label_id": white_label_id,
+                "white_label_user_identifier": white_label_user_identifier,
+                "sync_metadata": sync_metadata,
+                "status": status,
+                "run_immediately": run_immediately,
             },
             headers={
                 "content-type": "application/json",
@@ -1855,9 +1096,738 @@ class AsyncConnectionsClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    Connection,
+                    Sync,
                     parse_obj_as(
-                        type_=Connection,  # type: ignore
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def list_all_jobs(
+        self,
+        *,
+        skip: typing.Optional[int] = None,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[SyncJob]:
+        """
+        List all sync jobs across all syncs.
+
+        Args:
+        -----
+            db: The database session
+            skip: The number of jobs to skip
+            limit: The number of jobs to return
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of all sync jobs
+
+        Parameters
+        ----------
+        skip : typing.Optional[int]
+
+        limit : typing.Optional[int]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SyncJob]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.list_all_jobs()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "sync/jobs",
+            method="GET",
+            params={
+                "skip": skip,
+                "limit": limit,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SyncJob],
+                    parse_obj_as(
+                        type_=typing.List[SyncJob],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def get_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Sync:
+        """
+        Get a specific sync by ID.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to get
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.get_sync(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def delete_sync(
+        self,
+        sync_id: str,
+        *,
+        delete_data: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
+        """
+        Delete a sync configuration and optionally its associated data.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to delete
+            delete_data: Whether to delete the data associated with the sync
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The deleted sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        delete_data : typing.Optional[bool]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.delete_sync(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def update_sync(
+        self,
+        sync_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        cron_schedule: typing.Optional[str] = OMIT,
+        next_scheduled_run: typing.Optional[dt.datetime] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
+        white_label_user_identifier: typing.Optional[str] = OMIT,
+        sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        status: typing.Optional[SyncStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Sync:
+        """
+        Update a sync configuration.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to update
+            sync_update: The sync update data
+            user: The current user
+
+        Returns:
+        --------
+            sync (schemas.Sync): The updated sync
+
+        Parameters
+        ----------
+        sync_id : str
+
+        name : typing.Optional[str]
+
+        cron_schedule : typing.Optional[str]
+
+        next_scheduled_run : typing.Optional[dt.datetime]
+
+        white_label_id : typing.Optional[str]
+
+        white_label_user_identifier : typing.Optional[str]
+
+        sync_metadata : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+
+        status : typing.Optional[SyncStatus]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Sync
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.update_sync(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "cron_schedule": cron_schedule,
+                "next_scheduled_run": next_scheduled_run,
+                "white_label_id": white_label_id,
+                "white_label_user_identifier": white_label_user_identifier,
+                "sync_metadata": sync_metadata,
+                "status": status,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    Sync,
+                    parse_obj_as(
+                        type_=Sync,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def run_sync(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncJob:
+        """
+        Trigger a sync run.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to run
+            user: The current user
+            background_tasks: The background tasks
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncJob
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.run_sync(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/run",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncJob,
+                    parse_obj_as(
+                        type_=SyncJob,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def list_sync_jobs(
+        self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SyncJob]:
+        """
+        List all jobs for a specific sync.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            user: The current user
+
+        Returns:
+        --------
+            list[schemas.SyncJob]: A list of sync jobs
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[SyncJob]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.list_sync_jobs(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/jobs",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[SyncJob],
+                    parse_obj_as(
+                        type_=typing.List[SyncJob],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def get_sync_job(
+        self, sync_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SyncJob:
+        """
+        Get details of a specific sync job.
+
+        Args:
+        -----
+            db: The database session
+            sync_id: The ID of the sync to list jobs for
+            job_id: The ID of the job to get
+            user: The current user
+
+        Returns:
+        --------
+            sync_job (schemas.SyncJob): The sync job
+
+        Parameters
+        ----------
+        sync_id : str
+
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncJob
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.get_sync_job(
+                sync_id="sync_id",
+                job_id="job_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/job/{jsonable_encoder(job_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncJob,
+                    parse_obj_as(
+                        type_=SyncJob,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def subscribe_sync_job(
+        self, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.Optional[typing.Any]:
+        """
+        Server-Sent Events (SSE) endpoint to subscribe to a sync job's progress.
+
+        Args:
+        -----
+            job_id: The ID of the job to subscribe to
+            user: The current user
+
+        Returns:
+        --------
+            StreamingResponse: The streaming response
+
+        Parameters
+        ----------
+        job_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.Optional[typing.Any]
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.subscribe_sync_job(
+                job_id="job_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/job/{jsonable_encoder(job_id)}/subscribe",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.Optional[typing.Any],
+                    parse_obj_as(
+                        type_=typing.Optional[typing.Any],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def get_sync_dag(self, sync_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> SyncDag:
+        """
+        Get the DAG for a specific sync.
+
+        Parameters
+        ----------
+        sync_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SyncDag
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.sync.get_sync_dag(
+                sync_id="sync_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sync/{jsonable_encoder(sync_id)}/dag",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    SyncDag,
+                    parse_obj_as(
+                        type_=SyncDag,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
