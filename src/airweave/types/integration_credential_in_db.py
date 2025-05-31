@@ -2,32 +2,26 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
+from .integration_type import IntegrationType
 from .auth_type import AuthType
-import datetime as dt
-from .fields import Fields
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class SourceWithAuthenticationFields(UniversalBaseModel):
+class IntegrationCredentialInDb(UniversalBaseModel):
     """
-    Schema for Source with auth config.
+    Integration credential in DB without decrypted data.
     """
 
     name: str
+    integration_short_name: str
     description: typing.Optional[str] = None
-    auth_type: typing.Optional[AuthType] = None
+    integration_type: IntegrationType
+    auth_type: AuthType
     auth_config_class: typing.Optional[str] = None
-    short_name: str
-    class_name: str
-    output_entity_definition_ids: typing.Optional[typing.List[str]] = None
-    organization_id: typing.Optional[str] = None
-    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
-    labels: typing.Optional[typing.List[str]] = None
     id: str
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    auth_fields: typing.Optional[Fields] = None
+    organization_id: str
+    encrypted_credentials: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -4,6 +4,7 @@ from ..core.pydantic_utilities import UniversalBaseModel
 import typing
 from .auth_type import AuthType
 import datetime as dt
+from .fields import Fields
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
@@ -16,7 +17,8 @@ class Source(UniversalBaseModel):
     name: str
     description: typing.Optional[str] = None
     auth_type: typing.Optional[AuthType] = None
-    auth_config_class: typing.Optional[str] = None
+    auth_config_class: str
+    config_class: str
     short_name: str
     class_name: str
     output_entity_definition_ids: typing.Optional[typing.List[str]] = None
@@ -26,6 +28,8 @@ class Source(UniversalBaseModel):
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime
+    auth_fields: Fields
+    config_fields: typing.Optional[Fields] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

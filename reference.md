@@ -23,6 +23,12 @@ Args:
 Returns:
 -------
     schemas.Source: The source object.
+
+Raises:
+    HTTPException:
+        - 404 if source not found
+        - 400 if source missing required configuration classes
+        - 500 if there's an error retrieving auth configuration
 </dd>
 </dl>
 </dd>
@@ -92,16 +98,7 @@ client.sources.read_source(
 <dl>
 <dd>
 
-Get all sources for the current user.
-
-Args:
------
-    db: The database session
-    user: The current user
-
-Returns:
---------
-    list[schemas.Source]: The list of sources.
+Get all sources with their authentication fields.
 </dd>
 </dl>
 </dd>
@@ -831,6 +828,14 @@ client.source_connections.create_source_connection(
 <dl>
 <dd>
 
+**white_label_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **collection:** `typing.Optional[str]` 
     
 </dd>
@@ -848,6 +853,14 @@ client.source_connections.create_source_connection(
 <dd>
 
 **auth_fields:** `typing.Optional[ConfigValues]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**credential_id:** `typing.Optional[str]` 
     
 </dd>
 </dl>
@@ -1045,7 +1058,7 @@ client.source_connections.update_source_connection(
 <dl>
 <dd>
 
-**auth_fields:** `typing.Optional[ConfigValues]` 
+**auth_fields:** `typing.Optional[SourceConnectionUpdateAuthFields]` 
     
 </dd>
 </dl>
@@ -1070,6 +1083,14 @@ client.source_connections.update_source_connection(
 <dd>
 
 **connection_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**white_label_id:** `typing.Optional[str]` 
     
 </dd>
 </dl>
@@ -1193,6 +1214,7 @@ Trigger a sync run for a source connection.
 Args:
     db: The database session
     source_connection_id: The ID of the source connection to run
+    access_token: Optional access token to use instead of stored credentials
     user: The current user
     background_tasks: Background tasks for async operations
 
@@ -1236,6 +1258,14 @@ client.source_connections.run_source_connection(
 <dd>
 
 **source_connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**access_token:** `typing.Optional[str]` 
     
 </dd>
 </dl>
@@ -1314,545 +1344,6 @@ client.source_connections.list_source_connection_jobs(
 <dd>
 
 **source_connection_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-## WhiteLabels
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">list_white_labels</a>()</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-List all white labels for the current user's organization.
-
-Args:
------
-    db: The database session
-    current_user: The current user
-
-Returns:
---------
-    list[schemas.WhiteLabel]: A list of white labels
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.white_labels.list_white_labels()
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">create_white_label</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Create new white label integration.
-
-Args:
------
-    db: The database session
-    current_user: The current user
-    white_label_in: The white label to create
-
-Returns:
---------
-    white_label (schemas.WhiteLabel): The created white label
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.white_labels.create_white_label(
-    name="name",
-    source_short_name="source_short_name",
-    redirect_url="redirect_url",
-    client_id="client_id",
-    client_secret="client_secret",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**name:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**source_short_name:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**redirect_url:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**client_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**client_secret:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get a specific white label integration.
-
-Args:
------
-    db: The database session
-    white_label_id: The ID of the white label to get
-    current_user: The current user
-
-Returns:
---------
-    white_label (schemas.WhiteLabel): The white label
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.white_labels.get_white_label(
-    white_label_id="white_label_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">update_white_label</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Update a white label integration.
-
-Args:
------
-    db: The database session
-    current_user: The current user
-    white_label_id: The ID of the white label to update
-    white_label_in: The white label to update
-
-Returns:
---------
-    white_label (schemas.WhiteLabel): The updated white label
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.white_labels.update_white_label(
-    white_label_id="white_label_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**name:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**redirect_url:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**client_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**client_secret:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">delete_white_label</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Delete a white label integration.
-
-Args:
------
-    db: The database session
-    current_user: The current user
-    white_label_id: The ID of the white label to delete
-
-Returns:
---------
-    white_label (schemas.WhiteLabel): The deleted white label
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.white_labels.delete_white_label(
-    white_label_id="white_label_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**white_label_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">list_white_label_syncs</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-List all syncs for a specific white label.
-
-Args:
------
-    white_label_id: The ID of the white label to list syncs for
-    db: The database session
-    current_user: The current user
-
-Returns:
---------
-    list[schemas.Sync]: A list of syncs
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.white_labels.list_white_label_syncs(
-    white_label_id="white_label_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**white_label_id:** `str` 
     
 </dd>
 </dl>

@@ -12,6 +12,8 @@ from ..core.api_error import ApiError
 from ..types.config_values import ConfigValues
 from ..types.source_connection import SourceConnection
 from ..core.jsonable_encoder import jsonable_encoder
+from .types.source_connection_update_auth_fields import SourceConnectionUpdateAuthFields
+from ..core.serialization import convert_and_respect_annotation_metadata
 from ..types.source_connection_job import SourceConnectionJob
 from ..core.client_wrapper import AsyncClientWrapper
 
@@ -111,9 +113,11 @@ class SourceConnectionsClient:
         short_name: str,
         description: typing.Optional[str] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
+        credential_id: typing.Optional[str] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
@@ -147,11 +151,15 @@ class SourceConnectionsClient:
 
         config_fields : typing.Optional[ConfigValues]
 
+        white_label_id : typing.Optional[str]
+
         collection : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
         auth_fields : typing.Optional[ConfigValues]
+
+        credential_id : typing.Optional[str]
 
         sync_immediately : typing.Optional[bool]
 
@@ -183,9 +191,11 @@ class SourceConnectionsClient:
                 "description": description,
                 "config_fields": config_fields,
                 "short_name": short_name,
+                "white_label_id": white_label_id,
                 "collection": collection,
                 "cron_schedule": cron_schedule,
                 "auth_fields": auth_fields,
+                "credential_id": credential_id,
                 "sync_immediately": sync_immediately,
             },
             request_options=request_options,
@@ -297,10 +307,11 @@ class SourceConnectionsClient:
         *,
         name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[ConfigValues] = OMIT,
+        auth_fields: typing.Optional[SourceConnectionUpdateAuthFields] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         connection_id: typing.Optional[str] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
@@ -324,13 +335,15 @@ class SourceConnectionsClient:
 
         description : typing.Optional[str]
 
-        auth_fields : typing.Optional[ConfigValues]
+        auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
 
         config_fields : typing.Optional[ConfigValues]
 
         cron_schedule : typing.Optional[str]
 
         connection_id : typing.Optional[str]
+
+        white_label_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -357,10 +370,13 @@ class SourceConnectionsClient:
             json={
                 "name": name,
                 "description": description,
-                "auth_fields": auth_fields,
+                "auth_fields": convert_and_respect_annotation_metadata(
+                    object_=auth_fields, annotation=SourceConnectionUpdateAuthFields, direction="write"
+                ),
                 "config_fields": config_fields,
                 "cron_schedule": cron_schedule,
                 "connection_id": connection_id,
+                "white_label_id": white_label_id,
             },
             headers={
                 "content-type": "application/json",
@@ -469,7 +485,11 @@ class SourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def run_source_connection(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        source_connection_id: str,
+        *,
+        access_token: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnectionJob:
         """
         Trigger a sync run for a source connection.
@@ -477,6 +497,7 @@ class SourceConnectionsClient:
         Args:
             db: The database session
             source_connection_id: The ID of the source connection to run
+            access_token: Optional access token to use instead of stored credentials
             user: The current user
             background_tasks: Background tasks for async operations
 
@@ -486,6 +507,8 @@ class SourceConnectionsClient:
         Parameters
         ----------
         source_connection_id : str
+
+        access_token : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -509,7 +532,14 @@ class SourceConnectionsClient:
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/run",
             method="POST",
+            json={
+                "access_token": access_token,
+            },
+            headers={
+                "content-type": "application/json",
+            },
             request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -702,9 +732,11 @@ class AsyncSourceConnectionsClient:
         short_name: str,
         description: typing.Optional[str] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
+        credential_id: typing.Optional[str] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
@@ -738,11 +770,15 @@ class AsyncSourceConnectionsClient:
 
         config_fields : typing.Optional[ConfigValues]
 
+        white_label_id : typing.Optional[str]
+
         collection : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
         auth_fields : typing.Optional[ConfigValues]
+
+        credential_id : typing.Optional[str]
 
         sync_immediately : typing.Optional[bool]
 
@@ -782,9 +818,11 @@ class AsyncSourceConnectionsClient:
                 "description": description,
                 "config_fields": config_fields,
                 "short_name": short_name,
+                "white_label_id": white_label_id,
                 "collection": collection,
                 "cron_schedule": cron_schedule,
                 "auth_fields": auth_fields,
+                "credential_id": credential_id,
                 "sync_immediately": sync_immediately,
             },
             request_options=request_options,
@@ -904,10 +942,11 @@ class AsyncSourceConnectionsClient:
         *,
         name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[ConfigValues] = OMIT,
+        auth_fields: typing.Optional[SourceConnectionUpdateAuthFields] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         connection_id: typing.Optional[str] = OMIT,
+        white_label_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
@@ -931,13 +970,15 @@ class AsyncSourceConnectionsClient:
 
         description : typing.Optional[str]
 
-        auth_fields : typing.Optional[ConfigValues]
+        auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
 
         config_fields : typing.Optional[ConfigValues]
 
         cron_schedule : typing.Optional[str]
 
         connection_id : typing.Optional[str]
+
+        white_label_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -972,10 +1013,13 @@ class AsyncSourceConnectionsClient:
             json={
                 "name": name,
                 "description": description,
-                "auth_fields": auth_fields,
+                "auth_fields": convert_and_respect_annotation_metadata(
+                    object_=auth_fields, annotation=SourceConnectionUpdateAuthFields, direction="write"
+                ),
                 "config_fields": config_fields,
                 "cron_schedule": cron_schedule,
                 "connection_id": connection_id,
+                "white_label_id": white_label_id,
             },
             headers={
                 "content-type": "application/json",
@@ -1092,7 +1136,11 @@ class AsyncSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def run_source_connection(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        source_connection_id: str,
+        *,
+        access_token: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnectionJob:
         """
         Trigger a sync run for a source connection.
@@ -1100,6 +1148,7 @@ class AsyncSourceConnectionsClient:
         Args:
             db: The database session
             source_connection_id: The ID of the source connection to run
+            access_token: Optional access token to use instead of stored credentials
             user: The current user
             background_tasks: Background tasks for async operations
 
@@ -1109,6 +1158,8 @@ class AsyncSourceConnectionsClient:
         Parameters
         ----------
         source_connection_id : str
+
+        access_token : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1140,7 +1191,14 @@ class AsyncSourceConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/run",
             method="POST",
+            json={
+                "access_token": access_token,
+            },
+            headers={
+                "content-type": "application/json",
+            },
             request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:

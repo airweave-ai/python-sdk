@@ -2,30 +2,27 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
-from .source_connection_status import SourceConnectionStatus
-import datetime as dt
+from .integration_type import IntegrationType
+from .auth_type import AuthType
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class SourceConnectionListItem(UniversalBaseModel):
+class IntegrationCredentialRawCreate(UniversalBaseModel):
     """
-    Simplified schema for source connection list item.
+    Create class for integration credentials with raw auth fields.
 
-    This is a compact representation containing only core attributes
-    directly from the source connection model.
+    This schema is used when auth fields need to be validated and encrypted
+    before creating the credential.
     """
 
-    id: str
     name: str
+    integration_short_name: str
     description: typing.Optional[str] = None
-    short_name: str
-    status: SourceConnectionStatus
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    sync_id: str
-    collection: str
-    white_label_id: typing.Optional[str] = None
+    integration_type: IntegrationType
+    auth_type: AuthType
+    auth_config_class: typing.Optional[str] = None
+    auth_fields: typing.Dict[str, typing.Optional[typing.Any]]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

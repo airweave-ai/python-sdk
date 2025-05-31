@@ -3,17 +3,14 @@
 from .api_key import ApiKey
 from .api_key_create import ApiKeyCreate
 from .auth_type import AuthType
-from .body_connect_integration_connections_connect_integration_type_short_name_post import (
-    BodyConnectIntegrationConnectionsConnectIntegrationTypeShortNamePost,
-)
 from .body_connect_slack_with_token_connections_direct_token_slack_post import (
     BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
 )
-from .body_create_source_connection_from_oauth_connections_create_source_connection_from_oauth_post import (
-    BodyCreateSourceConnectionFromOauthConnectionsCreateSourceConnectionFromOauthPost,
+from .body_create_credentials_from_authorization_code_source_connections_source_short_name_code_to_token_credentials_post import (
+    BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost,
 )
-from .body_send_oauth_2_code_connections_oauth_2_source_code_post import (
-    BodySendOauth2CodeConnectionsOauth2SourceCodePost,
+from .body_exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options import (
+    BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodeOptions,
 )
 from .chat import Chat
 from .chat_create import ChatCreate
@@ -48,8 +45,11 @@ from .entity_relation_update import EntityRelationUpdate
 from .entity_type import EntityType
 from .fields import Fields
 from .http_validation_error import HttpValidationError
+from .integration_credential_in_db import IntegrationCredentialInDb
+from .integration_credential_raw_create import IntegrationCredentialRawCreate
 from .integration_type import IntegrationType
 from .node_type import NodeType
+from .o_auth_2_auth_url import OAuth2AuthUrl
 from .organization import Organization
 from .response_type import ResponseType
 from .search_response import SearchResponse
@@ -61,7 +61,6 @@ from .source_connection_create import SourceConnectionCreate
 from .source_connection_job import SourceConnectionJob
 from .source_connection_list_item import SourceConnectionListItem
 from .source_connection_status import SourceConnectionStatus
-from .source_with_authentication_fields import SourceWithAuthenticationFields
 from .sync import Sync
 from .sync_create import SyncCreate
 from .sync_dag import SyncDag
@@ -80,15 +79,16 @@ from .user_create import UserCreate
 from .validation_error import ValidationError
 from .validation_error_loc_item import ValidationErrorLocItem
 from .white_label import WhiteLabel
+from .white_label_create import WhiteLabelCreate
+from .white_label_update import WhiteLabelUpdate
 
 __all__ = [
     "ApiKey",
     "ApiKeyCreate",
     "AuthType",
-    "BodyConnectIntegrationConnectionsConnectIntegrationTypeShortNamePost",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
-    "BodyCreateSourceConnectionFromOauthConnectionsCreateSourceConnectionFromOauthPost",
-    "BodySendOauth2CodeConnectionsOauth2SourceCodePost",
+    "BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost",
+    "BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodeOptions",
     "Chat",
     "ChatCreate",
     "ChatMessage",
@@ -122,8 +122,11 @@ __all__ = [
     "EntityType",
     "Fields",
     "HttpValidationError",
+    "IntegrationCredentialInDb",
+    "IntegrationCredentialRawCreate",
     "IntegrationType",
     "NodeType",
+    "OAuth2AuthUrl",
     "Organization",
     "ResponseType",
     "SearchResponse",
@@ -135,7 +138,6 @@ __all__ = [
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
-    "SourceWithAuthenticationFields",
     "Sync",
     "SyncCreate",
     "SyncDag",
@@ -154,4 +156,6 @@ __all__ = [
     "ValidationError",
     "ValidationErrorLocItem",
     "WhiteLabel",
+    "WhiteLabelCreate",
+    "WhiteLabelUpdate",
 ]

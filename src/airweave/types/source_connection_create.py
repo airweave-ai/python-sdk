@@ -23,9 +23,11 @@ class SourceConnectionCreate(UniversalBaseModel):
     description: typing.Optional[str] = None
     config_fields: typing.Optional[ConfigValues] = None
     short_name: str
+    white_label_id: typing.Optional[str] = None
     collection: typing.Optional[str] = None
     cron_schedule: typing.Optional[str] = None
     auth_fields: typing.Optional[ConfigValues] = None
+    credential_id: typing.Optional[str] = None
     sync_immediately: typing.Optional[bool] = None
 
     if IS_PYDANTIC_V2:

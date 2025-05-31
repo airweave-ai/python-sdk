@@ -3,14 +3,13 @@
 from ..core.client_wrapper import SyncClientWrapper
 import typing
 from ..core.request_options import RequestOptions
-from ..types.source_with_authentication_fields import SourceWithAuthenticationFields
+from ..types.source import Source
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
-from ..types.source import Source
 from ..core.client_wrapper import AsyncClientWrapper
 
 
@@ -18,9 +17,7 @@ class SourcesClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read_source(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithAuthenticationFields:
+    def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
         Get source by id.
 
@@ -34,6 +31,12 @@ class SourcesClient:
         -------
             schemas.Source: The source object.
 
+        Raises:
+            HTTPException:
+                - 404 if source not found
+                - 400 if source missing required configuration classes
+                - 500 if there's an error retrieving auth configuration
+
         Parameters
         ----------
         short_name : str
@@ -43,7 +46,7 @@ class SourcesClient:
 
         Returns
         -------
-        SourceWithAuthenticationFields
+        Source
             Successful Response
 
         Examples
@@ -65,9 +68,9 @@ class SourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithAuthenticationFields,
+                    Source,
                     parse_obj_as(
-                        type_=SourceWithAuthenticationFields,  # type: ignore
+                        type_=Source,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -88,16 +91,7 @@ class SourcesClient:
 
     def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
-        Get all sources for the current user.
-
-        Args:
-        -----
-            db: The database session
-            user: The current user
-
-        Returns:
-        --------
-            list[schemas.Source]: The list of sources.
+        Get all sources with their authentication fields.
 
         Parameters
         ----------
@@ -152,9 +146,7 @@ class AsyncSourcesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read_source(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceWithAuthenticationFields:
+    async def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
         Get source by id.
 
@@ -168,6 +160,12 @@ class AsyncSourcesClient:
         -------
             schemas.Source: The source object.
 
+        Raises:
+            HTTPException:
+                - 404 if source not found
+                - 400 if source missing required configuration classes
+                - 500 if there's an error retrieving auth configuration
+
         Parameters
         ----------
         short_name : str
@@ -177,7 +175,7 @@ class AsyncSourcesClient:
 
         Returns
         -------
-        SourceWithAuthenticationFields
+        Source
             Successful Response
 
         Examples
@@ -207,9 +205,9 @@ class AsyncSourcesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return typing.cast(
-                    SourceWithAuthenticationFields,
+                    Source,
                     parse_obj_as(
-                        type_=SourceWithAuthenticationFields,  # type: ignore
+                        type_=Source,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -230,16 +228,7 @@ class AsyncSourcesClient:
 
     async def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
-        Get all sources for the current user.
-
-        Args:
-        -----
-            db: The database session
-            user: The current user
-
-        Returns:
-        --------
-            list[schemas.Source]: The list of sources.
+        Get all sources with their authentication fields.
 
         Parameters
         ----------

@@ -2,13 +2,14 @@
 
 from ..core.pydantic_utilities import UniversalBaseModel
 import typing
+from .source_connection_create import SourceConnectionCreate
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
 
-class BodyConnectIntegrationConnectionsConnectIntegrationTypeShortNamePost(UniversalBaseModel):
-    name: typing.Optional[str] = None
-    auth_fields: typing.Dict[str, typing.Optional[typing.Any]]
+class BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodeOptions(UniversalBaseModel):
+    code: str
+    source_connection_in: typing.Optional[SourceConnectionCreate] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -24,6 +24,7 @@ class SourceConnection(UniversalBaseModel):
     description: typing.Optional[str] = None
     config_fields: typing.Optional[ConfigValues] = None
     short_name: str
+    white_label_id: typing.Optional[str] = None
     id: str
     sync_id: typing.Optional[str] = None
     organization_id: str
@@ -39,6 +40,7 @@ class SourceConnection(UniversalBaseModel):
     latest_sync_job_id: typing.Optional[str] = None
     latest_sync_job_started_at: typing.Optional[dt.datetime] = None
     latest_sync_job_completed_at: typing.Optional[dt.datetime] = None
+    latest_sync_job_error: typing.Optional[str] = None
     cron_schedule: typing.Optional[str] = None
     next_scheduled_run: typing.Optional[dt.datetime] = None
 

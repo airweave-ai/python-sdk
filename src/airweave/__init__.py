@@ -4,10 +4,9 @@ from .types import (
     ApiKey,
     ApiKeyCreate,
     AuthType,
-    BodyConnectIntegrationConnectionsConnectIntegrationTypeShortNamePost,
     BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
-    BodyCreateSourceConnectionFromOauthConnectionsCreateSourceConnectionFromOauthPost,
-    BodySendOauth2CodeConnectionsOauth2SourceCodePost,
+    BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost,
+    BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodeOptions,
     Chat,
     ChatCreate,
     ChatMessage,
@@ -41,8 +40,11 @@ from .types import (
     EntityType,
     Fields,
     HttpValidationError,
+    IntegrationCredentialInDb,
+    IntegrationCredentialRawCreate,
     IntegrationType,
     NodeType,
+    OAuth2AuthUrl,
     Organization,
     ResponseType,
     SearchResponse,
@@ -54,7 +56,6 @@ from .types import (
     SourceConnectionJob,
     SourceConnectionListItem,
     SourceConnectionStatus,
-    SourceWithAuthenticationFields,
     Sync,
     SyncCreate,
     SyncDag,
@@ -73,11 +74,14 @@ from .types import (
     ValidationError,
     ValidationErrorLocItem,
     WhiteLabel,
+    WhiteLabelCreate,
+    WhiteLabelUpdate,
 )
 from .errors import UnprocessableEntityError
-from . import collections, source_connections, sources, white_labels
+from . import collections, source_connections, sources
 from .client import AirweaveSDK, AsyncAirweaveSDK
 from .environment import AirweaveSDKEnvironment
+from .source_connections import SourceConnectionUpdateAuthFields
 from .version import __version__
 
 __all__ = [
@@ -87,10 +91,9 @@ __all__ = [
     "ApiKeyCreate",
     "AsyncAirweaveSDK",
     "AuthType",
-    "BodyConnectIntegrationConnectionsConnectIntegrationTypeShortNamePost",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
-    "BodyCreateSourceConnectionFromOauthConnectionsCreateSourceConnectionFromOauthPost",
-    "BodySendOauth2CodeConnectionsOauth2SourceCodePost",
+    "BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost",
+    "BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodeOptions",
     "Chat",
     "ChatCreate",
     "ChatMessage",
@@ -124,8 +127,11 @@ __all__ = [
     "EntityType",
     "Fields",
     "HttpValidationError",
+    "IntegrationCredentialInDb",
+    "IntegrationCredentialRawCreate",
     "IntegrationType",
     "NodeType",
+    "OAuth2AuthUrl",
     "Organization",
     "ResponseType",
     "SearchResponse",
@@ -137,7 +143,7 @@ __all__ = [
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
-    "SourceWithAuthenticationFields",
+    "SourceConnectionUpdateAuthFields",
     "Sync",
     "SyncCreate",
     "SyncDag",
@@ -157,9 +163,10 @@ __all__ = [
     "ValidationError",
     "ValidationErrorLocItem",
     "WhiteLabel",
+    "WhiteLabelCreate",
+    "WhiteLabelUpdate",
     "__version__",
     "collections",
     "source_connections",
     "sources",
-    "white_labels",
 ]

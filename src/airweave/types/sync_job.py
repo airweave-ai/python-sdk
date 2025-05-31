@@ -25,6 +25,7 @@ class SyncJob(UniversalBaseModel):
     completed_at: typing.Optional[dt.datetime] = None
     failed_at: typing.Optional[dt.datetime] = None
     error: typing.Optional[str] = None
+    access_token: typing.Optional[str] = None
     id: str
     organization_id: str
     created_by_email: str
