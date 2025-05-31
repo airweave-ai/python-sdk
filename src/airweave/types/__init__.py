@@ -9,8 +9,8 @@ from .body_connect_slack_with_token_connections_direct_token_slack_post import (
 from .body_create_credentials_from_authorization_code_source_connections_source_short_name_code_to_token_credentials_post import (
     BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost,
 )
-from .body_exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options import (
-    BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodeOptions,
+from .body_exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_post import (
+    BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodePost,
 )
 from .chat import Chat
 from .chat_create import ChatCreate
@@ -88,7 +88,7 @@ __all__ = [
     "AuthType",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
     "BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost",
-    "BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodeOptions",
+    "BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodePost",
     "Chat",
     "ChatCreate",
     "ChatMessage",
