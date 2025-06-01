@@ -9,9 +9,6 @@ from .body_connect_slack_with_token_connections_direct_token_slack_post import (
 from .body_create_credentials_from_authorization_code_source_connections_source_short_name_code_to_token_credentials_post import (
     BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost,
 )
-from .body_exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_post import (
-    BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodePost,
-)
 from .chat import Chat
 from .chat_create import ChatCreate
 from .chat_message import ChatMessage
@@ -79,8 +76,6 @@ from .user_create import UserCreate
 from .validation_error import ValidationError
 from .validation_error_loc_item import ValidationErrorLocItem
 from .white_label import WhiteLabel
-from .white_label_create import WhiteLabelCreate
-from .white_label_update import WhiteLabelUpdate
 
 __all__ = [
     "ApiKey",
@@ -88,7 +83,6 @@ __all__ = [
     "AuthType",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
     "BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost",
-    "BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodePost",
     "Chat",
     "ChatCreate",
     "ChatMessage",
@@ -156,6 +150,4 @@ __all__ = [
     "ValidationError",
     "ValidationErrorLocItem",
     "WhiteLabel",
-    "WhiteLabelCreate",
-    "WhiteLabelUpdate",
 ]

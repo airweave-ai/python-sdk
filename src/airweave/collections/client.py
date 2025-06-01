@@ -123,7 +123,8 @@ class CollectionsClient:
             api_key="YOUR_API_KEY",
         )
         client.collections.create_collection(
-            name="name",
+            name="Finance Data",
+            readable_id="finance-data",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -566,7 +567,8 @@ class AsyncCollectionsClient:
 
         async def main() -> None:
             await client.collections.create_collection(
-                name="name",
+                name="Finance Data",
+                readable_id="finance-data",
             )
 
 

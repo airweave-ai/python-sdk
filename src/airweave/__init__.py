@@ -6,7 +6,6 @@ from .types import (
     AuthType,
     BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
     BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost,
-    BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodePost,
     Chat,
     ChatCreate,
     ChatMessage,
@@ -74,11 +73,9 @@ from .types import (
     ValidationError,
     ValidationErrorLocItem,
     WhiteLabel,
-    WhiteLabelCreate,
-    WhiteLabelUpdate,
 )
 from .errors import UnprocessableEntityError
-from . import collections, source_connections, sources
+from . import collections, source_connections, sources, white_labels
 from .client import AirweaveSDK, AsyncAirweaveSDK
 from .environment import AirweaveSDKEnvironment
 from .source_connections import SourceConnectionUpdateAuthFields
@@ -93,7 +90,6 @@ __all__ = [
     "AuthType",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
     "BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost",
-    "BodyExchangeWhiteLabelOauth2CodeWhiteLabelsWhiteLabelIdOauth2CodePost",
     "Chat",
     "ChatCreate",
     "ChatMessage",
@@ -163,10 +159,9 @@ __all__ = [
     "ValidationError",
     "ValidationErrorLocItem",
     "WhiteLabel",
-    "WhiteLabelCreate",
-    "WhiteLabelUpdate",
     "__version__",
     "collections",
     "source_connections",
     "sources",
+    "white_labels",
 ]

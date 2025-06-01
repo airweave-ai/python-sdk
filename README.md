@@ -26,7 +26,8 @@ client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
 client.collections.create_collection(
-    name="name",
+    name="Finance Data",
+    readable_id="finance-data",
 )
 ```
 
@@ -46,7 +47,8 @@ client = AsyncAirweaveSDK(
 
 async def main() -> None:
     await client.collections.create_collection(
-        name="name",
+        name="Finance Data",
+        readable_id="finance-data",
     )
 
 

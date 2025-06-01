@@ -7,10 +7,12 @@ from .core.client_wrapper import SyncClientWrapper
 from .sources.client import SourcesClient
 from .collections.client import CollectionsClient
 from .source_connections.client import SourceConnectionsClient
+from .white_labels.client import WhiteLabelsClient
 from .core.client_wrapper import AsyncClientWrapper
 from .sources.client import AsyncSourcesClient
 from .collections.client import AsyncCollectionsClient
 from .source_connections.client import AsyncSourceConnectionsClient
+from .white_labels.client import AsyncWhiteLabelsClient
 
 
 class AirweaveSDK:
@@ -74,6 +76,7 @@ class AirweaveSDK:
         self.sources = SourcesClient(client_wrapper=self._client_wrapper)
         self.collections = CollectionsClient(client_wrapper=self._client_wrapper)
         self.source_connections = SourceConnectionsClient(client_wrapper=self._client_wrapper)
+        self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
 
 
 class AsyncAirweaveSDK:
@@ -137,6 +140,7 @@ class AsyncAirweaveSDK:
         self.sources = AsyncSourcesClient(client_wrapper=self._client_wrapper)
         self.collections = AsyncCollectionsClient(client_wrapper=self._client_wrapper)
         self.source_connections = AsyncSourceConnectionsClient(client_wrapper=self._client_wrapper)
+        self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:

@@ -3,57 +3,514 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.source_connection_list_item import SourceConnectionListItem
+from ..types.white_label import WhiteLabel
 from ..core.pydantic_utilities import parse_obj_as
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
-from ..types.config_values import ConfigValues
-from ..types.source_connection import SourceConnection
 from ..core.jsonable_encoder import jsonable_encoder
-from .types.source_connection_update_auth_fields import SourceConnectionUpdateAuthFields
+from ..types.source_connection_list_item import SourceConnectionListItem
+from ..types.source_connection_create import SourceConnectionCreate
+from ..types.source_connection import SourceConnection
 from ..core.serialization import convert_and_respect_annotation_metadata
-from ..types.source_connection_job import SourceConnectionJob
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class SourceConnectionsClient:
+class WhiteLabelsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_source_connections(
-        self,
-        *,
-        collection: typing.Optional[str] = None,
-        skip: typing.Optional[int] = None,
-        limit: typing.Optional[int] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[SourceConnectionListItem]:
+    def list_white_labels(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[WhiteLabel]:
         """
-        List all source connections for the current user.
+        List all white labels for the current user's organization.
 
         Args:
+        -----
             db: The database session
-            collection: The collection to filter by
-            skip: The number of connections to skip
-            limit: The number of connections to return
-            user: The current user
+            current_user: The current user
 
         Returns:
-            A list of source connection list items with essential information
+        --------
+            list[schemas.WhiteLabel]: A list of white labels
 
         Parameters
         ----------
-        collection : typing.Optional[str]
-            Filter by collection
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
 
-        skip : typing.Optional[int]
+        Returns
+        -------
+        typing.List[WhiteLabel]
+            Successful Response
 
-        limit : typing.Optional[int]
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.white_labels.list_white_labels()
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "white-labels/list",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[WhiteLabel],
+                    parse_obj_as(
+                        type_=typing.List[WhiteLabel],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def create_white_label(
+        self,
+        *,
+        name: str,
+        source_short_name: str,
+        redirect_url: str,
+        client_id: str,
+        client_secret: str,
+        allowed_origins: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WhiteLabel:
+        """
+        Create new white label integration.
+
+        Args:
+        -----
+            db: The database session
+            current_user: The current user
+            white_label_in: The white label to create
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The created white label
+
+        Parameters
+        ----------
+        name : str
+
+        source_short_name : str
+
+        redirect_url : str
+
+        client_id : str
+
+        client_secret : str
+
+        allowed_origins : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.white_labels.create_white_label(
+            name="Company Slack Integration",
+            source_short_name="slack",
+            redirect_url="https://yourapp.com/auth/slack/callback",
+            client_id="1234567890.1234567890123",
+            client_secret="abcdefghijklmnopqrstuvwxyz123456",
+            allowed_origins="https://yourapp.com,https://app.yourapp.com",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "white-labels",
+            method="POST",
+            json={
+                "name": name,
+                "source_short_name": source_short_name,
+                "redirect_url": redirect_url,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "allowed_origins": allowed_origins,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def get_white_label(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> WhiteLabel:
+        """
+        Get a specific white label integration.
+
+        Args:
+        -----
+            db: The database session
+            white_label_id: The ID of the white label to get
+            current_user: The current user
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The white label
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.white_labels.get_white_label(
+            white_label_id="white_label_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def update_white_label(
+        self,
+        white_label_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        redirect_url: typing.Optional[str] = OMIT,
+        client_id: typing.Optional[str] = OMIT,
+        client_secret: typing.Optional[str] = OMIT,
+        allowed_origins: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WhiteLabel:
+        """
+        Update a white label integration.
+
+        Args:
+        -----
+            db: The database session
+            current_user: The current user
+            white_label_id: The ID of the white label to update
+            white_label_in: The white label to update
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The updated white label
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        name : typing.Optional[str]
+
+        redirect_url : typing.Optional[str]
+
+        client_id : typing.Optional[str]
+
+        client_secret : typing.Optional[str]
+
+        allowed_origins : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.white_labels.update_white_label(
+            white_label_id="white_label_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}",
+            method="PUT",
+            json={
+                "name": name,
+                "redirect_url": redirect_url,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "allowed_origins": allowed_origins,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def delete_white_label(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> WhiteLabel:
+        """
+        Delete a white label integration.
+
+        Args:
+        -----
+            db: The database session
+            current_user: The current user
+            white_label_id: The ID of the white label to delete
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The deleted white label
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.white_labels.delete_white_label(
+            white_label_id="white_label_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> str:
+        """
+        Generate the OAuth2 authorization URL by delegating to oauth2_service.
+
+        Args:
+        -----
+            request: The HTTP request
+            response: The HTTP response
+            db: The database session
+            white_label_id: The ID of the white label to get the auth URL for
+            user: The current user
+
+        Returns:
+        --------
+            str: The OAuth2 authorization URL
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        str
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+            white_label_id="white_label_id",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    str,
+                    parse_obj_as(
+                        type_=str,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    def list_white_label_source_connections(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionListItem]:
+        """
+        List all source connections for a specific white label.
+
+        Args:
+        -----
+            white_label_id: The ID of the white label to list source connections for
+            db: The database session
+            current_user: The current user
+
+        Returns:
+        --------
+            list[schemas.SourceConnectionListItem]: A list of source connections
+
+        Parameters
+        ----------
+        white_label_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -70,16 +527,13 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.list_source_connections()
+        client.white_labels.list_white_label_source_connections(
+            white_label_id="white_label_id",
+        )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "source-connections",
+            f"white-labels/{jsonable_encoder(white_label_id)}/source-connections",
             method="GET",
-            params={
-                "collection": collection,
-                "skip": skip,
-                "limit": limit,
-            },
             request_options=request_options,
         )
         try:
@@ -106,62 +560,39 @@ class SourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def create_source_connection(
+    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
+        white_label_id: str,
         *,
-        name: str,
-        short_name: str,
-        description: typing.Optional[str] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
-        collection: typing.Optional[str] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[ConfigValues] = OMIT,
-        credential_id: typing.Optional[str] = OMIT,
-        sync_immediately: typing.Optional[bool] = OMIT,
+        code: str,
+        source_connection_in: typing.Optional[SourceConnectionCreate] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Create a new source connection.
-
-        This endpoint creates:
-        1. An integration credential with the provided auth fields
-        2. A collection if not provided
-        3. The source connection
-        4. A sync configuration and DAG
-        5. A sync job if immediate execution is requested
+        Exchange OAuth2 code for tokens and create connection with source connection.
 
         Args:
+        -----
+            request: The HTTP request
+            response: The HTTP response
+            white_label_id: The ID of the white label to exchange the code for
+            code: The OAuth2 code
+            source_connection_in: Optional source connection configuration
             db: The database session
-            source_connection_in: The source connection to create
             user: The current user
             background_tasks: Background tasks for async operations
 
         Returns:
-            The created source connection
+        --------
+            source_connection (schemas.SourceConnection): The created source connection
 
         Parameters
         ----------
-        name : str
-            Name of the source connection
+        white_label_id : str
 
-        short_name : str
+        code : str
 
-        description : typing.Optional[str]
-
-        config_fields : typing.Optional[ConfigValues]
-
-        white_label_id : typing.Optional[str]
-
-        collection : typing.Optional[str]
-
-        cron_schedule : typing.Optional[str]
-
-        auth_fields : typing.Optional[ConfigValues]
-
-        credential_id : typing.Optional[str]
-
-        sync_immediately : typing.Optional[bool]
+        source_connection_in : typing.Optional[SourceConnectionCreate]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -178,210 +609,19 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.create_source_connection(
-            name="My Stripe Connection",
-            description="Production Stripe account for payment data",
-            short_name="stripe",
-            collection="finance-data",
-            cron_schedule="0 */6 * * *",
-            auth_fields={"api_key": "sk_live_51H..."},
-            sync_immediately=True,
+        client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+            white_label_id="white_label_id",
+            code="code",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
-            "source-connections",
+            f"white-labels/{jsonable_encoder(white_label_id)}/oauth2/code",
             method="POST",
             json={
-                "name": name,
-                "description": description,
-                "config_fields": config_fields,
-                "short_name": short_name,
-                "white_label_id": white_label_id,
-                "collection": collection,
-                "cron_schedule": cron_schedule,
-                "auth_fields": auth_fields,
-                "credential_id": credential_id,
-                "sync_immediately": sync_immediately,
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def get_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        show_auth_fields: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Get a specific source connection by ID.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            show_auth_fields: Whether to show the auth fields, default is False
-            user: The current user
-
-        Returns:
-            The source connection
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        show_auth_fields : typing.Optional[bool]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.source_connections.get_source_connection(
-            source_connection_id="source_connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}",
-            method="GET",
-            params={
-                "show_auth_fields": show_auth_fields,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def update_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        name: typing.Optional[str] = OMIT,
-        description: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[SourceConnectionUpdateAuthFields] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        connection_id: typing.Optional[str] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Update a source connection.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to update
-            source_connection_in: The updated source connection data
-            user: The current user
-
-        Returns:
-            The updated source connection
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        name : typing.Optional[str]
-            Name of the source connection
-
-        description : typing.Optional[str]
-
-        auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
-
-        config_fields : typing.Optional[ConfigValues]
-
-        cron_schedule : typing.Optional[str]
-
-        connection_id : typing.Optional[str]
-
-        white_label_id : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.source_connections.update_source_connection(
-            source_connection_id="source_connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}",
-            method="PUT",
-            json={
-                "name": name,
-                "description": description,
-                "auth_fields": convert_and_respect_annotation_metadata(
-                    object_=auth_fields, annotation=SourceConnectionUpdateAuthFields, direction="write"
+                "code": code,
+                "source_connection_in": convert_and_respect_annotation_metadata(
+                    object_=source_connection_in, annotation=SourceConnectionCreate, direction="write"
                 ),
-                "config_fields": config_fields,
-                "cron_schedule": cron_schedule,
-                "connection_id": connection_id,
-                "white_label_id": white_label_id,
             },
             headers={
                 "content-type": "application/json",
@@ -413,263 +653,548 @@ class SourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def delete_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Delete a source connection and all related components.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to delete
-            delete_data: Whether to delete the associated data in destinations
-            user: The current user
-
-        Returns:
-            The deleted source connection
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        delete_data : typing.Optional[bool]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.source_connections.delete_source_connection(
-            source_connection_id="source_connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}",
-            method="DELETE",
-            params={
-                "delete_data": delete_data,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def run_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        access_token: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnectionJob:
-        """
-        Trigger a sync run for a source connection.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to run
-            access_token: Optional access token to use instead of stored credentials
-            user: The current user
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            The created sync job
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        access_token : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnectionJob
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.source_connections.run_source_connection(
-            source_connection_id="source_connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}/run",
-            method="POST",
-            json={
-                "access_token": access_token,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnectionJob,
-                    parse_obj_as(
-                        type_=SourceConnectionJob,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    def list_source_connection_jobs(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[SourceConnectionJob]:
-        """
-        List all sync jobs for a source connection.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            user: The current user
-
-        Returns:
-            A list of sync jobs
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[SourceConnectionJob]
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.source_connections.list_source_connection_jobs(
-            source_connection_id="source_connection_id",
-        )
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}/jobs",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[SourceConnectionJob],
-                    parse_obj_as(
-                        type_=typing.List[SourceConnectionJob],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-
-class AsyncSourceConnectionsClient:
+class AsyncWhiteLabelsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def list_source_connections(
-        self,
-        *,
-        collection: typing.Optional[str] = None,
-        skip: typing.Optional[int] = None,
-        limit: typing.Optional[int] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[SourceConnectionListItem]:
+    async def list_white_labels(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[WhiteLabel]:
         """
-        List all source connections for the current user.
+        List all white labels for the current user's organization.
 
         Args:
+        -----
             db: The database session
-            collection: The collection to filter by
-            skip: The number of connections to skip
-            limit: The number of connections to return
-            user: The current user
+            current_user: The current user
 
         Returns:
-            A list of source connection list items with essential information
+        --------
+            list[schemas.WhiteLabel]: A list of white labels
 
         Parameters
         ----------
-        collection : typing.Optional[str]
-            Filter by collection
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
 
-        skip : typing.Optional[int]
+        Returns
+        -------
+        typing.List[WhiteLabel]
+            Successful Response
 
-        limit : typing.Optional[int]
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.white_labels.list_white_labels()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "white-labels/list",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[WhiteLabel],
+                    parse_obj_as(
+                        type_=typing.List[WhiteLabel],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def create_white_label(
+        self,
+        *,
+        name: str,
+        source_short_name: str,
+        redirect_url: str,
+        client_id: str,
+        client_secret: str,
+        allowed_origins: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WhiteLabel:
+        """
+        Create new white label integration.
+
+        Args:
+        -----
+            db: The database session
+            current_user: The current user
+            white_label_in: The white label to create
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The created white label
+
+        Parameters
+        ----------
+        name : str
+
+        source_short_name : str
+
+        redirect_url : str
+
+        client_id : str
+
+        client_secret : str
+
+        allowed_origins : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.white_labels.create_white_label(
+                name="Company Slack Integration",
+                source_short_name="slack",
+                redirect_url="https://yourapp.com/auth/slack/callback",
+                client_id="1234567890.1234567890123",
+                client_secret="abcdefghijklmnopqrstuvwxyz123456",
+                allowed_origins="https://yourapp.com,https://app.yourapp.com",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "white-labels",
+            method="POST",
+            json={
+                "name": name,
+                "source_short_name": source_short_name,
+                "redirect_url": redirect_url,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "allowed_origins": allowed_origins,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def get_white_label(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> WhiteLabel:
+        """
+        Get a specific white label integration.
+
+        Args:
+        -----
+            db: The database session
+            white_label_id: The ID of the white label to get
+            current_user: The current user
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The white label
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.white_labels.get_white_label(
+                white_label_id="white_label_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def update_white_label(
+        self,
+        white_label_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        redirect_url: typing.Optional[str] = OMIT,
+        client_id: typing.Optional[str] = OMIT,
+        client_secret: typing.Optional[str] = OMIT,
+        allowed_origins: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WhiteLabel:
+        """
+        Update a white label integration.
+
+        Args:
+        -----
+            db: The database session
+            current_user: The current user
+            white_label_id: The ID of the white label to update
+            white_label_in: The white label to update
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The updated white label
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        name : typing.Optional[str]
+
+        redirect_url : typing.Optional[str]
+
+        client_id : typing.Optional[str]
+
+        client_secret : typing.Optional[str]
+
+        allowed_origins : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.white_labels.update_white_label(
+                white_label_id="white_label_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}",
+            method="PUT",
+            json={
+                "name": name,
+                "redirect_url": redirect_url,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "allowed_origins": allowed_origins,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def delete_white_label(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> WhiteLabel:
+        """
+        Delete a white label integration.
+
+        Args:
+        -----
+            db: The database session
+            current_user: The current user
+            white_label_id: The ID of the white label to delete
+
+        Returns:
+        --------
+            white_label (schemas.WhiteLabel): The deleted white label
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WhiteLabel
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.white_labels.delete_white_label(
+                white_label_id="white_label_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    WhiteLabel,
+                    parse_obj_as(
+                        type_=WhiteLabel,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> str:
+        """
+        Generate the OAuth2 authorization URL by delegating to oauth2_service.
+
+        Args:
+        -----
+            request: The HTTP request
+            response: The HTTP response
+            db: The database session
+            white_label_id: The ID of the white label to get the auth URL for
+            user: The current user
+
+        Returns:
+        --------
+            str: The OAuth2 authorization URL
+
+        Parameters
+        ----------
+        white_label_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        str
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+                white_label_id="white_label_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"white-labels/{jsonable_encoder(white_label_id)}/oauth2/auth_url",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    str,
+                    parse_obj_as(
+                        type_=str,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def list_white_label_source_connections(
+        self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[SourceConnectionListItem]:
+        """
+        List all source connections for a specific white label.
+
+        Args:
+        -----
+            white_label_id: The ID of the white label to list source connections for
+            db: The database session
+            current_user: The current user
+
+        Returns:
+        --------
+            list[schemas.SourceConnectionListItem]: A list of source connections
+
+        Parameters
+        ----------
+        white_label_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -691,19 +1216,16 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.list_source_connections()
+            await client.white_labels.list_white_label_source_connections(
+                white_label_id="white_label_id",
+            )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "source-connections",
+            f"white-labels/{jsonable_encoder(white_label_id)}/source-connections",
             method="GET",
-            params={
-                "collection": collection,
-                "skip": skip,
-                "limit": limit,
-            },
             request_options=request_options,
         )
         try:
@@ -730,62 +1252,39 @@ class AsyncSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def create_source_connection(
+    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
+        white_label_id: str,
         *,
-        name: str,
-        short_name: str,
-        description: typing.Optional[str] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
-        collection: typing.Optional[str] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[ConfigValues] = OMIT,
-        credential_id: typing.Optional[str] = OMIT,
-        sync_immediately: typing.Optional[bool] = OMIT,
+        code: str,
+        source_connection_in: typing.Optional[SourceConnectionCreate] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Create a new source connection.
-
-        This endpoint creates:
-        1. An integration credential with the provided auth fields
-        2. A collection if not provided
-        3. The source connection
-        4. A sync configuration and DAG
-        5. A sync job if immediate execution is requested
+        Exchange OAuth2 code for tokens and create connection with source connection.
 
         Args:
+        -----
+            request: The HTTP request
+            response: The HTTP response
+            white_label_id: The ID of the white label to exchange the code for
+            code: The OAuth2 code
+            source_connection_in: Optional source connection configuration
             db: The database session
-            source_connection_in: The source connection to create
             user: The current user
             background_tasks: Background tasks for async operations
 
         Returns:
-            The created source connection
+        --------
+            source_connection (schemas.SourceConnection): The created source connection
 
         Parameters
         ----------
-        name : str
-            Name of the source connection
+        white_label_id : str
 
-        short_name : str
+        code : str
 
-        description : typing.Optional[str]
-
-        config_fields : typing.Optional[ConfigValues]
-
-        white_label_id : typing.Optional[str]
-
-        collection : typing.Optional[str]
-
-        cron_schedule : typing.Optional[str]
-
-        auth_fields : typing.Optional[ConfigValues]
-
-        credential_id : typing.Optional[str]
-
-        sync_immediately : typing.Optional[bool]
+        source_connection_in : typing.Optional[SourceConnectionCreate]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -807,229 +1306,22 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.create_source_connection(
-                name="My Stripe Connection",
-                description="Production Stripe account for payment data",
-                short_name="stripe",
-                collection="finance-data",
-                cron_schedule="0 */6 * * *",
-                auth_fields={"api_key": "sk_live_51H..."},
-                sync_immediately=True,
+            await client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+                white_label_id="white_label_id",
+                code="code",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "source-connections",
+            f"white-labels/{jsonable_encoder(white_label_id)}/oauth2/code",
             method="POST",
             json={
-                "name": name,
-                "description": description,
-                "config_fields": config_fields,
-                "short_name": short_name,
-                "white_label_id": white_label_id,
-                "collection": collection,
-                "cron_schedule": cron_schedule,
-                "auth_fields": auth_fields,
-                "credential_id": credential_id,
-                "sync_immediately": sync_immediately,
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def get_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        show_auth_fields: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Get a specific source connection by ID.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            show_auth_fields: Whether to show the auth fields, default is False
-            user: The current user
-
-        Returns:
-            The source connection
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        show_auth_fields : typing.Optional[bool]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.source_connections.get_source_connection(
-                source_connection_id="source_connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}",
-            method="GET",
-            params={
-                "show_auth_fields": show_auth_fields,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def update_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        name: typing.Optional[str] = OMIT,
-        description: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[SourceConnectionUpdateAuthFields] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        connection_id: typing.Optional[str] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Update a source connection.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to update
-            source_connection_in: The updated source connection data
-            user: The current user
-
-        Returns:
-            The updated source connection
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        name : typing.Optional[str]
-            Name of the source connection
-
-        description : typing.Optional[str]
-
-        auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
-
-        config_fields : typing.Optional[ConfigValues]
-
-        cron_schedule : typing.Optional[str]
-
-        connection_id : typing.Optional[str]
-
-        white_label_id : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.source_connections.update_source_connection(
-                source_connection_id="source_connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}",
-            method="PUT",
-            json={
-                "name": name,
-                "description": description,
-                "auth_fields": convert_and_respect_annotation_metadata(
-                    object_=auth_fields, annotation=SourceConnectionUpdateAuthFields, direction="write"
+                "code": code,
+                "source_connection_in": convert_and_respect_annotation_metadata(
+                    object_=source_connection_in, annotation=SourceConnectionCreate, direction="write"
                 ),
-                "config_fields": config_fields,
-                "cron_schedule": cron_schedule,
-                "connection_id": connection_id,
-                "white_label_id": white_label_id,
             },
             headers={
                 "content-type": "application/json",
@@ -1043,253 +1335,6 @@ class AsyncSourceConnectionsClient:
                     SourceConnection,
                     parse_obj_as(
                         type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def delete_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Delete a source connection and all related components.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to delete
-            delete_data: Whether to delete the associated data in destinations
-            user: The current user
-
-        Returns:
-            The deleted source connection
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        delete_data : typing.Optional[bool]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.source_connections.delete_source_connection(
-                source_connection_id="source_connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}",
-            method="DELETE",
-            params={
-                "delete_data": delete_data,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def run_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        access_token: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnectionJob:
-        """
-        Trigger a sync run for a source connection.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to run
-            access_token: Optional access token to use instead of stored credentials
-            user: The current user
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            The created sync job
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        access_token : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnectionJob
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.source_connections.run_source_connection(
-                source_connection_id="source_connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}/run",
-            method="POST",
-            json={
-                "access_token": access_token,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    SourceConnectionJob,
-                    parse_obj_as(
-                        type_=SourceConnectionJob,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    )
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, body=_response.text)
-        raise ApiError(status_code=_response.status_code, body=_response_json)
-
-    async def list_source_connection_jobs(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[SourceConnectionJob]:
-        """
-        List all sync jobs for a source connection.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            user: The current user
-
-        Returns:
-            A list of sync jobs
-
-        Parameters
-        ----------
-        source_connection_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[SourceConnectionJob]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.source_connections.list_source_connection_jobs(
-                source_connection_id="source_connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"source-connections/{jsonable_encoder(source_connection_id)}/jobs",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                return typing.cast(
-                    typing.List[SourceConnectionJob],
-                    parse_obj_as(
-                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
