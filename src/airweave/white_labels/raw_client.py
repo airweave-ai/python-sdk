@@ -497,7 +497,7 @@ class RawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def exchange_white_label_oauth_2_code(
+    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -1057,7 +1057,7 @@ class AsyncRawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def exchange_white_label_oauth_2_code(
+    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
