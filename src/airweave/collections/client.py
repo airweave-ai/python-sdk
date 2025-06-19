@@ -58,6 +58,7 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.collections.list_collections()
@@ -96,6 +97,7 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.collections.create_collection(
@@ -131,6 +133,7 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.collections.get_collection(
@@ -154,7 +157,7 @@ class CollectionsClient:
             readable_id: The readable ID of the collection to delete
             delete_data: Whether to delete the data in destinations
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             The deleted collection
@@ -178,6 +181,7 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.collections.delete_collection(
@@ -205,7 +209,7 @@ class CollectionsClient:
             query: The search query
             response_type: Type of response (raw results or AI completion)
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             dict: Search results or AI completion response
@@ -233,6 +237,7 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.collections.search_collection(
@@ -254,7 +259,7 @@ class CollectionsClient:
         Args:
             readable_id: The readable ID of the collection
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -277,6 +282,7 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.collections.refresh_all_source_connections(
@@ -333,6 +339,7 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -379,6 +386,7 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -422,6 +430,7 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -451,7 +460,7 @@ class AsyncCollectionsClient:
             readable_id: The readable ID of the collection to delete
             delete_data: Whether to delete the data in destinations
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             The deleted collection
@@ -477,6 +486,7 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -510,7 +520,7 @@ class AsyncCollectionsClient:
             query: The search query
             response_type: Type of response (raw results or AI completion)
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             dict: Search results or AI completion response
@@ -540,6 +550,7 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -567,7 +578,7 @@ class AsyncCollectionsClient:
         Args:
             readable_id: The readable ID of the collection
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -592,6 +603,7 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 

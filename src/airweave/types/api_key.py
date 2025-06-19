@@ -18,8 +18,8 @@ class ApiKey(UniversalBaseModel):
     modified_at: dt.datetime
     last_used_date: typing.Optional[dt.datetime] = None
     expiration_date: dt.datetime
-    created_by_email: str
-    modified_by_email: str
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
     decrypted_key: str
 
     if IS_PYDANTIC_V2:

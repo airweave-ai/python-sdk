@@ -35,14 +35,14 @@ class RawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[SourceConnectionListItem]]:
         """
-        List all source connections for the current user.
+        List all source connections for the organization.
 
         Args:
             db: The database session
             collection: The collection to filter by
             skip: The number of connections to skip
             limit: The number of connections to return
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of source connection list items with essential information
@@ -128,7 +128,7 @@ class RawSourceConnectionsClient:
         Args:
             db: The database session
             source_connection_in: The source connection to create
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -226,7 +226,7 @@ class RawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection
             show_auth_fields: Whether to show the auth fields, default is False
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The source connection
@@ -299,7 +299,7 @@ class RawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to update
             source_connection_in: The updated source connection data
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The updated source connection
@@ -391,7 +391,7 @@ class RawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to delete
             delete_data: Whether to delete the associated data in destinations
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The deleted source connection
@@ -458,7 +458,7 @@ class RawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to run
             access_token: Optional access token to use instead of stored credentials
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -525,7 +525,7 @@ class RawSourceConnectionsClient:
         Args:
             db: The database session
             source_connection_id: The ID of the source connection
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of sync jobs
@@ -587,14 +587,14 @@ class AsyncRawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[SourceConnectionListItem]]:
         """
-        List all source connections for the current user.
+        List all source connections for the organization.
 
         Args:
             db: The database session
             collection: The collection to filter by
             skip: The number of connections to skip
             limit: The number of connections to return
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of source connection list items with essential information
@@ -680,7 +680,7 @@ class AsyncRawSourceConnectionsClient:
         Args:
             db: The database session
             source_connection_in: The source connection to create
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -778,7 +778,7 @@ class AsyncRawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection
             show_auth_fields: Whether to show the auth fields, default is False
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The source connection
@@ -851,7 +851,7 @@ class AsyncRawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to update
             source_connection_in: The updated source connection data
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The updated source connection
@@ -943,7 +943,7 @@ class AsyncRawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to delete
             delete_data: Whether to delete the associated data in destinations
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The deleted source connection
@@ -1010,7 +1010,7 @@ class AsyncRawSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to run
             access_token: Optional access token to use instead of stored credentials
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -1077,7 +1077,7 @@ class AsyncRawSourceConnectionsClient:
         Args:
             db: The database session
             source_connection_id: The ID of the source connection
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of sync jobs

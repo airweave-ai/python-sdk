@@ -60,6 +60,7 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.sources.read_source(
@@ -88,6 +89,7 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.sources.read_sources()
@@ -150,6 +152,7 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -186,6 +189,7 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 

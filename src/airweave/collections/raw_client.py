@@ -211,7 +211,7 @@ class RawCollectionsClient:
             readable_id: The readable ID of the collection to delete
             delete_data: Whether to delete the data in destinations
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             The deleted collection
@@ -280,7 +280,7 @@ class RawCollectionsClient:
             query: The search query
             response_type: Type of response (raw results or AI completion)
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             dict: Search results or AI completion response
@@ -347,7 +347,7 @@ class RawCollectionsClient:
         Args:
             readable_id: The readable ID of the collection
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -588,7 +588,7 @@ class AsyncRawCollectionsClient:
             readable_id: The readable ID of the collection to delete
             delete_data: Whether to delete the data in destinations
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             The deleted collection
@@ -657,7 +657,7 @@ class AsyncRawCollectionsClient:
             query: The search query
             response_type: Type of response (raw results or AI completion)
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
             dict: Search results or AI completion response
@@ -724,7 +724,7 @@ class AsyncRawCollectionsClient:
         Args:
             readable_id: The readable ID of the collection
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:

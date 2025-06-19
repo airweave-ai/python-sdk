@@ -6,15 +6,13 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class ChatUpdate(UniversalBaseModel):
+class InvitationCreate(UniversalBaseModel):
     """
-    Schema for updating a chat.
+    Schema for creating an invitation.
     """
 
-    name: typing.Optional[str] = None
-    description: typing.Optional[str] = None
-    model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
-    search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    email: str
+    role: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

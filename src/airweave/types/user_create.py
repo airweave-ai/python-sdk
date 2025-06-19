@@ -3,7 +3,9 @@
 import typing
 
 import pydantic
+import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ..core.serialization import FieldMetadata
 
 
 class UserCreate(UniversalBaseModel):
@@ -13,7 +15,7 @@ class UserCreate(UniversalBaseModel):
 
     email: str
     full_name: typing.Optional[str] = None
-    organization_id: typing.Optional[str] = None
+    auth_0_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="auth0_id")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

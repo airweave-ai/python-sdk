@@ -4,15 +4,19 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .organization import Organization
 
 
-class ChatMessageCreate(UniversalBaseModel):
+class UserOrganization(UniversalBaseModel):
     """
-    Schema for creating a chat message.
+    Schema for UserOrganization relationship with full organization details.
     """
 
-    content: str
     role: typing.Optional[str] = None
+    is_primary: typing.Optional[bool] = None
+    user_id: str
+    organization_id: str
+    organization: Organization
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

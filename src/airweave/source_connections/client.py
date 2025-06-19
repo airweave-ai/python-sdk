@@ -39,14 +39,14 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List all source connections for the current user.
+        List all source connections for the organization.
 
         Args:
             db: The database session
             collection: The collection to filter by
             skip: The number of connections to skip
             limit: The number of connections to return
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of source connection list items with essential information
@@ -73,6 +73,7 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.list_source_connections()
@@ -110,7 +111,7 @@ class SourceConnectionsClient:
         Args:
             db: The database session
             source_connection_in: The source connection to create
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -152,6 +153,7 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.create_source_connection(
@@ -193,7 +195,7 @@ class SourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection
             show_auth_fields: Whether to show the auth fields, default is False
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The source connection
@@ -217,6 +219,7 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.get_source_connection(
@@ -248,7 +251,7 @@ class SourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to update
             source_connection_in: The updated source connection data
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The updated source connection
@@ -285,6 +288,7 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.update_source_connection(
@@ -318,7 +322,7 @@ class SourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to delete
             delete_data: Whether to delete the associated data in destinations
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The deleted source connection
@@ -342,6 +346,7 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.delete_source_connection(
@@ -367,7 +372,7 @@ class SourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to run
             access_token: Optional access token to use instead of stored credentials
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -392,6 +397,7 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.run_source_connection(
@@ -412,7 +418,7 @@ class SourceConnectionsClient:
         Args:
             db: The database session
             source_connection_id: The ID of the source connection
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of sync jobs
@@ -434,6 +440,7 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.list_source_connection_jobs(
@@ -468,14 +475,14 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List all source connections for the current user.
+        List all source connections for the organization.
 
         Args:
             db: The database session
             collection: The collection to filter by
             skip: The number of connections to skip
             limit: The number of connections to return
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of source connection list items with essential information
@@ -504,6 +511,7 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -547,7 +555,7 @@ class AsyncSourceConnectionsClient:
         Args:
             db: The database session
             source_connection_in: The source connection to create
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -591,6 +599,7 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -638,7 +647,7 @@ class AsyncSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection
             show_auth_fields: Whether to show the auth fields, default is False
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The source connection
@@ -664,6 +673,7 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -701,7 +711,7 @@ class AsyncSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to update
             source_connection_in: The updated source connection data
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The updated source connection
@@ -740,6 +750,7 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -779,7 +790,7 @@ class AsyncSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to delete
             delete_data: Whether to delete the associated data in destinations
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             The deleted source connection
@@ -805,6 +816,7 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -836,7 +848,7 @@ class AsyncSourceConnectionsClient:
             db: The database session
             source_connection_id: The ID of the source connection to run
             access_token: Optional access token to use instead of stored credentials
-            user: The current user
+            auth_context: The current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -863,6 +875,7 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -889,7 +902,7 @@ class AsyncSourceConnectionsClient:
         Args:
             db: The database session
             source_connection_id: The ID of the source connection
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
             A list of sync jobs
@@ -913,6 +926,7 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 

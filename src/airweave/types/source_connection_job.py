@@ -19,8 +19,8 @@ class SourceConnectionJob(UniversalBaseModel):
     source_connection_id: str
     id: str
     organization_id: str
-    created_by_email: str
-    modified_by_email: str
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
     created_at: dt.datetime
     modified_at: dt.datetime
     status: typing.Optional[SyncJobStatus] = None

@@ -23,8 +23,8 @@ class Collection(UniversalBaseModel):
     created_at: dt.datetime
     modified_at: dt.datetime
     organization_id: str
-    created_by_email: str
-    modified_by_email: str
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
     status: typing.Optional[CollectionStatus] = None
 
     if IS_PYDANTIC_V2:

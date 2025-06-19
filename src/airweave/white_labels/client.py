@@ -36,7 +36,7 @@ class WhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -57,6 +57,7 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.white_labels.list_white_labels()
@@ -81,7 +82,7 @@ class WhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current user
             white_label_in: The white label to create
 
         Returns:
@@ -115,6 +116,7 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.white_labels.create_white_label(
@@ -147,7 +149,7 @@ class WhiteLabelsClient:
         -----
             db: The database session
             white_label_id: The ID of the white label to get
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -170,6 +172,7 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.white_labels.get_white_label(
@@ -196,7 +199,7 @@ class WhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             white_label_id: The ID of the white label to update
             white_label_in: The white label to update
 
@@ -231,6 +234,7 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.white_labels.update_white_label(
@@ -257,7 +261,7 @@ class WhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current authentication context
             white_label_id: The ID of the white label to delete
 
         Returns:
@@ -281,6 +285,7 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.white_labels.delete_white_label(
@@ -302,7 +307,7 @@ class WhiteLabelsClient:
             response: The HTTP response
             db: The database session
             white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
         --------
@@ -325,6 +330,7 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
@@ -348,7 +354,7 @@ class WhiteLabelsClient:
         -----
             white_label_id: The ID of the white label to list source connections for
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -371,6 +377,7 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
         client.white_labels.list_white_label_source_connections(
@@ -382,7 +389,7 @@ class WhiteLabelsClient:
         )
         return _response.data
 
-    def exchange_white_label_oauth_2_code(
+    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -401,7 +408,7 @@ class WhiteLabelsClient:
             code: The OAuth2 code
             source_connection_in: Optional source connection configuration
             db: The database session
-            user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -429,14 +436,15 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.exchange_white_label_oauth_2_code(
+        client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id="white_label_id",
             code="code",
         )
         """
-        _response = self._raw_client.exchange_white_label_oauth_2_code(
+        _response = self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
         )
         return _response.data
@@ -466,7 +474,7 @@ class AsyncWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -489,6 +497,7 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -519,7 +528,7 @@ class AsyncWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current user
             white_label_in: The white label to create
 
         Returns:
@@ -555,6 +564,7 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -593,7 +603,7 @@ class AsyncWhiteLabelsClient:
         -----
             db: The database session
             white_label_id: The ID of the white label to get
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -618,6 +628,7 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -650,7 +661,7 @@ class AsyncWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             white_label_id: The ID of the white label to update
             white_label_in: The white label to update
 
@@ -687,6 +698,7 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -719,7 +731,7 @@ class AsyncWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current authentication context
             white_label_id: The ID of the white label to delete
 
         Returns:
@@ -745,6 +757,7 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -772,7 +785,7 @@ class AsyncWhiteLabelsClient:
             response: The HTTP response
             db: The database session
             white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
         --------
@@ -797,6 +810,7 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -824,7 +838,7 @@ class AsyncWhiteLabelsClient:
         -----
             white_label_id: The ID of the white label to list source connections for
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -849,6 +863,7 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
@@ -866,7 +881,7 @@ class AsyncWhiteLabelsClient:
         )
         return _response.data
 
-    async def exchange_white_label_oauth_2_code(
+    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -885,7 +900,7 @@ class AsyncWhiteLabelsClient:
             code: The OAuth2 code
             source_connection_in: Optional source connection configuration
             db: The database session
-            user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -915,12 +930,13 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
-            await client.white_labels.exchange_white_label_oauth_2_code(
+            await client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
                 white_label_id="white_label_id",
                 code="code",
             )
@@ -928,7 +944,9 @@ class AsyncWhiteLabelsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.exchange_white_label_oauth_2_code(
-            white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+        _response = (
+            await self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+                white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+            )
         )
         return _response.data

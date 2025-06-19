@@ -7,18 +7,28 @@ from .http_client import AsyncHttpClient, HttpClient
 
 
 class BaseClientWrapper:
-    def __init__(self, *, api_key: typing.Optional[str] = None, base_url: str, timeout: typing.Optional[float] = None):
+    def __init__(
+        self,
+        *,
+        organization_id: typing.Optional[str] = None,
+        api_key: typing.Optional[str] = None,
+        base_url: str,
+        timeout: typing.Optional[float] = None,
+    ):
+        self._organization_id = organization_id
         self._api_key = api_key
         self._base_url = base_url
         self._timeout = timeout
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "airweave-sdk/v0.2.78",
+            "User-Agent": "airweave-sdk/v0.3.0",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "airweave-sdk",
-            "X-Fern-SDK-Version": "v0.2.78",
+            "X-Fern-SDK-Version": "v0.3.0",
         }
+        if self._organization_id is not None:
+            headers["X-Organization-ID"] = self._organization_id
         if self._api_key is not None:
             headers["x-api-key"] = self._api_key
         return headers
@@ -34,12 +44,13 @@ class SyncClientWrapper(BaseClientWrapper):
     def __init__(
         self,
         *,
+        organization_id: typing.Optional[str] = None,
         api_key: typing.Optional[str] = None,
         base_url: str,
         timeout: typing.Optional[float] = None,
         httpx_client: httpx.Client,
     ):
-        super().__init__(api_key=api_key, base_url=base_url, timeout=timeout)
+        super().__init__(organization_id=organization_id, api_key=api_key, base_url=base_url, timeout=timeout)
         self.httpx_client = HttpClient(
             httpx_client=httpx_client,
             base_headers=self.get_headers,
@@ -52,12 +63,13 @@ class AsyncClientWrapper(BaseClientWrapper):
     def __init__(
         self,
         *,
+        organization_id: typing.Optional[str] = None,
         api_key: typing.Optional[str] = None,
         base_url: str,
         timeout: typing.Optional[float] = None,
         httpx_client: httpx.AsyncClient,
     ):
-        super().__init__(api_key=api_key, base_url=base_url, timeout=timeout)
+        super().__init__(organization_id=organization_id, api_key=api_key, base_url=base_url, timeout=timeout)
         self.httpx_client = AsyncHttpClient(
             httpx_client=httpx_client,
             base_headers=self.get_headers,

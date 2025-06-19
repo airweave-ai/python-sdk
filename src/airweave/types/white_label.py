@@ -22,8 +22,8 @@ class WhiteLabel(UniversalBaseModel):
     organization_id: str
     created_at: dt.datetime
     modified_at: dt.datetime
-    created_by_email: str
-    modified_by_email: str
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

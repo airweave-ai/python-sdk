@@ -34,7 +34,7 @@ class RawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -98,7 +98,7 @@ class RawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current user
             white_label_in: The white label to create
 
         Returns:
@@ -180,7 +180,7 @@ class RawWhiteLabelsClient:
         -----
             db: The database session
             white_label_id: The ID of the white label to get
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -246,7 +246,7 @@ class RawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             white_label_id: The ID of the white label to update
             white_label_in: The white label to update
 
@@ -327,7 +327,7 @@ class RawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current authentication context
             white_label_id: The ID of the white label to delete
 
         Returns:
@@ -389,7 +389,7 @@ class RawWhiteLabelsClient:
             response: The HTTP response
             db: The database session
             white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
         --------
@@ -448,7 +448,7 @@ class RawWhiteLabelsClient:
         -----
             white_label_id: The ID of the white label to list source connections for
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -497,7 +497,7 @@ class RawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def exchange_white_label_oauth_2_code(
+    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -516,7 +516,7 @@ class RawWhiteLabelsClient:
             code: The OAuth2 code
             source_connection_in: Optional source connection configuration
             db: The database session
-            user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -594,7 +594,7 @@ class AsyncRawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -658,7 +658,7 @@ class AsyncRawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current user
             white_label_in: The white label to create
 
         Returns:
@@ -740,7 +740,7 @@ class AsyncRawWhiteLabelsClient:
         -----
             db: The database session
             white_label_id: The ID of the white label to get
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -806,7 +806,7 @@ class AsyncRawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
             white_label_id: The ID of the white label to update
             white_label_in: The white label to update
 
@@ -887,7 +887,7 @@ class AsyncRawWhiteLabelsClient:
         Args:
         -----
             db: The database session
-            current_user: The current user
+            auth_context: The current authentication context
             white_label_id: The ID of the white label to delete
 
         Returns:
@@ -949,7 +949,7 @@ class AsyncRawWhiteLabelsClient:
             response: The HTTP response
             db: The database session
             white_label_id: The ID of the white label to get the auth URL for
-            user: The current user
+            auth_context: The current authentication context
 
         Returns:
         --------
@@ -1008,7 +1008,7 @@ class AsyncRawWhiteLabelsClient:
         -----
             white_label_id: The ID of the white label to list source connections for
             db: The database session
-            current_user: The current user
+            auth_context: The authentication context
 
         Returns:
         --------
@@ -1057,7 +1057,7 @@ class AsyncRawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def exchange_white_label_oauth_2_code(
+    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -1076,7 +1076,7 @@ class AsyncRawWhiteLabelsClient:
             code: The OAuth2 code
             source_connection_in: Optional source connection configuration
             db: The database session
-            user: The current user
+            auth_context: The authentication context
             background_tasks: Background tasks for async operations
 
         Returns:

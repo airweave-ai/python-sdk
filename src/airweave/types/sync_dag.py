@@ -29,8 +29,8 @@ class SyncDag(UniversalBaseModel):
     sync_id: str
     id: str
     organization_id: str
-    created_by_email: str
-    modified_by_email: str
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
     nodes: typing.List[DagNode]
     edges: typing.List[DagEdge]
 

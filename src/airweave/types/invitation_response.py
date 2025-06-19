@@ -6,19 +6,16 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class EntityRelation(UniversalBaseModel):
+class InvitationResponse(UniversalBaseModel):
     """
-    Schema for an entity relation.
+    Schema for invitation responses.
     """
 
-    name: str
-    description: typing.Optional[str] = None
-    from_entity_id: str
-    to_entity_id: str
     id: str
-    organization_id: str
-    created_by_email: str
-    modified_by_email: str
+    email: str
+    role: str
+    status: str
+    invited_at: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -4,28 +4,24 @@ import datetime as dt
 import typing
 
 import pydantic
+import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .chat_message import ChatMessage
+from ..core.serialization import FieldMetadata
 
 
-class Chat(UniversalBaseModel):
+class OrganizationWithRole(UniversalBaseModel):
     """
-    Schema for chat responses.
+    Organization schema with user's role information.
     """
 
-    name: str
-    sync_id: str
-    description: typing.Optional[str] = None
-    model_name: typing.Optional[str] = None
-    model_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
-    search_settings: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     id: str
-    messages: typing.Optional[typing.List[ChatMessage]] = None
+    name: str
+    description: typing.Optional[str] = None
     created_at: dt.datetime
     modified_at: dt.datetime
-    created_by_email: str
-    modified_by_email: str
-    organization_id: str
+    role: str
+    is_primary: bool
+    auth_0_org_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="auth0_org_id")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

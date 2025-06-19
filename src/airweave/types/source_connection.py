@@ -32,8 +32,8 @@ class SourceConnection(UniversalBaseModel):
     modified_at: dt.datetime
     connection_id: typing.Optional[str] = None
     collection: str
-    created_by_email: str
-    modified_by_email: str
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
     auth_fields: typing.Optional[SourceConnectionAuthFields] = None
     status: typing.Optional[SourceConnectionStatus] = None
     latest_sync_job_status: typing.Optional[SyncJobStatus] = None
