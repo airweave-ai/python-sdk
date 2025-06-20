@@ -28,8 +28,8 @@ class SyncJob(UniversalBaseModel):
     access_token: typing.Optional[str] = None
     id: str
     organization_id: str
-    created_by_email: str
-    modified_by_email: str
+    created_by_email: typing.Optional[str] = None
+    modified_by_email: typing.Optional[str] = None
     created_at: typing.Optional[dt.datetime] = None
     modified_at: typing.Optional[dt.datetime] = None
     sync_name: typing.Optional[str] = pydantic.Field(default=None)
