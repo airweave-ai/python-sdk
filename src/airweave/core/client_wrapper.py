@@ -22,10 +22,10 @@ class BaseClientWrapper:
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "airweave-sdk/v0.3.6",
+            "User-Agent": "airweave-sdk/v0.3.7",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "airweave-sdk",
-            "X-Fern-SDK-Version": "v0.3.6",
+            "X-Fern-SDK-Version": "v0.3.7",
         }
         if self._api_key is not None:
             headers["X-API-Key"] = self._api_key
