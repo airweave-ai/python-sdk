@@ -57,8 +57,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.list_white_labels()
         """
@@ -116,8 +116,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.create_white_label(
             name="Company Slack Integration",
@@ -172,8 +172,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.get_white_label(
             white_label_id="white_label_id",
@@ -234,8 +234,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.update_white_label(
             white_label_id="white_label_id",
@@ -285,8 +285,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.delete_white_label(
             white_label_id="white_label_id",
@@ -330,8 +330,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.get_white_label_oauth_2_auth_url(
             white_label_id="white_label_id",
@@ -373,8 +373,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.list_white_label_source_connections(
             white_label_id="white_label_id",
@@ -432,8 +432,8 @@ class WhiteLabelsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id="white_label_id",
@@ -493,8 +493,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -560,8 +560,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -624,8 +624,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -694,8 +694,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -753,8 +753,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -806,8 +806,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -859,8 +859,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -926,8 +926,8 @@ class AsyncWhiteLabelsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 

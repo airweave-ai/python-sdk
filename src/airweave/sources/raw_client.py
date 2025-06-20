@@ -28,7 +28,7 @@ class RawSourcesClient:
         ----
             db (AsyncSession): The database session.
             short_name (str): The short name of the source.
-            user (schemas.User): The current user.
+            auth_context (schemas.AuthContext): The current auth context.
 
         Returns:
         -------
@@ -145,7 +145,7 @@ class AsyncRawSourcesClient:
         ----
             db (AsyncSession): The database session.
             short_name (str): The short name of the source.
-            user (schemas.User): The current user.
+            auth_context (schemas.AuthContext): The current auth context.
 
         Returns:
         -------

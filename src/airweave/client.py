@@ -29,8 +29,8 @@ class AirweaveSDK:
 
 
 
-    organization_id : typing.Optional[str]
     api_key : typing.Optional[str]
+    organization_id : typing.Optional[str]
     timeout : typing.Optional[float]
         The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
 
@@ -45,8 +45,8 @@ class AirweaveSDK:
     from airweave import AirweaveSDK
 
     client = AirweaveSDK(
-        organization_id="YOUR_ORGANIZATION_ID",
         api_key="YOUR_API_KEY",
+        organization_id="YOUR_ORGANIZATION_ID",
     )
     """
 
@@ -55,8 +55,8 @@ class AirweaveSDK:
         *,
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
-        organization_id: typing.Optional[str] = None,
         api_key: typing.Optional[str] = None,
+        organization_id: typing.Optional[str] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
@@ -66,8 +66,8 @@ class AirweaveSDK:
         )
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            organization_id=organization_id,
             api_key=api_key,
+            organization_id=organization_id,
             httpx_client=httpx_client
             if httpx_client is not None
             else httpx.Client(timeout=_defaulted_timeout, follow_redirects=follow_redirects)
@@ -99,8 +99,8 @@ class AsyncAirweaveSDK:
 
 
 
-    organization_id : typing.Optional[str]
     api_key : typing.Optional[str]
+    organization_id : typing.Optional[str]
     timeout : typing.Optional[float]
         The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
 
@@ -115,8 +115,8 @@ class AsyncAirweaveSDK:
     from airweave import AsyncAirweaveSDK
 
     client = AsyncAirweaveSDK(
-        organization_id="YOUR_ORGANIZATION_ID",
         api_key="YOUR_API_KEY",
+        organization_id="YOUR_ORGANIZATION_ID",
     )
     """
 
@@ -125,8 +125,8 @@ class AsyncAirweaveSDK:
         *,
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
-        organization_id: typing.Optional[str] = None,
         api_key: typing.Optional[str] = None,
+        organization_id: typing.Optional[str] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
@@ -136,8 +136,8 @@ class AsyncAirweaveSDK:
         )
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            organization_id=organization_id,
             api_key=api_key,
+            organization_id=organization_id,
             httpx_client=httpx_client
             if httpx_client is not None
             else httpx.AsyncClient(timeout=_defaulted_timeout, follow_redirects=follow_redirects)

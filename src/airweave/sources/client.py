@@ -31,7 +31,7 @@ class SourcesClient:
         ----
             db (AsyncSession): The database session.
             short_name (str): The short name of the source.
-            user (schemas.User): The current user.
+            auth_context (schemas.AuthContext): The current auth context.
 
         Returns:
         -------
@@ -60,8 +60,8 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.sources.read_source(
             short_name="short_name",
@@ -89,8 +89,8 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.sources.read_sources()
         """
@@ -121,7 +121,7 @@ class AsyncSourcesClient:
         ----
             db (AsyncSession): The database session.
             short_name (str): The short name of the source.
-            user (schemas.User): The current user.
+            auth_context (schemas.AuthContext): The current auth context.
 
         Returns:
         -------
@@ -152,8 +152,8 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -189,8 +189,8 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 

@@ -58,8 +58,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.list_collections()
         """
@@ -97,8 +97,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.create_collection(
             name="Finance Data",
@@ -133,8 +133,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.get_collection(
             readable_id="readable_id",
@@ -181,8 +181,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.delete_collection(
             readable_id="readable_id",
@@ -237,8 +237,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.search_collection(
             readable_id="readable_id",
@@ -282,8 +282,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.refresh_all_source_connections(
             readable_id="readable_id",
@@ -339,8 +339,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -386,8 +386,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -430,8 +430,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -486,8 +486,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -550,8 +550,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -603,8 +603,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            organization_id="YOUR_ORGANIZATION_ID",
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
