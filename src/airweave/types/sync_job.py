@@ -30,8 +30,8 @@ class SyncJob(UniversalBaseModel):
     organization_id: str
     created_by_email: str
     modified_by_email: str
-    created_at: dt.datetime
-    modified_at: dt.datetime
+    created_at: typing.Optional[dt.datetime] = None
+    modified_at: typing.Optional[dt.datetime] = None
     sync_name: typing.Optional[str] = pydantic.Field(default=None)
     """
     Name of the sync, populated from join query
