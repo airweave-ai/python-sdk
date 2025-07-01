@@ -389,7 +389,7 @@ class WhiteLabelsClient:
         )
         return _response.data
 
-    def exchange_white_label_oauth_2_code(
+    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -439,12 +439,12 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             organization_id="YOUR_ORGANIZATION_ID",
         )
-        client.white_labels.exchange_white_label_oauth_2_code(
+        client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id="white_label_id",
             code="code",
         )
         """
-        _response = self._raw_client.exchange_white_label_oauth_2_code(
+        _response = self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
         )
         return _response.data
@@ -881,7 +881,7 @@ class AsyncWhiteLabelsClient:
         )
         return _response.data
 
-    async def exchange_white_label_oauth_2_code(
+    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -936,7 +936,7 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.exchange_white_label_oauth_2_code(
+            await client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
                 white_label_id="white_label_id",
                 code="code",
             )
@@ -944,7 +944,9 @@ class AsyncWhiteLabelsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.exchange_white_label_oauth_2_code(
-            white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+        _response = (
+            await self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+                white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+            )
         )
         return _response.data
