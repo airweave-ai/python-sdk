@@ -84,6 +84,7 @@ class WhiteLabelsClient:
             db: The database session
             auth_context: The current user
             white_label_in: The white label to create
+            logger: The logger with the current authentication context
 
         Returns:
         --------
@@ -150,6 +151,7 @@ class WhiteLabelsClient:
             db: The database session
             white_label_id: The ID of the white label to get
             auth_context: The authentication context
+            logger: The logger with the current authentication context
 
         Returns:
         --------
@@ -405,6 +407,7 @@ class WhiteLabelsClient:
             source_connection_in: Optional source connection configuration
             db: The database session
             auth_context: The authentication context
+            logger: The logger with the current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
@@ -526,6 +529,7 @@ class AsyncWhiteLabelsClient:
             db: The database session
             auth_context: The current user
             white_label_in: The white label to create
+            logger: The logger with the current authentication context
 
         Returns:
         --------
@@ -600,6 +604,7 @@ class AsyncWhiteLabelsClient:
             db: The database session
             white_label_id: The ID of the white label to get
             auth_context: The authentication context
+            logger: The logger with the current authentication context
 
         Returns:
         --------
@@ -897,6 +902,7 @@ class AsyncWhiteLabelsClient:
             source_connection_in: Optional source connection configuration
             db: The database session
             auth_context: The authentication context
+            logger: The logger with the current authentication context
             background_tasks: Background tasks for async operations
 
         Returns:
