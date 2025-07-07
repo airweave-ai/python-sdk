@@ -13,7 +13,7 @@ from ..core.serialization import convert_and_respect_annotation_metadata
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
 from ..types.source_connection import SourceConnection
-from ..types.source_connection_create import SourceConnectionCreate
+from ..types.source_connection_create_with_white_label import SourceConnectionCreateWithWhiteLabel
 from ..types.source_connection_list_item import SourceConnectionListItem
 from ..types.white_label import WhiteLabel
 
@@ -379,7 +379,7 @@ class RawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def get_white_label_oauth_2_auth_url(
+    def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[str]:
         """
@@ -499,12 +499,12 @@ class RawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+    def exchange_white_label_oauth_2_code(
         self,
         white_label_id: str,
         *,
         code: str,
-        source_connection_in: typing.Optional[SourceConnectionCreate] = OMIT,
+        source_connection_in: typing.Optional[SourceConnectionCreateWithWhiteLabel] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnection]:
         """
@@ -532,7 +532,7 @@ class RawWhiteLabelsClient:
 
         code : str
 
-        source_connection_in : typing.Optional[SourceConnectionCreate]
+        source_connection_in : typing.Optional[SourceConnectionCreateWithWhiteLabel]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -548,7 +548,7 @@ class RawWhiteLabelsClient:
             json={
                 "code": code,
                 "source_connection_in": convert_and_respect_annotation_metadata(
-                    object_=source_connection_in, annotation=SourceConnectionCreate, direction="write"
+                    object_=source_connection_in, annotation=SourceConnectionCreateWithWhiteLabel, direction="write"
                 ),
             },
             headers={
@@ -942,7 +942,7 @@ class AsyncRawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_white_label_oauth_2_auth_url(
+    async def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[str]:
         """
@@ -1062,12 +1062,12 @@ class AsyncRawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+    async def exchange_white_label_oauth_2_code(
         self,
         white_label_id: str,
         *,
         code: str,
-        source_connection_in: typing.Optional[SourceConnectionCreate] = OMIT,
+        source_connection_in: typing.Optional[SourceConnectionCreateWithWhiteLabel] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnection]:
         """
@@ -1095,7 +1095,7 @@ class AsyncRawWhiteLabelsClient:
 
         code : str
 
-        source_connection_in : typing.Optional[SourceConnectionCreate]
+        source_connection_in : typing.Optional[SourceConnectionCreateWithWhiteLabel]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1111,7 +1111,7 @@ class AsyncRawWhiteLabelsClient:
             json={
                 "code": code,
                 "source_connection_in": convert_and_respect_annotation_metadata(
-                    object_=source_connection_in, annotation=SourceConnectionCreate, direction="write"
+                    object_=source_connection_in, annotation=SourceConnectionCreateWithWhiteLabel, direction="write"
                 ),
             },
             headers={

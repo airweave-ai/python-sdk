@@ -7,12 +7,13 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .config_values import ConfigValues
 
 
-class SourceConnectionCreate(UniversalBaseModel):
+class SourceConnectionCreateWithCredential(UniversalBaseModel):
     """
-    Schema for creating a source connection.
+    Schema for creating a source connection with an existing credential (internal use).
 
-    Contains all fields that are required to create a source connection.
-    - Sync specific fields are included here.
+    This schema includes credential_id and is used internally by the frontend
+    after credentials have already been created via OAuth or other flows.
+    This should NOT be exposed in public API documentation.
     """
 
     name: str = pydantic.Field()
@@ -23,11 +24,13 @@ class SourceConnectionCreate(UniversalBaseModel):
     description: typing.Optional[str] = None
     config_fields: typing.Optional[ConfigValues] = None
     short_name: str
-    white_label_id: typing.Optional[str] = None
     collection: typing.Optional[str] = None
     cron_schedule: typing.Optional[str] = None
-    auth_fields: typing.Optional[ConfigValues] = None
-    credential_id: typing.Optional[str] = None
+    credential_id: str = pydantic.Field()
+    """
+    ID of the existing integration credential to use
+    """
+
     sync_immediately: typing.Optional[bool] = None
 
     if IS_PYDANTIC_V2:

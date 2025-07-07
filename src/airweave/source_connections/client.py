@@ -90,11 +90,9 @@ class SourceConnectionsClient:
         short_name: str,
         description: typing.Optional[str] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
-        credential_id: typing.Optional[str] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
@@ -128,15 +126,11 @@ class SourceConnectionsClient:
 
         config_fields : typing.Optional[ConfigValues]
 
-        white_label_id : typing.Optional[str]
-
         collection : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
         auth_fields : typing.Optional[ConfigValues]
-
-        credential_id : typing.Optional[str]
 
         sync_immediately : typing.Optional[bool]
 
@@ -171,11 +165,9 @@ class SourceConnectionsClient:
             short_name=short_name,
             description=description,
             config_fields=config_fields,
-            white_label_id=white_label_id,
             collection=collection,
             cron_schedule=cron_schedule,
             auth_fields=auth_fields,
-            credential_id=credential_id,
             sync_immediately=sync_immediately,
             request_options=request_options,
         )
@@ -534,11 +526,9 @@ class AsyncSourceConnectionsClient:
         short_name: str,
         description: typing.Optional[str] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
-        credential_id: typing.Optional[str] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
@@ -572,15 +562,11 @@ class AsyncSourceConnectionsClient:
 
         config_fields : typing.Optional[ConfigValues]
 
-        white_label_id : typing.Optional[str]
-
         collection : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
         auth_fields : typing.Optional[ConfigValues]
-
-        credential_id : typing.Optional[str]
 
         sync_immediately : typing.Optional[bool]
 
@@ -623,11 +609,9 @@ class AsyncSourceConnectionsClient:
             short_name=short_name,
             description=description,
             config_fields=config_fields,
-            white_label_id=white_label_id,
             collection=collection,
             cron_schedule=cron_schedule,
             auth_fields=auth_fields,
-            credential_id=credential_id,
             sync_immediately=sync_immediately,
             request_options=request_options,
         )

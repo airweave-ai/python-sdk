@@ -107,11 +107,9 @@ class RawSourceConnectionsClient:
         short_name: str,
         description: typing.Optional[str] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
-        credential_id: typing.Optional[str] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnection]:
@@ -145,15 +143,11 @@ class RawSourceConnectionsClient:
 
         config_fields : typing.Optional[ConfigValues]
 
-        white_label_id : typing.Optional[str]
-
         collection : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
         auth_fields : typing.Optional[ConfigValues]
-
-        credential_id : typing.Optional[str]
 
         sync_immediately : typing.Optional[bool]
 
@@ -173,11 +167,9 @@ class RawSourceConnectionsClient:
                 "description": description,
                 "config_fields": config_fields,
                 "short_name": short_name,
-                "white_label_id": white_label_id,
                 "collection": collection,
                 "cron_schedule": cron_schedule,
                 "auth_fields": auth_fields,
-                "credential_id": credential_id,
                 "sync_immediately": sync_immediately,
             },
             headers={
@@ -659,11 +651,9 @@ class AsyncRawSourceConnectionsClient:
         short_name: str,
         description: typing.Optional[str] = OMIT,
         config_fields: typing.Optional[ConfigValues] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
-        credential_id: typing.Optional[str] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnection]:
@@ -697,15 +687,11 @@ class AsyncRawSourceConnectionsClient:
 
         config_fields : typing.Optional[ConfigValues]
 
-        white_label_id : typing.Optional[str]
-
         collection : typing.Optional[str]
 
         cron_schedule : typing.Optional[str]
 
         auth_fields : typing.Optional[ConfigValues]
-
-        credential_id : typing.Optional[str]
 
         sync_immediately : typing.Optional[bool]
 
@@ -725,11 +711,9 @@ class AsyncRawSourceConnectionsClient:
                 "description": description,
                 "config_fields": config_fields,
                 "short_name": short_name,
-                "white_label_id": white_label_id,
                 "collection": collection,
                 "cron_schedule": cron_schedule,
                 "auth_fields": auth_fields,
-                "credential_id": credential_id,
                 "sync_immediately": sync_immediately,
             },
             headers={

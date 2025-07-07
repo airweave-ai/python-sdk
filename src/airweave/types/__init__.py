@@ -53,7 +53,8 @@ from .search_status import SearchStatus
 from .source import Source
 from .source_connection import SourceConnection
 from .source_connection_auth_fields import SourceConnectionAuthFields
-from .source_connection_create import SourceConnectionCreate
+from .source_connection_create_with_credential import SourceConnectionCreateWithCredential
+from .source_connection_create_with_white_label import SourceConnectionCreateWithWhiteLabel
 from .source_connection_job import SourceConnectionJob
 from .source_connection_list_item import SourceConnectionListItem
 from .source_connection_status import SourceConnectionStatus
@@ -125,7 +126,8 @@ __all__ = [
     "Source",
     "SourceConnection",
     "SourceConnectionAuthFields",
-    "SourceConnectionCreate",
+    "SourceConnectionCreateWithCredential",
+    "SourceConnectionCreateWithWhiteLabel",
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
