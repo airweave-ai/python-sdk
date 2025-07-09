@@ -10,13 +10,28 @@ from .search_status import SearchStatus
 
 class SearchResponse(UniversalBaseModel):
     """
-    Schema for search response.
+    Comprehensive search response containing results and metadata.
     """
 
-    results: typing.List[typing.Dict[str, typing.Optional[typing.Any]]]
-    response_type: ResponseType
-    completion: typing.Optional[str] = None
-    status: SearchStatus
+    results: typing.List[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field()
+    """
+    Array of search result objects containing the found documents, records, or data entities.
+    """
+
+    response_type: ResponseType = pydantic.Field()
+    """
+    Indicates whether results are raw search matches or AI-generated completions based on the found content.
+    """
+
+    completion: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    AI-generated natural language answer when response_type is 'completion'. This provides natural language answers to your query based on the content found across your connected data sources.
+    """
+
+    status: SearchStatus = pydantic.Field()
+    """
+    Status of the search operation indicating the quality and availability of results:<br/>• **success**: Search found relevant results matching your query<br/>• **no_relevant_results**: Search completed but found no sufficiently relevant matches<br/>• **no_results**: Search found no results at all, possibly indicating empty collections or very specific queries
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

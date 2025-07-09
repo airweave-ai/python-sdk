@@ -9,28 +9,57 @@ from .config_values import ConfigValues
 
 class SourceConnectionCreateWithWhiteLabel(UniversalBaseModel):
     """
-    Schema for creating a source connection through the white label endpoint.
-
-    This schema includes white_label_id and is used specifically for
-    white label source connection creation.
+    Schema for creating a source connection through white label OAuth integrations.
     """
 
     name: str = pydantic.Field()
     """
-    Name of the source connection
+    Human-readable name for the source connection. This helps you identify the connection in the UI and should clearly describe what data it connects to.
     """
 
-    description: typing.Optional[str] = None
-    config_fields: typing.Optional[ConfigValues] = None
-    short_name: str
-    collection: typing.Optional[str] = None
-    cron_schedule: typing.Optional[str] = None
-    auth_fields: typing.Optional[ConfigValues] = None
-    credential_id: typing.Optional[str] = None
-    sync_immediately: typing.Optional[bool] = None
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Optional detailed description of what this source connection provides. Use this to document the purpose, data types, or any special considerations for this connection.
+    """
+
+    config_fields: typing.Optional[ConfigValues] = pydantic.Field(default=None)
+    """
+    Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
+    """
+
+    short_name: str = pydantic.Field()
+    """
+    Technical identifier of the source type that determines which connector to use for data synchronization.
+    """
+
+    collection: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Readable ID of the collection where synced data will be stored. If not provided, a new collection will be automatically created.
+    """
+
+    cron_schedule: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Cron expression for automatic data synchronization schedule. Uses standard cron format: minute hour day month weekday.
+    """
+
+    auth_fields: typing.Optional[ConfigValues] = pydantic.Field(default=None)
+    """
+    Authentication credentials for the data source. For white label OAuth flows, these are typically obtained automatically during the OAuth consent process.
+    """
+
+    credential_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    ID of an existing integration credential to use instead of creating a new one. Useful when credentials have already been established through OAuth flows.
+    """
+
+    sync_immediately: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether to start an initial data synchronization immediately after creating the connection.
+    """
+
     white_label_id: typing.Optional[str] = pydantic.Field(default=None)
     """
-    ID of the white label integration (set automatically by white label endpoint)
+    ID of the white label integration configuration. This is automatically set by the white label OAuth endpoint and links the connection to your custom OAuth application.
     """
 
     if IS_PYDANTIC_V2:

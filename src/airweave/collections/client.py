@@ -37,13 +37,15 @@ class CollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[Collection]:
         """
-        List all collections for the current user's organization.
+        List all collections that belong to your organization.
 
         Parameters
         ----------
         skip : typing.Optional[int]
+            Number of collections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of collections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -76,13 +78,17 @@ class CollectionsClient:
         """
         Create a new collection.
 
+        <br/><br/>
+        The newly created collection is initially empty and does not contain any data
+        until you explicitly add source connections to it.
+
         Parameters
         ----------
         name : str
-            Display name for the collection
+            Human-readable display name for the collection. This appears in the UI and should clearly describe the data contained within (e.g., 'Finance Data').
 
         readable_id : typing.Optional[str]
-            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
+            URL-safe unique identifier used in API endpoints. Must contain only lowercase letters, numbers, and hyphens. If not provided, it will be automatically generated from the collection name with a random suffix for uniqueness (e.g., 'finance-data-ab123').
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -102,7 +108,7 @@ class CollectionsClient:
         )
         client.collections.create_collection(
             name="Finance Data",
-            readable_id="finance-data",
+            readable_id="finance-data-reports",
         )
         """
         _response = self._raw_client.create_collection(
@@ -114,11 +120,12 @@ class CollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Collection:
         """
-        Get a specific collection by its readable ID.
+        Retrieve a specific collection by its readable ID.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection (e.g., 'finance-data-ab123')
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -143,6 +150,53 @@ class CollectionsClient:
         _response = self._raw_client.get_collection(readable_id, request_options=request_options)
         return _response.data
 
+    def update_collection(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Collection:
+        """
+        Update a collection's properties.
+
+        <br/><br/>
+        Modifies the display name of an existing collection.
+        Note that the readable ID cannot be changed after creation to maintain stable
+        API endpoints and preserve any existing integrations or bookmarks.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Collection
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+        client.collections.update_collection(
+            readable_id="readable_id",
+            name="Updated Finance Data",
+        )
+        """
+        _response = self._raw_client.update_collection(readable_id, name=name, request_options=request_options)
+        return _response.data
+
     def delete_collection(
         self,
         readable_id: str,
@@ -151,22 +205,21 @@ class CollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Collection:
         """
-        Delete a collection by its readable ID.
+        Delete a collection and optionally its associated data.
 
-        Args:
-            readable_id: The readable ID of the collection to delete
-            delete_data: Whether to delete the data in destinations
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            The deleted collection
+        <br/><br/>
+        Permanently removes a collection from your organization. By default, this only
+        deletes the collection metadata while preserving the actual data in the
+        destination systems.<br/><br/>All source connections within this collection
+        will also be deleted as part of the cleanup process.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to delete
 
         delete_data : typing.Optional[bool]
+            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -202,27 +255,18 @@ class CollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SearchResponse:
         """
-        Search within a collection identified by readable ID.
-
-        Args:
-            readable_id: The readable ID of the collection to search
-            query: The search query
-            response_type: Type of response (raw results or AI completion)
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            dict: Search results or AI completion response
+        Search across all data sources within the specified collection.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to search
 
         query : str
-            Search query
+            The search query text to find relevant documents and data
 
         response_type : typing.Optional[ResponseType]
-            Type of response: raw search results or AI completion
+            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -242,7 +286,7 @@ class CollectionsClient:
         )
         client.collections.search_collection(
             readable_id="readable_id",
-            query="query",
+            query="customer payment issues",
         )
         """
         _response = self._raw_client.search_collection(
@@ -254,20 +298,17 @@ class CollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionJob]:
         """
-        Start sync jobs for all source connections in the collection.
+        Trigger data synchronization for all source connections in the collection.
 
-        Args:
-            readable_id: The readable ID of the collection
-            db: The database session
-            auth_context: The authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            A list of created sync jobs
+        <br/><br/>The sync jobs run asynchronously in the background, so this endpoint
+        returns immediately with job details that you can use to track progress. You can
+        monitor the status of individual data synchronization using the source connection
+        endpoints.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to refresh
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -316,13 +357,15 @@ class AsyncCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[Collection]:
         """
-        List all collections for the current user's organization.
+        List all collections that belong to your organization.
 
         Parameters
         ----------
         skip : typing.Optional[int]
+            Number of collections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of collections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -363,13 +406,17 @@ class AsyncCollectionsClient:
         """
         Create a new collection.
 
+        <br/><br/>
+        The newly created collection is initially empty and does not contain any data
+        until you explicitly add source connections to it.
+
         Parameters
         ----------
         name : str
-            Display name for the collection
+            Human-readable display name for the collection. This appears in the UI and should clearly describe the data contained within (e.g., 'Finance Data').
 
         readable_id : typing.Optional[str]
-            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
+            URL-safe unique identifier used in API endpoints. Must contain only lowercase letters, numbers, and hyphens. If not provided, it will be automatically generated from the collection name with a random suffix for uniqueness (e.g., 'finance-data-ab123').
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -394,7 +441,7 @@ class AsyncCollectionsClient:
         async def main() -> None:
             await client.collections.create_collection(
                 name="Finance Data",
-                readable_id="finance-data",
+                readable_id="finance-data-reports",
             )
 
 
@@ -409,11 +456,12 @@ class AsyncCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Collection:
         """
-        Get a specific collection by its readable ID.
+        Retrieve a specific collection by its readable ID.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection (e.g., 'finance-data-ab123')
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -446,6 +494,61 @@ class AsyncCollectionsClient:
         _response = await self._raw_client.get_collection(readable_id, request_options=request_options)
         return _response.data
 
+    async def update_collection(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Collection:
+        """
+        Update a collection's properties.
+
+        <br/><br/>
+        Modifies the display name of an existing collection.
+        Note that the readable ID cannot be changed after creation to maintain stable
+        API endpoints and preserve any existing integrations or bookmarks.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Collection
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+
+
+        async def main() -> None:
+            await client.collections.update_collection(
+                readable_id="readable_id",
+                name="Updated Finance Data",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.update_collection(readable_id, name=name, request_options=request_options)
+        return _response.data
+
     async def delete_collection(
         self,
         readable_id: str,
@@ -454,22 +557,21 @@ class AsyncCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Collection:
         """
-        Delete a collection by its readable ID.
+        Delete a collection and optionally its associated data.
 
-        Args:
-            readable_id: The readable ID of the collection to delete
-            delete_data: Whether to delete the data in destinations
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            The deleted collection
+        <br/><br/>
+        Permanently removes a collection from your organization. By default, this only
+        deletes the collection metadata while preserving the actual data in the
+        destination systems.<br/><br/>All source connections within this collection
+        will also be deleted as part of the cleanup process.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to delete
 
         delete_data : typing.Optional[bool]
+            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -513,27 +615,18 @@ class AsyncCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SearchResponse:
         """
-        Search within a collection identified by readable ID.
-
-        Args:
-            readable_id: The readable ID of the collection to search
-            query: The search query
-            response_type: Type of response (raw results or AI completion)
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            dict: Search results or AI completion response
+        Search across all data sources within the specified collection.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to search
 
         query : str
-            Search query
+            The search query text to find relevant documents and data
 
         response_type : typing.Optional[ResponseType]
-            Type of response: raw search results or AI completion
+            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -558,7 +651,7 @@ class AsyncCollectionsClient:
         async def main() -> None:
             await client.collections.search_collection(
                 readable_id="readable_id",
-                query="query",
+                query="customer payment issues",
             )
 
 
@@ -573,20 +666,17 @@ class AsyncCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionJob]:
         """
-        Start sync jobs for all source connections in the collection.
+        Trigger data synchronization for all source connections in the collection.
 
-        Args:
-            readable_id: The readable ID of the collection
-            db: The database session
-            auth_context: The authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            A list of created sync jobs
+        <br/><br/>The sync jobs run asynchronously in the background, so this endpoint
+        returns immediately with job details that you can use to track progress. You can
+        monitor the status of individual data synchronization using the source connection
+        endpoints.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to refresh
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

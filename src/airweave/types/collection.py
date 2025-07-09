@@ -10,22 +10,56 @@ from .collection_status import CollectionStatus
 
 class Collection(UniversalBaseModel):
     """
-    Schema for complete collection representation.
+    Complete collection representation returned by the API.
+
+    This schema includes all collection metadata plus computed status information
+    based on the health and state of associated source connections.
     """
 
     name: str = pydantic.Field()
     """
-    Display name for the collection
+    Human-readable display name for the collection.
     """
 
-    readable_id: str
-    id: str
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    organization_id: str
-    created_by_email: typing.Optional[str] = None
-    modified_by_email: typing.Optional[str] = None
-    status: typing.Optional[CollectionStatus] = None
+    readable_id: str = pydantic.Field()
+    """
+    URL-safe unique identifier used in API endpoints. This becomes non-optional once the collection is created.
+    """
+
+    id: str = pydantic.Field()
+    """
+    Unique system identifier for the collection. This UUID is generated automatically and used for internal references.
+    """
+
+    created_at: dt.datetime = pydantic.Field()
+    """
+    Timestamp when the collection was created (ISO 8601 format).
+    """
+
+    modified_at: dt.datetime = pydantic.Field()
+    """
+    Timestamp when the collection was last modified (ISO 8601 format).
+    """
+
+    organization_id: str = pydantic.Field()
+    """
+    Identifier of the organization that owns this collection. Collections are isolated per organization.
+    """
+
+    created_by_email: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Email address of the user who created this collection.
+    """
+
+    modified_by_email: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Email address of the user who last modified this collection.
+    """
+
+    status: typing.Optional[CollectionStatus] = pydantic.Field(default=None)
+    """
+    Current operational status of the collection:<br/>• **NEEDS_SOURCE**: Collection exists but has no source connections configured yet<br/>• **ACTIVE**: All source connections are healthy and data is being synced successfully<br/>• **PARTIAL_ERROR**: Some source connections are failing but others are working<br/>• **ERROR**: All source connections are failing or in error state
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

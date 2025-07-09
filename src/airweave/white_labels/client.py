@@ -31,16 +31,14 @@ class WhiteLabelsClient:
 
     def list_white_labels(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[WhiteLabel]:
         """
-        List all white labels for the current user's organization.
+        List all white label integrations for your organization.
 
-        Args:
-        -----
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        <br/><br/>
+        Returns all custom OAuth integrations configured with your own branding and
+        credentials. These integrations allow you to present OAuth consent screens with
+        your company name instead of Airweave.<br/><br/>**White label integrations only
+        work with OAuth2.0 sources** like Slack, Google Drive, or HubSpot that require
+        OAuth consent flows.
 
         Parameters
         ----------
@@ -69,7 +67,7 @@ class WhiteLabelsClient:
         self,
         *,
         name: str,
-        source_short_name: str,
+        short_name: str,
         redirect_url: str,
         client_id: str,
         client_secret: str,
@@ -77,32 +75,35 @@ class WhiteLabelsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> WhiteLabel:
         """
-        Create new white label integration.
+        Create a new white label integration.
 
-        Args:
-        -----
-            db: The database session
-            auth_context: The current user
-            white_label_in: The white label to create
-            logger: The logger with the current authentication context
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        <br/><br/>
+        **This only works for sources that use OAuth2.0 authentication** like Slack,
+        Google Drive, GitHub, or HubSpot.<br/><br/>Sets up a custom OAuth integration
+        using your own OAuth application credentials and branding. Once created,
+        customers will see your company name during OAuth consent flows instead of
+        Airweave. This requires you to have already configured your own OAuth
+        application with the target service provider.
 
         Parameters
         ----------
         name : str
+            Human-readable name for the white label integration. This helps you identify the integration in the UI and should clearly describe its purpose (e.g., 'Customer Portal Slack Integration', 'Enterprise Google Drive Access').
 
-        source_short_name : str
+        short_name : str
+            Technical identifier of the source type that this integration supports (e.g., 'slack', 'google_drive', 'github'). This determines which service provider the OAuth integration connects to.
 
         redirect_url : str
+            OAuth2 callback URL where users are redirected after completing authentication. This must be a valid HTTPS URL that your application can handle to receive the authorization code.
 
         client_id : str
+            OAuth2 client identifier provided by the service provider. This identifies your application during the OAuth consent flow and must match the client ID configured in the service provider's developer console.
 
         client_secret : str
+            OAuth2 client secret from your registered application. This is used to securely authenticate your application when exchanging authorization codes for access tokens. Keep this value secure and never expose it in client-side code.
 
         allowed_origins : str
+            Comma-separated list of allowed domains for OAuth flows and CORS. This prevents unauthorized websites from using your OAuth credentials and should include all domains where your application is hosted.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -121,8 +122,8 @@ class WhiteLabelsClient:
             organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.create_white_label(
-            name="Company Slack Integration",
-            source_short_name="slack",
+            name="Customer Portal Slack Integration",
+            short_name="slack",
             redirect_url="https://yourapp.com/auth/slack/callback",
             client_id="1234567890.1234567890123",
             client_secret="abcdefghijklmnopqrstuvwxyz123456",
@@ -131,7 +132,7 @@ class WhiteLabelsClient:
         """
         _response = self._raw_client.create_white_label(
             name=name,
-            source_short_name=source_short_name,
+            short_name=short_name,
             redirect_url=redirect_url,
             client_id=client_id,
             client_secret=client_secret,
@@ -144,22 +145,12 @@ class WhiteLabelsClient:
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> WhiteLabel:
         """
-        Get a specific white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            auth_context: The authentication context
-            logger: The logger with the current authentication context
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+        Retrieve a specific white label integration by its ID.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -196,32 +187,27 @@ class WhiteLabelsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> WhiteLabel:
         """
-        Update a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            auth_context: The authentication context
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+        Update a white label integration's configuration.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration to update
 
         name : typing.Optional[str]
+            Updated name for the white label integration.
 
         redirect_url : typing.Optional[str]
+            Updated OAuth callback URL. Must be a valid HTTPS URL that matches your OAuth application configuration.
 
         client_id : typing.Optional[str]
+            Updated OAuth2 client ID. Must match the client ID in your service provider's developer console.
 
         client_secret : typing.Optional[str]
+            Updated OAuth2 client secret. This will replace the existing secret and affect all future OAuth flows.
 
         allowed_origins : typing.Optional[str]
+            Updated comma-separated list of allowed domains for OAuth flows.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -241,6 +227,9 @@ class WhiteLabelsClient:
         )
         client.white_labels.update_white_label(
             white_label_id="white_label_id",
+            name="Updated Customer Portal Integration",
+            redirect_url="https://v2.yourapp.com/auth/slack/callback",
+            allowed_origins="https://v2.yourapp.com,https://api.yourapp.com",
         )
         """
         _response = self._raw_client.update_white_label(
@@ -260,19 +249,15 @@ class WhiteLabelsClient:
         """
         Delete a white label integration.
 
-        Args:
-        -----
-            db: The database session
-            auth_context: The current authentication context
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+        <br/><br/>
+        Permanently removes the white label configuration and OAuth credentials.
+        Existing source connections created through this integration will continue to work,
+        but no new OAuth flows can be initiated until a new white label integration is created.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration to delete
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -301,23 +286,17 @@ class WhiteLabelsClient:
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
-        Generate the OAuth2 authorization URL by delegating to oauth2_service.
+        Generate a branded OAuth2 authorization URL for customer authentication.
 
-        Args:
-        -----
-            request: The HTTP request
-            response: The HTTP response
-            db: The database session
-            white_label_id: The ID of the white label to get the auth URL for
-            auth_context: The current authentication context
-
-        Returns:
-        --------
-            str: The OAuth2 authorization URL
+        <br/><br/>
+        Creates the OAuth consent URL that customers should be redirected to for
+        authentication. The OAuth consent screen will display your company name and
+        branding instead of Airweave.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -325,7 +304,7 @@ class WhiteLabelsClient:
         Returns
         -------
         str
-            Successful Response
+            OAuth2 authorization URL with your branding
 
         Examples
         --------
@@ -350,21 +329,15 @@ class WhiteLabelsClient:
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List all source connections for a specific white label.
+        List all source connections created through a specific white label integration.
 
-        Args:
-        -----
-            white_label_id: The ID of the white label to list source connections for
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-        --------
-            list[schemas.SourceConnectionListItem]: A list of source connections
+        <br/><br/>
+        Returns source connections that were established using this white label's OAuth flow.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -391,7 +364,7 @@ class WhiteLabelsClient:
         )
         return _response.data
 
-    def exchange_white_label_oauth_2_code(
+    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -400,31 +373,25 @@ class WhiteLabelsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Exchange OAuth2 code for tokens and create connection with source connection.
+        Complete the OAuth flow and create a source connection.
 
-        Args:
-        -----
-            request: The HTTP request
-            response: The HTTP response
-            white_label_id: The ID of the white label to exchange the code for
-            code: The OAuth2 code
-            source_connection_in: Optional source connection configuration
-            db: The database session
-            auth_context: The authentication context
-            logger: The logger with the current authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-        --------
-            source_connection (schemas.SourceConnection): The created source connection
+        <br/><br/>
+        **This is the core endpoint that converts OAuth authorization codes into working
+        source connections.**<br/><br/>The OAuth credentials are obtained automatically
+        from the authorization code - you do not need to provide auth_fields. The white
+        label integration is automatically linked to the created source connection for
+        tracking and branding purposes.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         code : str
+            The OAuth2 authorization code received from the OAuth callback after customer authentication
 
         source_connection_in : typing.Optional[SourceConnectionCreateWithWhiteLabel]
+            Optional configuration for the source connection. If not provided, a source connection will be created automatically with default settings. The white label integration is automatically linked to the source connection.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -442,12 +409,12 @@ class WhiteLabelsClient:
             api_key="YOUR_API_KEY",
             organization_id="YOUR_ORGANIZATION_ID",
         )
-        client.white_labels.exchange_white_label_oauth_2_code(
+        client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id="white_label_id",
-            code="code",
+            code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
         )
         """
-        _response = self._raw_client.exchange_white_label_oauth_2_code(
+        _response = self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
         )
         return _response.data
@@ -472,16 +439,14 @@ class AsyncWhiteLabelsClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[WhiteLabel]:
         """
-        List all white labels for the current user's organization.
+        List all white label integrations for your organization.
 
-        Args:
-        -----
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-        --------
-            list[schemas.WhiteLabel]: A list of white labels
+        <br/><br/>
+        Returns all custom OAuth integrations configured with your own branding and
+        credentials. These integrations allow you to present OAuth consent screens with
+        your company name instead of Airweave.<br/><br/>**White label integrations only
+        work with OAuth2.0 sources** like Slack, Google Drive, or HubSpot that require
+        OAuth consent flows.
 
         Parameters
         ----------
@@ -518,7 +483,7 @@ class AsyncWhiteLabelsClient:
         self,
         *,
         name: str,
-        source_short_name: str,
+        short_name: str,
         redirect_url: str,
         client_id: str,
         client_secret: str,
@@ -526,32 +491,35 @@ class AsyncWhiteLabelsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> WhiteLabel:
         """
-        Create new white label integration.
+        Create a new white label integration.
 
-        Args:
-        -----
-            db: The database session
-            auth_context: The current user
-            white_label_in: The white label to create
-            logger: The logger with the current authentication context
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The created white label
+        <br/><br/>
+        **This only works for sources that use OAuth2.0 authentication** like Slack,
+        Google Drive, GitHub, or HubSpot.<br/><br/>Sets up a custom OAuth integration
+        using your own OAuth application credentials and branding. Once created,
+        customers will see your company name during OAuth consent flows instead of
+        Airweave. This requires you to have already configured your own OAuth
+        application with the target service provider.
 
         Parameters
         ----------
         name : str
+            Human-readable name for the white label integration. This helps you identify the integration in the UI and should clearly describe its purpose (e.g., 'Customer Portal Slack Integration', 'Enterprise Google Drive Access').
 
-        source_short_name : str
+        short_name : str
+            Technical identifier of the source type that this integration supports (e.g., 'slack', 'google_drive', 'github'). This determines which service provider the OAuth integration connects to.
 
         redirect_url : str
+            OAuth2 callback URL where users are redirected after completing authentication. This must be a valid HTTPS URL that your application can handle to receive the authorization code.
 
         client_id : str
+            OAuth2 client identifier provided by the service provider. This identifies your application during the OAuth consent flow and must match the client ID configured in the service provider's developer console.
 
         client_secret : str
+            OAuth2 client secret from your registered application. This is used to securely authenticate your application when exchanging authorization codes for access tokens. Keep this value secure and never expose it in client-side code.
 
         allowed_origins : str
+            Comma-separated list of allowed domains for OAuth flows and CORS. This prevents unauthorized websites from using your OAuth credentials and should include all domains where your application is hosted.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -575,8 +543,8 @@ class AsyncWhiteLabelsClient:
 
         async def main() -> None:
             await client.white_labels.create_white_label(
-                name="Company Slack Integration",
-                source_short_name="slack",
+                name="Customer Portal Slack Integration",
+                short_name="slack",
                 redirect_url="https://yourapp.com/auth/slack/callback",
                 client_id="1234567890.1234567890123",
                 client_secret="abcdefghijklmnopqrstuvwxyz123456",
@@ -588,7 +556,7 @@ class AsyncWhiteLabelsClient:
         """
         _response = await self._raw_client.create_white_label(
             name=name,
-            source_short_name=source_short_name,
+            short_name=short_name,
             redirect_url=redirect_url,
             client_id=client_id,
             client_secret=client_secret,
@@ -601,22 +569,12 @@ class AsyncWhiteLabelsClient:
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> WhiteLabel:
         """
-        Get a specific white label integration.
-
-        Args:
-        -----
-            db: The database session
-            white_label_id: The ID of the white label to get
-            auth_context: The authentication context
-            logger: The logger with the current authentication context
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The white label
+        Retrieve a specific white label integration by its ID.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -661,32 +619,27 @@ class AsyncWhiteLabelsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> WhiteLabel:
         """
-        Update a white label integration.
-
-        Args:
-        -----
-            db: The database session
-            auth_context: The authentication context
-            white_label_id: The ID of the white label to update
-            white_label_in: The white label to update
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The updated white label
+        Update a white label integration's configuration.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration to update
 
         name : typing.Optional[str]
+            Updated name for the white label integration.
 
         redirect_url : typing.Optional[str]
+            Updated OAuth callback URL. Must be a valid HTTPS URL that matches your OAuth application configuration.
 
         client_id : typing.Optional[str]
+            Updated OAuth2 client ID. Must match the client ID in your service provider's developer console.
 
         client_secret : typing.Optional[str]
+            Updated OAuth2 client secret. This will replace the existing secret and affect all future OAuth flows.
 
         allowed_origins : typing.Optional[str]
+            Updated comma-separated list of allowed domains for OAuth flows.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -711,6 +664,9 @@ class AsyncWhiteLabelsClient:
         async def main() -> None:
             await client.white_labels.update_white_label(
                 white_label_id="white_label_id",
+                name="Updated Customer Portal Integration",
+                redirect_url="https://v2.yourapp.com/auth/slack/callback",
+                allowed_origins="https://v2.yourapp.com,https://api.yourapp.com",
             )
 
 
@@ -733,19 +689,15 @@ class AsyncWhiteLabelsClient:
         """
         Delete a white label integration.
 
-        Args:
-        -----
-            db: The database session
-            auth_context: The current authentication context
-            white_label_id: The ID of the white label to delete
-
-        Returns:
-        --------
-            white_label (schemas.WhiteLabel): The deleted white label
+        <br/><br/>
+        Permanently removes the white label configuration and OAuth credentials.
+        Existing source connections created through this integration will continue to work,
+        but no new OAuth flows can be initiated until a new white label integration is created.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration to delete
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -782,23 +734,17 @@ class AsyncWhiteLabelsClient:
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
-        Generate the OAuth2 authorization URL by delegating to oauth2_service.
+        Generate a branded OAuth2 authorization URL for customer authentication.
 
-        Args:
-        -----
-            request: The HTTP request
-            response: The HTTP response
-            db: The database session
-            white_label_id: The ID of the white label to get the auth URL for
-            auth_context: The current authentication context
-
-        Returns:
-        --------
-            str: The OAuth2 authorization URL
+        <br/><br/>
+        Creates the OAuth consent URL that customers should be redirected to for
+        authentication. The OAuth consent screen will display your company name and
+        branding instead of Airweave.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -806,7 +752,7 @@ class AsyncWhiteLabelsClient:
         Returns
         -------
         str
-            Successful Response
+            OAuth2 authorization URL with your branding
 
         Examples
         --------
@@ -837,21 +783,15 @@ class AsyncWhiteLabelsClient:
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List all source connections for a specific white label.
+        List all source connections created through a specific white label integration.
 
-        Args:
-        -----
-            white_label_id: The ID of the white label to list source connections for
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-        --------
-            list[schemas.SourceConnectionListItem]: A list of source connections
+        <br/><br/>
+        Returns source connections that were established using this white label's OAuth flow.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -886,7 +826,7 @@ class AsyncWhiteLabelsClient:
         )
         return _response.data
 
-    async def exchange_white_label_oauth_2_code(
+    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -895,31 +835,25 @@ class AsyncWhiteLabelsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Exchange OAuth2 code for tokens and create connection with source connection.
+        Complete the OAuth flow and create a source connection.
 
-        Args:
-        -----
-            request: The HTTP request
-            response: The HTTP response
-            white_label_id: The ID of the white label to exchange the code for
-            code: The OAuth2 code
-            source_connection_in: Optional source connection configuration
-            db: The database session
-            auth_context: The authentication context
-            logger: The logger with the current authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-        --------
-            source_connection (schemas.SourceConnection): The created source connection
+        <br/><br/>
+        **This is the core endpoint that converts OAuth authorization codes into working
+        source connections.**<br/><br/>The OAuth credentials are obtained automatically
+        from the authorization code - you do not need to provide auth_fields. The white
+        label integration is automatically linked to the created source connection for
+        tracking and branding purposes.
 
         Parameters
         ----------
         white_label_id : str
+            The unique identifier of the white label integration
 
         code : str
+            The OAuth2 authorization code received from the OAuth callback after customer authentication
 
         source_connection_in : typing.Optional[SourceConnectionCreateWithWhiteLabel]
+            Optional configuration for the source connection. If not provided, a source connection will be created automatically with default settings. The white label integration is automatically linked to the source connection.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -942,15 +876,17 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.exchange_white_label_oauth_2_code(
+            await client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
                 white_label_id="white_label_id",
-                code="code",
+                code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.exchange_white_label_oauth_2_code(
-            white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+        _response = (
+            await self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+                white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+            )
         )
         return _response.data

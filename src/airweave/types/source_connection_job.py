@@ -10,30 +10,98 @@ from .sync_job_status import SyncJobStatus
 
 class SourceConnectionJob(UniversalBaseModel):
     """
-    Schema for SourceConnectionJob.
-
-    This is a public schema that is used to return sync jobs for a source connection.
-    Sync / sync jobs are system tables, and are not exposed to the public API.
+    Data synchronization job for a specific source connection.
     """
 
-    source_connection_id: str
-    id: str
-    organization_id: str
-    created_by_email: typing.Optional[str] = None
-    modified_by_email: typing.Optional[str] = None
-    created_at: typing.Optional[dt.datetime] = None
-    modified_at: typing.Optional[dt.datetime] = None
-    status: typing.Optional[SyncJobStatus] = None
-    entities_inserted: typing.Optional[int] = None
-    entities_updated: typing.Optional[int] = None
-    entities_deleted: typing.Optional[int] = None
-    entities_kept: typing.Optional[int] = None
-    entities_skipped: typing.Optional[int] = None
-    entities_encountered: typing.Optional[typing.Dict[str, typing.Optional[int]]] = None
-    started_at: typing.Optional[dt.datetime] = None
-    completed_at: typing.Optional[dt.datetime] = None
-    failed_at: typing.Optional[dt.datetime] = None
-    error: typing.Optional[str] = None
+    source_connection_id: str = pydantic.Field()
+    """
+    Unique identifier of the source connection for which this data refresh is running.
+    """
+
+    id: str = pydantic.Field()
+    """
+    Unique identifier for this specific data refresh operation.
+    """
+
+    organization_id: str = pydantic.Field()
+    """
+    Identifier of the organization that owns this data refresh operation.
+    """
+
+    created_by_email: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Email address of the user who initiated this data refresh (for manually triggered operations).
+    """
+
+    modified_by_email: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Email address of the user who last modified this data refresh operation.
+    """
+
+    created_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Timestamp when this data refresh was created and queued (ISO 8601 format).
+    """
+
+    modified_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Timestamp when this data refresh was last modified (ISO 8601 format).
+    """
+
+    status: typing.Optional[SyncJobStatus] = pydantic.Field(default=None)
+    """
+    Current execution status of the data refresh:<br/>• **created**: Operation has been created but not yet queued<br/>• **pending**: Operation is queued and waiting to start<br/>• **in_progress**: Currently running and processing data<br/>• **completed**: Finished successfully with all data processed<br/>• **failed**: Encountered errors and could not complete<br/>• **cancelled**: Manually cancelled before completion
+    """
+
+    entities_inserted: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of new data entities that were added to the collection during this refresh.
+    """
+
+    entities_updated: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of existing entities that were modified and updated during this refresh.
+    """
+
+    entities_deleted: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of entities that were removed from the collection because they no longer exist in the source.
+    """
+
+    entities_kept: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of entities that were checked but required no changes because they were already up-to-date.
+    """
+
+    entities_skipped: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of entities that were intentionally skipped due to filtering rules or processing decisions.
+    """
+
+    entities_encountered: typing.Optional[typing.Dict[str, typing.Optional[int]]] = pydantic.Field(default=None)
+    """
+    Detailed breakdown of entities processed by type or category.
+    """
+
+    started_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Timestamp when the data refresh began active processing (ISO 8601 format).
+    """
+
+    completed_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Timestamp when the data refresh finished successfully (ISO 8601 format).
+    """
+
+    failed_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Timestamp when the data refresh failed (ISO 8601 format).
+    """
+
+    error: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Detailed error message if the data refresh failed.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

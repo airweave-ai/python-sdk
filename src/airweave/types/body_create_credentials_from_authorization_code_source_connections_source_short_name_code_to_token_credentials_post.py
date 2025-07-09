@@ -9,10 +9,25 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 class BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost(
     UniversalBaseModel
 ):
-    credential_name: typing.Optional[str] = None
-    credential_description: typing.Optional[str] = None
-    client_id: typing.Optional[str] = None
-    client_secret: typing.Optional[str] = None
+    credential_name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Custom name for the stored credential
+    """
+
+    credential_description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Description to help identify this credential
+    """
+
+    client_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    OAuth client ID (required for bring-your-own-credentials)
+    """
+
+    client_secret: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    OAuth client secret (required for bring-your-own-credentials)
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

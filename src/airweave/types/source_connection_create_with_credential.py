@@ -9,29 +9,48 @@ from .config_values import ConfigValues
 
 class SourceConnectionCreateWithCredential(UniversalBaseModel):
     """
-    Schema for creating a source connection with an existing credential (internal use).
-
-    This schema includes credential_id and is used internally by the frontend
-    after credentials have already been created via OAuth or other flows.
-    This should NOT be exposed in public API documentation.
+    Schema for creating a source connection with pre-existing credentials (internal use).
     """
 
     name: str = pydantic.Field()
     """
-    Name of the source connection
+    Human-readable name for the source connection. This helps you identify the connection in the UI and should clearly describe what data it connects to.
     """
 
-    description: typing.Optional[str] = None
-    config_fields: typing.Optional[ConfigValues] = None
-    short_name: str
-    collection: typing.Optional[str] = None
-    cron_schedule: typing.Optional[str] = None
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Optional detailed description of what this source connection provides. Use this to document the purpose, data types, or any special considerations for this connection.
+    """
+
+    config_fields: typing.Optional[ConfigValues] = pydantic.Field(default=None)
+    """
+    Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
+    """
+
+    short_name: str = pydantic.Field()
+    """
+    Technical identifier of the source type that determines which connector to use for data synchronization.
+    """
+
+    collection: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Readable ID of the collection where synced data will be stored.
+    """
+
+    cron_schedule: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Cron expression for automatic data synchronization schedule.
+    """
+
     credential_id: str = pydantic.Field()
     """
-    ID of the existing integration credential to use
+    ID of the existing integration credential to use for authentication. This credential must already exist and be associated with the same source type.
     """
 
-    sync_immediately: typing.Optional[bool] = None
+    sync_immediately: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether to start an initial data synchronization immediately after creating the connection.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

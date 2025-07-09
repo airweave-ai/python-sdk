@@ -11,25 +11,78 @@ from .fields import Fields
 
 class Source(UniversalBaseModel):
     """
-    Schema for Source.
+    Complete source representation with authentication and configuration schemas.
     """
 
-    name: str
-    description: typing.Optional[str] = None
-    auth_type: typing.Optional[AuthType] = None
-    auth_config_class: str
-    config_class: str
-    short_name: str
-    class_name: str
-    output_entity_definition_ids: typing.Optional[typing.List[str]] = None
-    organization_id: typing.Optional[str] = None
-    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
-    labels: typing.Optional[typing.List[str]] = None
-    id: str
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    auth_fields: Fields
-    config_fields: typing.Optional[Fields] = None
+    name: str = pydantic.Field()
+    """
+    Human-readable name of the data source connector (e.g., 'GitHub', 'Stripe', 'PostgreSQL').
+    """
+
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Detailed description explaining what data this source can extract and its typical use cases.
+    """
+
+    auth_type: typing.Optional[AuthType] = pydantic.Field(default=None)
+    """
+    Type of authentication mechanism required by this source (e.g., 'oauth2').
+    """
+
+    auth_config_class: str = pydantic.Field()
+    """
+    Python class name that defines the authentication configuration fields required for this source.
+    """
+
+    config_class: str = pydantic.Field()
+    """
+    Python class name that defines the source-specific configuration options and parameters.
+    """
+
+    short_name: str = pydantic.Field()
+    """
+    Technical identifier used internally to reference this source type. Must be unique across all sources.
+    """
+
+    class_name: str = pydantic.Field()
+    """
+    Python class name of the source implementation that handles data extraction logic.
+    """
+
+    output_entity_definition_ids: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    List of entity definition IDs that this source can produce. Defines the data schema and structure that this connector outputs.
+    """
+
+    organization_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Organization identifier for custom source connectors. System sources have this set to null.
+    """
+
+    labels: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Categorization tags to help users discover and filter sources by domain or use case.
+    """
+
+    id: str = pydantic.Field()
+    """
+    Unique system identifier for this source type. Generated automatically when the source is registered.
+    """
+
+    created_at: dt.datetime = pydantic.Field()
+    """
+    Timestamp when this source type was registered in the system (ISO 8601 format).
+    """
+
+    modified_at: dt.datetime = pydantic.Field()
+    """
+    Timestamp when this source type was last updated (ISO 8601 format).
+    """
+
+    auth_fields: Fields = pydantic.Field()
+    """
+    Schema definition for authentication fields required to connect to this source. Describes field types, validation rules, and user interface hints.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

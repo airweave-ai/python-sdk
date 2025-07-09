@@ -13,7 +13,6 @@ from .body_create_credentials_from_authorization_code_source_connections_source_
 )
 from .collection import Collection
 from .collection_status import CollectionStatus
-from .collection_update import CollectionUpdate
 from .config_field import ConfigField
 from .config_values import ConfigValues
 from .connection import Connection
@@ -86,7 +85,6 @@ __all__ = [
     "BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost",
     "Collection",
     "CollectionStatus",
-    "CollectionUpdate",
     "ConfigField",
     "ConfigValues",
     "Connection",

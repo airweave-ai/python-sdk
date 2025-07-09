@@ -10,22 +10,58 @@ from .source_connection_status import SourceConnectionStatus
 
 class SourceConnectionListItem(UniversalBaseModel):
     """
-    Simplified schema for source connection list item.
-
-    This is a compact representation containing only core attributes
-    directly from the source connection model.
+    Simplified source connection representation for list operations.
     """
 
-    id: str
-    name: str
-    description: typing.Optional[str] = None
-    short_name: str
-    status: SourceConnectionStatus
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    sync_id: str
-    collection: str
-    white_label_id: typing.Optional[str] = None
+    id: str = pydantic.Field()
+    """
+    Unique identifier for the source connection.
+    """
+
+    name: str = pydantic.Field()
+    """
+    Human-readable name of the source connection.
+    """
+
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Brief description of what data this connection provides.
+    """
+
+    short_name: str = pydantic.Field()
+    """
+    Technical identifier of the source type (e.g., 'stripe', 'postgresql').
+    """
+
+    status: SourceConnectionStatus = pydantic.Field()
+    """
+    Current operational status: active, in_progress, or failing.
+    """
+
+    created_at: dt.datetime = pydantic.Field()
+    """
+    When the source connection was created (ISO 8601 format).
+    """
+
+    modified_at: dt.datetime = pydantic.Field()
+    """
+    When the source connection was last modified (ISO 8601 format).
+    """
+
+    sync_id: str = pydantic.Field()
+    """
+    Internal identifier for the sync configuration.
+    """
+
+    collection: str = pydantic.Field()
+    """
+    Readable ID of the collection where this connection syncs data.
+    """
+
+    white_label_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Identifier for custom OAuth integrations, if applicable.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

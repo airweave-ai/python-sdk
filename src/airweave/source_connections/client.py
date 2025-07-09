@@ -39,26 +39,24 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List all source connections for the organization.
+        List source connections across your organization.
 
-        Args:
-            db: The database session
-            collection: The collection to filter by
-            skip: The number of connections to skip
-            limit: The number of connections to return
-            auth_context: The current authentication context
-
-        Returns:
-            A list of source connection list items with essential information
+        <br/><br/>
+        By default, returns ALL source connections from every collection in your
+        organization. Use the 'collection' parameter to filter results to a specific
+        collection. This is useful for getting an overview of all your data sources
+        or managing connections within a particular collection.
 
         Parameters
         ----------
         collection : typing.Optional[str]
-            Filter by collection
+            Filter source connections by collection readable ID
 
         skip : typing.Optional[int]
+            Number of source connections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of source connections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -97,42 +95,47 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Create a new source connection.
+        Create a new source connection to sync data into your collection.
 
-        This endpoint creates:
-        1. An integration credential with the provided auth fields
-        2. A collection if not provided
-        3. The source connection
-        4. A sync configuration and DAG
-        5. A sync job if immediate execution is requested
+        <br/><br/>
 
-        Args:
-            db: The database session
-            source_connection_in: The source connection to create
-            auth_context: The current authentication context
-            background_tasks: Background tasks for async operations
+        **This endpoint only works for sources that do not use OAuth2.0.**
+        Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
+        connected through the UI where you can complete the OAuth consent flow.<br/><br/>
 
-        Returns:
-            The created source connection
+        Credentials for a source have to be provided using the `auth_fields` field.
+        Currently, it is not automatically checked if the provided credentials are valid.
+        If they are not valid, the data synchronization will fail.<br/><br/>
+
+        Check the documentation of a specific source (for example
+        [Github](https://docs.airweave.ai/docs/connectors/github)) to see what kind
+        of authentication is used.
 
         Parameters
         ----------
         name : str
-            Name of the source connection
+            Human-readable name for the source connection. This helps you identify the connection in the UI and should clearly describe what data it connects to.
 
         short_name : str
+            Technical identifier of the source type that determines which connector to use for data synchronization.
 
         description : typing.Optional[str]
+            Optional detailed description of what this source connection provides. Use this to document the purpose, data types, or any special considerations for this connection.
 
         config_fields : typing.Optional[ConfigValues]
+            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
         collection : typing.Optional[str]
+            Readable ID of the collection where synced data will be stored. If not provided, a new collection will be automatically created.
 
         cron_schedule : typing.Optional[str]
+            Cron expression for automatic data synchronization schedule. If not provided, data will only sync when manually triggered. Use standard cron format: minute hour day month weekday.
 
         auth_fields : typing.Optional[ConfigValues]
+            Authentication credentials required to access the data source. The required fields vary by source type. Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
         sync_immediately : typing.Optional[bool]
+            Whether to start an initial data synchronization immediately after creating the connection.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -151,12 +154,16 @@ class SourceConnectionsClient:
             organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.create_source_connection(
-            name="My Stripe Connection",
-            description="Production Stripe account for payment data",
-            short_name="stripe",
-            collection="finance-data",
+            name="GitHub - Airweave Repository",
+            description="Sync code and documentation from our main repository",
+            config_fields={"branch": "main"},
+            short_name="github",
+            collection="engineering-docs",
             cron_schedule="0 */6 * * *",
-            auth_fields={"api_key": "sk_live_51H..."},
+            auth_fields={
+                "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "repo_name": "airweave-ai/airweave",
+            },
             sync_immediately=True,
         )
         """
@@ -181,22 +188,15 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Get a specific source connection by ID.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            show_auth_fields: Whether to show the auth fields, default is False
-            auth_context: The current authentication context
-
-        Returns:
-            The source connection
+        Retrieve a specific source connection by its ID.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection
 
         show_auth_fields : typing.Optional[bool]
+            Whether to reveal authentication credentials.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -237,35 +237,38 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Update a source connection.
+        Update a source connection's properties.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to update
-            source_connection_in: The updated source connection data
-            auth_context: The current authentication context
+        <br/><br/>
 
-        Returns:
-            The updated source connection
+        Modify the configuration of an existing source connection including its name,
+        authentication credentials, configuration fields, sync schedule, or source-specific settings.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection to update
 
         name : typing.Optional[str]
-            Name of the source connection
+            Updated name for the source connection. Must be between 4 and 42 characters.
 
         description : typing.Optional[str]
+            Updated description of what this source connection provides.
 
         auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
+            Updated authentication credentials for the data source. Provide new credentials to refresh or update authentication.
 
         config_fields : typing.Optional[ConfigValues]
+            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
         cron_schedule : typing.Optional[str]
+            Updated cron expression for automatic synchronization schedule. Set to null to disable automatic syncing.
 
         connection_id : typing.Optional[str]
+            Internal connection identifier. This is typically managed automatically and should not be modified manually.
 
         white_label_id : typing.Optional[str]
+            ID of the white label integration. Used for custom OAuth integrations with your own branding.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -285,6 +288,14 @@ class SourceConnectionsClient:
         )
         client.source_connections.update_source_connection(
             source_connection_id="source_connection_id",
+            name="GitHub - Updated Engineering Documentation",
+            description="Updated: Now includes API documentation and code examples from multiple repositories",
+            auth_fields={
+                "personal_access_token": "ghp_yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+                "repo_name": "airweave-ai/engineering-docs",
+            },
+            config_fields={"branch": "develop"},
+            cron_schedule="0 */4 * * *",
         )
         """
         _response = self._raw_client.update_source_connection(
@@ -308,22 +319,21 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Delete a source connection and all related components.
+        Delete a source connection.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to delete
-            delete_data: Whether to delete the associated data in destinations
-            auth_context: The current authentication context
+        <br/><br/>
 
-        Returns:
-            The deleted source connection
+        Permanently removes the source connection configuration and credentials.
+        By default, previously synced data remains in your destination systems for continuity.
+        Use delete_data=true to also remove all associated data from destination systems.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection to delete
 
         delete_data : typing.Optional[bool]
+            Whether to also delete all synced data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -358,23 +368,20 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnectionJob:
         """
-        Trigger a sync run for a source connection.
+        Manually trigger a data sync for this source connection.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to run
-            access_token: Optional access token to use instead of stored credentials
-            auth_context: The current authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            The created sync job
+        <br/><br/>
+        Starts an immediate synchronization job that extracts fresh data from your source,
+        transforms it according to your configuration, and updates the destination systems.
+        The job runs asynchronously and endpoint returns immediately with tracking information.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection to sync
 
         access_token : typing.Optional[str]
+            This parameter gives you the ability to start a sync job with an access token for an OAuth2.0 source directly instead of using the credentials that Airweave has stored for you. Learn more about direct token injection [here](https://docs.airweave.ai/direct-token-injection).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -407,17 +414,14 @@ class SourceConnectionsClient:
         """
         List all sync jobs for a source connection.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            auth_context: The current authentication context
-
-        Returns:
-            A list of sync jobs
+        <br/><br/>
+        Returns the complete history of data synchronization jobs including successful syncs,
+        failed attempts, and currently running operations.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -440,6 +444,91 @@ class SourceConnectionsClient:
         )
         """
         _response = self._raw_client.list_source_connection_jobs(source_connection_id, request_options=request_options)
+        return _response.data
+
+    def get_source_connection_job(
+        self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceConnectionJob:
+        """
+        Get detailed information about a specific sync job.
+
+        Parameters
+        ----------
+        source_connection_id : str
+            The unique identifier of the source connection
+
+        job_id : str
+            The unique identifier of the sync job
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SourceConnectionJob
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+        client.source_connections.get_source_connection_job(
+            source_connection_id="source_connection_id",
+            job_id="job_id",
+        )
+        """
+        _response = self._raw_client.get_source_connection_job(
+            source_connection_id, job_id, request_options=request_options
+        )
+        return _response.data
+
+    def cancel_source_connection_job(
+        self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceConnectionJob:
+        """
+        Cancel a running sync job.
+
+        <br/><br/>
+        Sends a cancellation signal to stop an in-progress data synchronization.
+        The job will complete its current operation and then terminate gracefully.
+        Only jobs in 'created', 'pending', or 'in_progress' states can be cancelled.
+
+        Parameters
+        ----------
+        source_connection_id : str
+            The unique identifier of the source connection
+
+        job_id : str
+            The unique identifier of the sync job to cancel
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SourceConnectionJob
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+        client.source_connections.cancel_source_connection_job(
+            source_connection_id="source_connection_id",
+            job_id="job_id",
+        )
+        """
+        _response = self._raw_client.cancel_source_connection_job(
+            source_connection_id, job_id, request_options=request_options
+        )
         return _response.data
 
 
@@ -467,26 +556,24 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List all source connections for the organization.
+        List source connections across your organization.
 
-        Args:
-            db: The database session
-            collection: The collection to filter by
-            skip: The number of connections to skip
-            limit: The number of connections to return
-            auth_context: The current authentication context
-
-        Returns:
-            A list of source connection list items with essential information
+        <br/><br/>
+        By default, returns ALL source connections from every collection in your
+        organization. Use the 'collection' parameter to filter results to a specific
+        collection. This is useful for getting an overview of all your data sources
+        or managing connections within a particular collection.
 
         Parameters
         ----------
         collection : typing.Optional[str]
-            Filter by collection
+            Filter source connections by collection readable ID
 
         skip : typing.Optional[int]
+            Number of source connections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of source connections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -533,42 +620,47 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Create a new source connection.
+        Create a new source connection to sync data into your collection.
 
-        This endpoint creates:
-        1. An integration credential with the provided auth fields
-        2. A collection if not provided
-        3. The source connection
-        4. A sync configuration and DAG
-        5. A sync job if immediate execution is requested
+        <br/><br/>
 
-        Args:
-            db: The database session
-            source_connection_in: The source connection to create
-            auth_context: The current authentication context
-            background_tasks: Background tasks for async operations
+        **This endpoint only works for sources that do not use OAuth2.0.**
+        Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
+        connected through the UI where you can complete the OAuth consent flow.<br/><br/>
 
-        Returns:
-            The created source connection
+        Credentials for a source have to be provided using the `auth_fields` field.
+        Currently, it is not automatically checked if the provided credentials are valid.
+        If they are not valid, the data synchronization will fail.<br/><br/>
+
+        Check the documentation of a specific source (for example
+        [Github](https://docs.airweave.ai/docs/connectors/github)) to see what kind
+        of authentication is used.
 
         Parameters
         ----------
         name : str
-            Name of the source connection
+            Human-readable name for the source connection. This helps you identify the connection in the UI and should clearly describe what data it connects to.
 
         short_name : str
+            Technical identifier of the source type that determines which connector to use for data synchronization.
 
         description : typing.Optional[str]
+            Optional detailed description of what this source connection provides. Use this to document the purpose, data types, or any special considerations for this connection.
 
         config_fields : typing.Optional[ConfigValues]
+            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
         collection : typing.Optional[str]
+            Readable ID of the collection where synced data will be stored. If not provided, a new collection will be automatically created.
 
         cron_schedule : typing.Optional[str]
+            Cron expression for automatic data synchronization schedule. If not provided, data will only sync when manually triggered. Use standard cron format: minute hour day month weekday.
 
         auth_fields : typing.Optional[ConfigValues]
+            Authentication credentials required to access the data source. The required fields vary by source type. Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
         sync_immediately : typing.Optional[bool]
+            Whether to start an initial data synchronization immediately after creating the connection.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -592,12 +684,16 @@ class AsyncSourceConnectionsClient:
 
         async def main() -> None:
             await client.source_connections.create_source_connection(
-                name="My Stripe Connection",
-                description="Production Stripe account for payment data",
-                short_name="stripe",
-                collection="finance-data",
+                name="GitHub - Airweave Repository",
+                description="Sync code and documentation from our main repository",
+                config_fields={"branch": "main"},
+                short_name="github",
+                collection="engineering-docs",
                 cron_schedule="0 */6 * * *",
-                auth_fields={"api_key": "sk_live_51H..."},
+                auth_fields={
+                    "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                    "repo_name": "airweave-ai/airweave",
+                },
                 sync_immediately=True,
             )
 
@@ -625,22 +721,15 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Get a specific source connection by ID.
-
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            show_auth_fields: Whether to show the auth fields, default is False
-            auth_context: The current authentication context
-
-        Returns:
-            The source connection
+        Retrieve a specific source connection by its ID.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection
 
         show_auth_fields : typing.Optional[bool]
+            Whether to reveal authentication credentials.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -689,35 +778,38 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Update a source connection.
+        Update a source connection's properties.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to update
-            source_connection_in: The updated source connection data
-            auth_context: The current authentication context
+        <br/><br/>
 
-        Returns:
-            The updated source connection
+        Modify the configuration of an existing source connection including its name,
+        authentication credentials, configuration fields, sync schedule, or source-specific settings.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection to update
 
         name : typing.Optional[str]
-            Name of the source connection
+            Updated name for the source connection. Must be between 4 and 42 characters.
 
         description : typing.Optional[str]
+            Updated description of what this source connection provides.
 
         auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
+            Updated authentication credentials for the data source. Provide new credentials to refresh or update authentication.
 
         config_fields : typing.Optional[ConfigValues]
+            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
         cron_schedule : typing.Optional[str]
+            Updated cron expression for automatic synchronization schedule. Set to null to disable automatic syncing.
 
         connection_id : typing.Optional[str]
+            Internal connection identifier. This is typically managed automatically and should not be modified manually.
 
         white_label_id : typing.Optional[str]
+            ID of the white label integration. Used for custom OAuth integrations with your own branding.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -742,6 +834,14 @@ class AsyncSourceConnectionsClient:
         async def main() -> None:
             await client.source_connections.update_source_connection(
                 source_connection_id="source_connection_id",
+                name="GitHub - Updated Engineering Documentation",
+                description="Updated: Now includes API documentation and code examples from multiple repositories",
+                auth_fields={
+                    "personal_access_token": "ghp_yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+                    "repo_name": "airweave-ai/engineering-docs",
+                },
+                config_fields={"branch": "develop"},
+                cron_schedule="0 */4 * * *",
             )
 
 
@@ -768,22 +868,21 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Delete a source connection and all related components.
+        Delete a source connection.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to delete
-            delete_data: Whether to delete the associated data in destinations
-            auth_context: The current authentication context
+        <br/><br/>
 
-        Returns:
-            The deleted source connection
+        Permanently removes the source connection configuration and credentials.
+        By default, previously synced data remains in your destination systems for continuity.
+        Use delete_data=true to also remove all associated data from destination systems.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection to delete
 
         delete_data : typing.Optional[bool]
+            Whether to also delete all synced data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -826,23 +925,20 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnectionJob:
         """
-        Trigger a sync run for a source connection.
+        Manually trigger a data sync for this source connection.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection to run
-            access_token: Optional access token to use instead of stored credentials
-            auth_context: The current authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            The created sync job
+        <br/><br/>
+        Starts an immediate synchronization job that extracts fresh data from your source,
+        transforms it according to your configuration, and updates the destination systems.
+        The job runs asynchronously and endpoint returns immediately with tracking information.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection to sync
 
         access_token : typing.Optional[str]
+            This parameter gives you the ability to start a sync job with an access token for an OAuth2.0 source directly instead of using the credentials that Airweave has stored for you. Learn more about direct token injection [here](https://docs.airweave.ai/direct-token-injection).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -883,17 +979,14 @@ class AsyncSourceConnectionsClient:
         """
         List all sync jobs for a source connection.
 
-        Args:
-            db: The database session
-            source_connection_id: The ID of the source connection
-            auth_context: The current authentication context
-
-        Returns:
-            A list of sync jobs
+        <br/><br/>
+        Returns the complete history of data synchronization jobs including successful syncs,
+        failed attempts, and currently running operations.
 
         Parameters
         ----------
         source_connection_id : str
+            The unique identifier of the source connection
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -925,5 +1018,106 @@ class AsyncSourceConnectionsClient:
         """
         _response = await self._raw_client.list_source_connection_jobs(
             source_connection_id, request_options=request_options
+        )
+        return _response.data
+
+    async def get_source_connection_job(
+        self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceConnectionJob:
+        """
+        Get detailed information about a specific sync job.
+
+        Parameters
+        ----------
+        source_connection_id : str
+            The unique identifier of the source connection
+
+        job_id : str
+            The unique identifier of the sync job
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SourceConnectionJob
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+
+
+        async def main() -> None:
+            await client.source_connections.get_source_connection_job(
+                source_connection_id="source_connection_id",
+                job_id="job_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_source_connection_job(
+            source_connection_id, job_id, request_options=request_options
+        )
+        return _response.data
+
+    async def cancel_source_connection_job(
+        self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> SourceConnectionJob:
+        """
+        Cancel a running sync job.
+
+        <br/><br/>
+        Sends a cancellation signal to stop an in-progress data synchronization.
+        The job will complete its current operation and then terminate gracefully.
+        Only jobs in 'created', 'pending', or 'in_progress' states can be cancelled.
+
+        Parameters
+        ----------
+        source_connection_id : str
+            The unique identifier of the source connection
+
+        job_id : str
+            The unique identifier of the sync job to cancel
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SourceConnectionJob
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+
+
+        async def main() -> None:
+            await client.source_connections.cancel_source_connection_job(
+                source_connection_id="source_connection_id",
+                job_id="job_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.cancel_source_connection_job(
+            source_connection_id, job_id, request_options=request_options
         )
         return _response.data

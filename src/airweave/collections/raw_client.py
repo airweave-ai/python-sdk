@@ -32,13 +32,15 @@ class RawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[Collection]]:
         """
-        List all collections for the current user's organization.
+        List all collections that belong to your organization.
 
         Parameters
         ----------
         skip : typing.Optional[int]
+            Number of collections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of collections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -93,13 +95,17 @@ class RawCollectionsClient:
         """
         Create a new collection.
 
+        <br/><br/>
+        The newly created collection is initially empty and does not contain any data
+        until you explicitly add source connections to it.
+
         Parameters
         ----------
         name : str
-            Display name for the collection
+            Human-readable display name for the collection. This appears in the UI and should clearly describe the data contained within (e.g., 'Finance Data').
 
         readable_id : typing.Optional[str]
-            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
+            URL-safe unique identifier used in API endpoints. Must contain only lowercase letters, numbers, and hyphens. If not provided, it will be automatically generated from the collection name with a random suffix for uniqueness (e.g., 'finance-data-ab123').
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -152,11 +158,12 @@ class RawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[Collection]:
         """
-        Get a specific collection by its readable ID.
+        Retrieve a specific collection by its readable ID.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection (e.g., 'finance-data-ab123')
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -197,6 +204,75 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def update_collection(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[Collection]:
+        """
+        Update a collection's properties.
+
+        <br/><br/>
+        Modifies the display name of an existing collection.
+        Note that the readable ID cannot be changed after creation to maintain stable
+        API endpoints and preserve any existing integrations or bookmarks.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[Collection]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}",
+            method="PUT",
+            json={
+                "name": name,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Collection,
+                    parse_obj_as(
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def delete_collection(
         self,
         readable_id: str,
@@ -205,22 +281,21 @@ class RawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[Collection]:
         """
-        Delete a collection by its readable ID.
+        Delete a collection and optionally its associated data.
 
-        Args:
-            readable_id: The readable ID of the collection to delete
-            delete_data: Whether to delete the data in destinations
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            The deleted collection
+        <br/><br/>
+        Permanently removes a collection from your organization. By default, this only
+        deletes the collection metadata while preserving the actual data in the
+        destination systems.<br/><br/>All source connections within this collection
+        will also be deleted as part of the cleanup process.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to delete
 
         delete_data : typing.Optional[bool]
+            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -273,27 +348,18 @@ class RawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SearchResponse]:
         """
-        Search within a collection identified by readable ID.
-
-        Args:
-            readable_id: The readable ID of the collection to search
-            query: The search query
-            response_type: Type of response (raw results or AI completion)
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            dict: Search results or AI completion response
+        Search across all data sources within the specified collection.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to search
 
         query : str
-            Search query
+            The search query text to find relevant documents and data
 
         response_type : typing.Optional[ResponseType]
-            Type of response: raw search results or AI completion
+            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -342,20 +408,17 @@ class RawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[typing.List[SourceConnectionJob]]:
         """
-        Start sync jobs for all source connections in the collection.
+        Trigger data synchronization for all source connections in the collection.
 
-        Args:
-            readable_id: The readable ID of the collection
-            db: The database session
-            auth_context: The authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            A list of created sync jobs
+        <br/><br/>The sync jobs run asynchronously in the background, so this endpoint
+        returns immediately with job details that you can use to track progress. You can
+        monitor the status of individual data synchronization using the source connection
+        endpoints.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to refresh
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -409,13 +472,15 @@ class AsyncRawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[Collection]]:
         """
-        List all collections for the current user's organization.
+        List all collections that belong to your organization.
 
         Parameters
         ----------
         skip : typing.Optional[int]
+            Number of collections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of collections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -470,13 +535,17 @@ class AsyncRawCollectionsClient:
         """
         Create a new collection.
 
+        <br/><br/>
+        The newly created collection is initially empty and does not contain any data
+        until you explicitly add source connections to it.
+
         Parameters
         ----------
         name : str
-            Display name for the collection
+            Human-readable display name for the collection. This appears in the UI and should clearly describe the data contained within (e.g., 'Finance Data').
 
         readable_id : typing.Optional[str]
-            Unique lowercase identifier (e.g., respectable-sparrow, collection-123)
+            URL-safe unique identifier used in API endpoints. Must contain only lowercase letters, numbers, and hyphens. If not provided, it will be automatically generated from the collection name with a random suffix for uniqueness (e.g., 'finance-data-ab123').
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -529,11 +598,12 @@ class AsyncRawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Collection]:
         """
-        Get a specific collection by its readable ID.
+        Retrieve a specific collection by its readable ID.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection (e.g., 'finance-data-ab123')
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -574,6 +644,75 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def update_collection(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[Collection]:
+        """
+        Update a collection's properties.
+
+        <br/><br/>
+        Modifies the display name of an existing collection.
+        Note that the readable ID cannot be changed after creation to maintain stable
+        API endpoints and preserve any existing integrations or bookmarks.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Collection]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}",
+            method="PUT",
+            json={
+                "name": name,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Collection,
+                    parse_obj_as(
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def delete_collection(
         self,
         readable_id: str,
@@ -582,22 +721,21 @@ class AsyncRawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[Collection]:
         """
-        Delete a collection by its readable ID.
+        Delete a collection and optionally its associated data.
 
-        Args:
-            readable_id: The readable ID of the collection to delete
-            delete_data: Whether to delete the data in destinations
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            The deleted collection
+        <br/><br/>
+        Permanently removes a collection from your organization. By default, this only
+        deletes the collection metadata while preserving the actual data in the
+        destination systems.<br/><br/>All source connections within this collection
+        will also be deleted as part of the cleanup process.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to delete
 
         delete_data : typing.Optional[bool]
+            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -650,27 +788,18 @@ class AsyncRawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SearchResponse]:
         """
-        Search within a collection identified by readable ID.
-
-        Args:
-            readable_id: The readable ID of the collection to search
-            query: The search query
-            response_type: Type of response (raw results or AI completion)
-            db: The database session
-            auth_context: The authentication context
-
-        Returns:
-            dict: Search results or AI completion response
+        Search across all data sources within the specified collection.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to search
 
         query : str
-            Search query
+            The search query text to find relevant documents and data
 
         response_type : typing.Optional[ResponseType]
-            Type of response: raw search results or AI completion
+            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -719,20 +848,17 @@ class AsyncRawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[typing.List[SourceConnectionJob]]:
         """
-        Start sync jobs for all source connections in the collection.
+        Trigger data synchronization for all source connections in the collection.
 
-        Args:
-            readable_id: The readable ID of the collection
-            db: The database session
-            auth_context: The authentication context
-            background_tasks: Background tasks for async operations
-
-        Returns:
-            A list of created sync jobs
+        <br/><br/>The sync jobs run asynchronously in the background, so this endpoint
+        returns immediately with job details that you can use to track progress. You can
+        monitor the status of individual data synchronization using the source connection
+        endpoints.
 
         Parameters
         ----------
         readable_id : str
+            The unique readable identifier of the collection to refresh
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

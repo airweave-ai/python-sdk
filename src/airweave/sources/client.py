@@ -25,27 +25,12 @@ class SourcesClient:
 
     def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
-        Get source by id.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
-            auth_context (schemas.AuthContext): The current auth context.
-
-        Returns:
-        -------
-            schemas.Source: The source object.
-
-        Raises:
-            HTTPException:
-                - 404 if source not found
-                - 400 if source missing required configuration classes
-                - 500 if there's an error retrieving auth configuration
+        Get detailed information about a specific data source connector.
 
         Parameters
         ----------
         short_name : str
+            Technical identifier of the source type (e.g., 'github', 'stripe', 'slack')
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -72,7 +57,10 @@ class SourcesClient:
 
     def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
-        Get all sources with their authentication fields.
+        List all available data source connectors.
+
+        <br/><br/>
+        Returns the complete catalog of source types that Airweave can connect to.
 
         Parameters
         ----------
@@ -115,27 +103,12 @@ class AsyncSourcesClient:
 
     async def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
-        Get source by id.
-
-        Args:
-        ----
-            db (AsyncSession): The database session.
-            short_name (str): The short name of the source.
-            auth_context (schemas.AuthContext): The current auth context.
-
-        Returns:
-        -------
-            schemas.Source: The source object.
-
-        Raises:
-            HTTPException:
-                - 404 if source not found
-                - 400 if source missing required configuration classes
-                - 500 if there's an error retrieving auth configuration
+        Get detailed information about a specific data source connector.
 
         Parameters
         ----------
         short_name : str
+            Technical identifier of the source type (e.g., 'github', 'stripe', 'slack')
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -170,7 +143,10 @@ class AsyncSourcesClient:
 
     async def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
-        Get all sources with their authentication fields.
+        List all available data source connectors.
+
+        <br/><br/>
+        Returns the complete catalog of source types that Airweave can connect to.
 
         Parameters
         ----------
