@@ -84,6 +84,11 @@ class Source(UniversalBaseModel):
     Schema definition for authentication fields required to connect to this source. Describes field types, validation rules, and user interface hints.
     """
 
+    config_fields: Fields = pydantic.Field()
+    """
+    Schema definition for configuration fields required to customize this source. Describes field types, validation rules, and user interface hints.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
