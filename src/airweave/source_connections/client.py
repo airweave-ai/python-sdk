@@ -154,17 +154,8 @@ class SourceConnectionsClient:
             organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.create_source_connection(
-            name="GitHub - Airweave Repository",
-            description="Sync code and documentation from our main repository",
-            config_fields={"branch": "main"},
-            short_name="github",
-            collection="engineering-docs",
-            cron_schedule="0 */6 * * *",
-            auth_fields={
-                "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                "repo_name": "airweave-ai/airweave",
-            },
-            sync_immediately=True,
+            name="Production Stripe Account",
+            short_name="stripe",
         )
         """
         _response = self._raw_client.create_source_connection(
@@ -288,14 +279,6 @@ class SourceConnectionsClient:
         )
         client.source_connections.update_source_connection(
             source_connection_id="source_connection_id",
-            name="GitHub - Updated Engineering Documentation",
-            description="Updated: Now includes API documentation and code examples from multiple repositories",
-            auth_fields={
-                "personal_access_token": "ghp_yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
-                "repo_name": "airweave-ai/engineering-docs",
-            },
-            config_fields={"branch": "develop"},
-            cron_schedule="0 */4 * * *",
         )
         """
         _response = self._raw_client.update_source_connection(
@@ -684,17 +667,8 @@ class AsyncSourceConnectionsClient:
 
         async def main() -> None:
             await client.source_connections.create_source_connection(
-                name="GitHub - Airweave Repository",
-                description="Sync code and documentation from our main repository",
-                config_fields={"branch": "main"},
-                short_name="github",
-                collection="engineering-docs",
-                cron_schedule="0 */6 * * *",
-                auth_fields={
-                    "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                    "repo_name": "airweave-ai/airweave",
-                },
-                sync_immediately=True,
+                name="Production Stripe Account",
+                short_name="stripe",
             )
 
 
@@ -834,14 +808,6 @@ class AsyncSourceConnectionsClient:
         async def main() -> None:
             await client.source_connections.update_source_connection(
                 source_connection_id="source_connection_id",
-                name="GitHub - Updated Engineering Documentation",
-                description="Updated: Now includes API documentation and code examples from multiple repositories",
-                auth_fields={
-                    "personal_access_token": "ghp_yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
-                    "repo_name": "airweave-ai/engineering-docs",
-                },
-                config_fields={"branch": "develop"},
-                cron_schedule="0 */4 * * *",
             )
 
 

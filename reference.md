@@ -842,17 +842,8 @@ client = AirweaveSDK(
     organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.create_source_connection(
-    name="GitHub - Airweave Repository",
-    description="Sync code and documentation from our main repository",
-    config_fields={"branch": "main"},
-    short_name="github",
-    collection="engineering-docs",
-    cron_schedule="0 */6 * * *",
-    auth_fields={
-        "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "repo_name": "airweave-ai/airweave",
-    },
-    sync_immediately=True,
+    name="Production Stripe Account",
+    short_name="stripe",
 )
 
 ```
@@ -1064,14 +1055,6 @@ client = AirweaveSDK(
 )
 client.source_connections.update_source_connection(
     source_connection_id="source_connection_id",
-    name="GitHub - Updated Engineering Documentation",
-    description="Updated: Now includes API documentation and code examples from multiple repositories",
-    auth_fields={
-        "personal_access_token": "ghp_yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
-        "repo_name": "airweave-ai/engineering-docs",
-    },
-    config_fields={"branch": "develop"},
-    cron_schedule="0 */4 * * *",
 )
 
 ```
@@ -2027,7 +2010,7 @@ client.white_labels.delete_white_label(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2065,7 +2048,7 @@ client = AirweaveSDK(
     api_key="YOUR_API_KEY",
     organization_id="YOUR_ORGANIZATION_ID",
 )
-client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+client.white_labels.get_white_label_oauth_2_auth_url(
     white_label_id="white_label_id",
 )
 
