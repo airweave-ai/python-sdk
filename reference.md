@@ -1668,7 +1668,7 @@ client = AirweaveSDK(
 )
 client.white_labels.create_white_label(
     name="Customer Portal Slack Integration",
-    short_name="slack",
+    source_short_name="slack",
     redirect_url="https://yourapp.com/auth/slack/callback",
     client_id="1234567890.1234567890123",
     client_secret="abcdefghijklmnopqrstuvwxyz123456",
@@ -1697,7 +1697,7 @@ client.white_labels.create_white_label(
 <dl>
 <dd>
 
-**short_name:** `str` — Technical identifier of the source type that this integration supports (e.g., 'slack', 'google_drive', 'github'). This determines which service provider the OAuth integration connects to.
+**source_short_name:** `str` — Technical identifier of the source type that this integration supports (e.g., 'slack', 'google_drive', 'github'). This determines which service provider the OAuth integration connects to.
     
 </dd>
 </dl>
@@ -2010,7 +2010,7 @@ client.white_labels.delete_white_label(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2048,7 +2048,7 @@ client = AirweaveSDK(
     api_key="YOUR_API_KEY",
     organization_id="YOUR_ORGANIZATION_ID",
 )
-client.white_labels.get_white_label_oauth_2_auth_url(
+client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
     white_label_id="white_label_id",
 )
 
@@ -2160,7 +2160,7 @@ client.white_labels.list_white_label_source_connections(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2200,7 +2200,7 @@ client = AirweaveSDK(
     api_key="YOUR_API_KEY",
     organization_id="YOUR_ORGANIZATION_ID",
 )
-client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+client.white_labels.exchange_white_label_oauth_2_code(
     white_label_id="white_label_id",
     code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
 )

@@ -83,7 +83,7 @@ class RawWhiteLabelsClient:
         self,
         *,
         name: str,
-        short_name: str,
+        source_short_name: str,
         redirect_url: str,
         client_id: str,
         client_secret: str,
@@ -106,7 +106,7 @@ class RawWhiteLabelsClient:
         name : str
             Human-readable name for the white label integration. This helps you identify the integration in the UI and should clearly describe its purpose (e.g., 'Customer Portal Slack Integration', 'Enterprise Google Drive Access').
 
-        short_name : str
+        source_short_name : str
             Technical identifier of the source type that this integration supports (e.g., 'slack', 'google_drive', 'github'). This determines which service provider the OAuth integration connects to.
 
         redirect_url : str
@@ -134,7 +134,7 @@ class RawWhiteLabelsClient:
             method="POST",
             json={
                 "name": name,
-                "short_name": short_name,
+                "source_short_name": source_short_name,
                 "redirect_url": redirect_url,
                 "client_id": client_id,
                 "client_secret": client_secret,
@@ -361,7 +361,7 @@ class RawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def get_white_label_oauth_2_auth_url(
+    def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[str]:
         """
@@ -469,7 +469,7 @@ class RawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+    def exchange_white_label_oauth_2_code(
         self,
         white_label_id: str,
         *,
@@ -610,7 +610,7 @@ class AsyncRawWhiteLabelsClient:
         self,
         *,
         name: str,
-        short_name: str,
+        source_short_name: str,
         redirect_url: str,
         client_id: str,
         client_secret: str,
@@ -633,7 +633,7 @@ class AsyncRawWhiteLabelsClient:
         name : str
             Human-readable name for the white label integration. This helps you identify the integration in the UI and should clearly describe its purpose (e.g., 'Customer Portal Slack Integration', 'Enterprise Google Drive Access').
 
-        short_name : str
+        source_short_name : str
             Technical identifier of the source type that this integration supports (e.g., 'slack', 'google_drive', 'github'). This determines which service provider the OAuth integration connects to.
 
         redirect_url : str
@@ -661,7 +661,7 @@ class AsyncRawWhiteLabelsClient:
             method="POST",
             json={
                 "name": name,
-                "short_name": short_name,
+                "source_short_name": source_short_name,
                 "redirect_url": redirect_url,
                 "client_id": client_id,
                 "client_secret": client_secret,
@@ -888,7 +888,7 @@ class AsyncRawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_white_label_oauth_2_auth_url(
+    async def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[str]:
         """
@@ -996,7 +996,7 @@ class AsyncRawWhiteLabelsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+    async def exchange_white_label_oauth_2_code(
         self,
         white_label_id: str,
         *,

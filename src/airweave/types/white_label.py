@@ -17,7 +17,7 @@ class WhiteLabel(UniversalBaseModel):
     Human-readable name for the white label integration. This helps you identify the integration in the UI and should clearly describe its purpose (e.g., 'Customer Portal Slack Integration', 'Enterprise Google Drive Access').
     """
 
-    short_name: str = pydantic.Field()
+    source_short_name: str = pydantic.Field()
     """
     Technical identifier of the source type that this integration supports (e.g., 'slack', 'google_drive', 'github'). This determines which service provider the OAuth integration connects to.
     """
