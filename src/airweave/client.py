@@ -29,8 +29,7 @@ class AirweaveSDK:
 
 
 
-    api_key : typing.Optional[str]
-    organization_id : typing.Optional[str]
+    api_key : str
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
 
@@ -49,7 +48,6 @@ class AirweaveSDK:
 
     client = AirweaveSDK(
         api_key="YOUR_API_KEY",
-        organization_id="YOUR_ORGANIZATION_ID",
     )
     """
 
@@ -58,8 +56,7 @@ class AirweaveSDK:
         *,
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
-        api_key: typing.Optional[str] = None,
-        organization_id: typing.Optional[str] = None,
+        api_key: str,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
@@ -71,7 +68,6 @@ class AirweaveSDK:
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
             api_key=api_key,
-            organization_id=organization_id,
             headers=headers,
             httpx_client=httpx_client
             if httpx_client is not None
@@ -104,8 +100,7 @@ class AsyncAirweaveSDK:
 
 
 
-    api_key : typing.Optional[str]
-    organization_id : typing.Optional[str]
+    api_key : str
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
 
@@ -124,7 +119,6 @@ class AsyncAirweaveSDK:
 
     client = AsyncAirweaveSDK(
         api_key="YOUR_API_KEY",
-        organization_id="YOUR_ORGANIZATION_ID",
     )
     """
 
@@ -133,8 +127,7 @@ class AsyncAirweaveSDK:
         *,
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
-        api_key: typing.Optional[str] = None,
-        organization_id: typing.Optional[str] = None,
+        api_key: str,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
@@ -146,7 +139,6 @@ class AsyncAirweaveSDK:
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
             api_key=api_key,
-            organization_id=organization_id,
             headers=headers,
             httpx_client=httpx_client
             if httpx_client is not None
