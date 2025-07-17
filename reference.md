@@ -1,5 +1,5 @@
 # Reference
-## Sources
+## sources
 <details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read_source</a>(...)</code></summary>
 <dl>
 <dd>
@@ -31,6 +31,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.sources.read_source(
     short_name="short_name",
@@ -104,6 +105,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.sources.read_sources()
 
@@ -133,7 +135,7 @@ client.sources.read_sources()
 </dl>
 </details>
 
-## Collections
+## collections
 <details><summary><code>client.collections.<a href="src/airweave/collections/client.py">list_collections</a>(...)</code></summary>
 <dl>
 <dd>
@@ -165,6 +167,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.list_collections()
 
@@ -245,6 +248,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.create_collection(
     name="Finance Data",
@@ -324,6 +328,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.get_collection(
     readable_id="readable_id",
@@ -399,6 +404,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.update_collection(
     readable_id="readable_id",
@@ -484,6 +490,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.delete_collection(
     readable_id="readable_id",
@@ -562,6 +569,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.search_collection(
     readable_id="readable_id",
@@ -654,6 +662,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.refresh_all_source_connections(
     readable_id="readable_id",
@@ -693,7 +702,7 @@ client.collections.refresh_all_source_connections(
 </dl>
 </details>
 
-## SourceConnections
+## source-connections
 <details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list_source_connections</a>(...)</code></summary>
 <dl>
 <dd>
@@ -731,6 +740,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.list_source_connections()
 
@@ -829,6 +839,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.create_source_connection(
     name="Production Stripe Account",
@@ -956,6 +967,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.get_source_connection(
     source_connection_id="source_connection_id",
@@ -1039,6 +1051,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.update_source_connection(
     source_connection_id="source_connection_id",
@@ -1171,6 +1184,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.delete_source_connection(
     source_connection_id="source_connection_id",
@@ -1254,6 +1268,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.run_source_connection(
     source_connection_id="source_connection_id",
@@ -1336,6 +1351,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.list_source_connection_jobs(
     source_connection_id="source_connection_id",
@@ -1406,6 +1422,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.get_source_connection_job(
     source_connection_id="source_connection_id",
@@ -1490,6 +1507,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.cancel_source_connection_job(
     source_connection_id="source_connection_id",
@@ -1538,7 +1556,7 @@ client.source_connections.cancel_source_connection_job(
 </dl>
 </details>
 
-## WhiteLabels
+## white-labels
 <details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">list_white_labels</a>()</code></summary>
 <dl>
 <dd>
@@ -1577,6 +1595,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.list_white_labels()
 
@@ -1645,6 +1664,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.create_white_label(
     name="Customer Portal Slack Integration",
@@ -1760,6 +1780,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.get_white_label(
     white_label_id="white_label_id",
@@ -1830,6 +1851,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.update_white_label(
     white_label_id="white_label_id",
@@ -1948,6 +1970,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.delete_white_label(
     white_label_id="white_label_id",
@@ -1987,7 +2010,7 @@ client.white_labels.delete_white_label(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2023,8 +2046,9 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
-client.white_labels.get_white_label_oauth_2_auth_url(
+client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
     white_label_id="white_label_id",
 )
 
@@ -2096,6 +2120,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.list_white_label_source_connections(
     white_label_id="white_label_id",
@@ -2173,6 +2198,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.exchange_white_label_oauth_2_code(
     white_label_id="white_label_id",

@@ -72,6 +72,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.list_source_connections()
         """
@@ -150,6 +151,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.create_source_connection(
             name="Production Stripe Account",
@@ -201,6 +203,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.get_source_connection(
             source_connection_id="source_connection_id",
@@ -272,6 +275,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.update_source_connection(
             source_connection_id="source_connection_id",
@@ -328,6 +332,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.delete_source_connection(
             source_connection_id="source_connection_id",
@@ -375,6 +380,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.run_source_connection(
             source_connection_id="source_connection_id",
@@ -414,6 +420,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.list_source_connection_jobs(
             source_connection_id="source_connection_id",
@@ -450,6 +457,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.get_source_connection_job(
             source_connection_id="source_connection_id",
@@ -494,6 +502,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.cancel_source_connection_job(
             source_connection_id="source_connection_id",
@@ -565,6 +574,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -651,6 +661,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -710,6 +721,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -789,6 +801,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -853,6 +866,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -908,6 +922,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -955,6 +970,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -1001,6 +1017,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -1053,6 +1070,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 

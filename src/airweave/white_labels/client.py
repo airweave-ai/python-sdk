@@ -56,6 +56,7 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.list_white_labels()
         """
@@ -118,6 +119,7 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.create_white_label(
             name="Customer Portal Slack Integration",
@@ -164,6 +166,7 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.get_white_label(
             white_label_id="white_label_id",
@@ -220,6 +223,7 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.update_white_label(
             white_label_id="white_label_id",
@@ -269,6 +273,7 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.delete_white_label(
             white_label_id="white_label_id",
@@ -277,7 +282,7 @@ class WhiteLabelsClient:
         _response = self._raw_client.delete_white_label(white_label_id, request_options=request_options)
         return _response.data
 
-    def get_white_label_oauth_2_auth_url(
+    def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
@@ -307,12 +312,17 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
-        client.white_labels.get_white_label_oauth_2_auth_url(
+        client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
             white_label_id="white_label_id",
         )
         """
-        _response = self._raw_client.get_white_label_oauth_2_auth_url(white_label_id, request_options=request_options)
+        _response = (
+            self._raw_client.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+                white_label_id, request_options=request_options
+            )
+        )
         return _response.data
 
     def list_white_label_source_connections(
@@ -343,6 +353,7 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.list_white_label_source_connections(
             white_label_id="white_label_id",
@@ -396,6 +407,7 @@ class WhiteLabelsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.white_labels.exchange_white_label_oauth_2_code(
             white_label_id="white_label_id",
@@ -454,6 +466,7 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -524,6 +537,7 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -578,6 +592,7 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -642,6 +657,7 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -699,6 +715,7 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -713,7 +730,7 @@ class AsyncWhiteLabelsClient:
         _response = await self._raw_client.delete_white_label(white_label_id, request_options=request_options)
         return _response.data
 
-    async def get_white_label_oauth_2_auth_url(
+    async def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
@@ -745,18 +762,19 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
         async def main() -> None:
-            await client.white_labels.get_white_label_oauth_2_auth_url(
+            await client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
                 white_label_id="white_label_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_white_label_oauth_2_auth_url(
+        _response = await self._raw_client.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
             white_label_id, request_options=request_options
         )
         return _response.data
@@ -791,6 +809,7 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -852,6 +871,7 @@ class AsyncWhiteLabelsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
