@@ -5,6 +5,7 @@ import typing
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.collection import Collection
+from ..types.query_expansion_strategy import QueryExpansionStrategy
 from ..types.response_type import ResponseType
 from ..types.search_response import SearchResponse
 from ..types.source_connection_job import SourceConnectionJob
@@ -61,7 +62,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.list_collections()
         """
@@ -104,7 +104,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.create_collection(
             name="Finance Data",
@@ -141,7 +140,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.get_collection(
             readable_id="readable_id",
@@ -187,7 +185,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.update_collection(
             readable_id="readable_id",
@@ -235,7 +232,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.delete_collection(
             readable_id="readable_id",
@@ -252,10 +248,17 @@ class CollectionsClient:
         *,
         query: str,
         response_type: typing.Optional[ResponseType] = None,
+        limit: typing.Optional[int] = None,
+        offset: typing.Optional[int] = None,
+        score_threshold: typing.Optional[float] = None,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SearchResponse:
         """
         Search across all data sources within the specified collection.
+
+        This GET endpoint provides basic search functionality. For advanced filtering
+        and options, use the POST /search endpoint.
 
         Parameters
         ----------
@@ -267,6 +270,18 @@ class CollectionsClient:
 
         response_type : typing.Optional[ResponseType]
             Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        offset : typing.Optional[int]
+            Number of results to skip for pagination
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy (auto, llm, or no_expansion)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -282,7 +297,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.search_collection(
             readable_id="readable_id",
@@ -290,7 +304,14 @@ class CollectionsClient:
         )
         """
         _response = self._raw_client.search_collection(
-            readable_id, query=query, response_type=response_type, request_options=request_options
+            readable_id,
+            query=query,
+            response_type=response_type,
+            limit=limit,
+            offset=offset,
+            score_threshold=score_threshold,
+            expansion_strategy=expansion_strategy,
+            request_options=request_options,
         )
         return _response.data
 
@@ -324,7 +345,6 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.refresh_all_source_connections(
             readable_id="readable_id",
@@ -383,7 +403,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -434,7 +453,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -479,7 +497,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -533,7 +550,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -589,7 +605,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -612,10 +627,17 @@ class AsyncCollectionsClient:
         *,
         query: str,
         response_type: typing.Optional[ResponseType] = None,
+        limit: typing.Optional[int] = None,
+        offset: typing.Optional[int] = None,
+        score_threshold: typing.Optional[float] = None,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SearchResponse:
         """
         Search across all data sources within the specified collection.
+
+        This GET endpoint provides basic search functionality. For advanced filtering
+        and options, use the POST /search endpoint.
 
         Parameters
         ----------
@@ -627,6 +649,18 @@ class AsyncCollectionsClient:
 
         response_type : typing.Optional[ResponseType]
             Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        offset : typing.Optional[int]
+            Number of results to skip for pagination
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy (auto, llm, or no_expansion)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -644,7 +678,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -658,7 +691,14 @@ class AsyncCollectionsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.search_collection(
-            readable_id, query=query, response_type=response_type, request_options=request_options
+            readable_id,
+            query=query,
+            response_type=response_type,
+            limit=limit,
+            offset=offset,
+            score_threshold=score_threshold,
+            expansion_strategy=expansion_strategy,
+            request_options=request_options,
         )
         return _response.data
 
@@ -694,7 +734,6 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
-            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 

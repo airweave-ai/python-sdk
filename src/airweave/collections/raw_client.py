@@ -12,6 +12,7 @@ from ..core.request_options import RequestOptions
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.collection import Collection
 from ..types.http_validation_error import HttpValidationError
+from ..types.query_expansion_strategy import QueryExpansionStrategy
 from ..types.response_type import ResponseType
 from ..types.search_response import SearchResponse
 from ..types.source_connection_job import SourceConnectionJob
@@ -345,10 +346,17 @@ class RawCollectionsClient:
         *,
         query: str,
         response_type: typing.Optional[ResponseType] = None,
+        limit: typing.Optional[int] = None,
+        offset: typing.Optional[int] = None,
+        score_threshold: typing.Optional[float] = None,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SearchResponse]:
         """
         Search across all data sources within the specified collection.
+
+        This GET endpoint provides basic search functionality. For advanced filtering
+        and options, use the POST /search endpoint.
 
         Parameters
         ----------
@@ -360,6 +368,18 @@ class RawCollectionsClient:
 
         response_type : typing.Optional[ResponseType]
             Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        offset : typing.Optional[int]
+            Number of results to skip for pagination
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy (auto, llm, or no_expansion)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -375,6 +395,10 @@ class RawCollectionsClient:
             params={
                 "query": query,
                 "response_type": response_type,
+                "limit": limit,
+                "offset": offset,
+                "score_threshold": score_threshold,
+                "expansion_strategy": expansion_strategy,
             },
             request_options=request_options,
         )
@@ -785,10 +809,17 @@ class AsyncRawCollectionsClient:
         *,
         query: str,
         response_type: typing.Optional[ResponseType] = None,
+        limit: typing.Optional[int] = None,
+        offset: typing.Optional[int] = None,
+        score_threshold: typing.Optional[float] = None,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SearchResponse]:
         """
         Search across all data sources within the specified collection.
+
+        This GET endpoint provides basic search functionality. For advanced filtering
+        and options, use the POST /search endpoint.
 
         Parameters
         ----------
@@ -800,6 +831,18 @@ class AsyncRawCollectionsClient:
 
         response_type : typing.Optional[ResponseType]
             Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        offset : typing.Optional[int]
+            Number of results to skip for pagination
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy (auto, llm, or no_expansion)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -815,6 +858,10 @@ class AsyncRawCollectionsClient:
             params={
                 "query": query,
                 "response_type": response_type,
+                "limit": limit,
+                "offset": offset,
+                "score_threshold": score_threshold,
+                "expansion_strategy": expansion_strategy,
             },
             request_options=request_options,
         )
