@@ -72,6 +72,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.list_source_connections()
         """
@@ -90,6 +91,8 @@ class SourceConnectionsClient:
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
+        auth_provider: typing.Optional[str] = OMIT,
+        auth_provider_config: typing.Optional[ConfigValues] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
@@ -133,6 +136,12 @@ class SourceConnectionsClient:
         auth_fields : typing.Optional[ConfigValues]
             Authentication credentials required to access the data source. The required fields vary by source type. Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
+        auth_provider : typing.Optional[str]
+            Unique readable ID of a connected auth provider to use for authentication instead of providing auth_fields directly. When specified, credentials for the source will be obtained and refreshed automatically by Airweave interaction with the auth provider. To see which auth providers are supported and learn more about how to use them, check [this page](https://docs.airweave.ai/docs/auth-providers).
+
+        auth_provider_config : typing.Optional[ConfigValues]
+            Configuration for the auth provider when using auth_provider field. Required fields vary by auth provider. For Composio, use integration_id and  account_id to specify which integration and account from Composio you want to use to connect to the source.
+
         sync_immediately : typing.Optional[bool]
             Whether to start an initial data synchronization immediately after creating the connection.
 
@@ -150,6 +159,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.create_source_connection(
             name="Production Stripe Account",
@@ -164,6 +174,8 @@ class SourceConnectionsClient:
             collection=collection,
             cron_schedule=cron_schedule,
             auth_fields=auth_fields,
+            auth_provider=auth_provider,
+            auth_provider_config=auth_provider_config,
             sync_immediately=sync_immediately,
             request_options=request_options,
         )
@@ -201,6 +213,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.get_source_connection(
             source_connection_id="source_connection_id",
@@ -222,6 +235,8 @@ class SourceConnectionsClient:
         cron_schedule: typing.Optional[str] = OMIT,
         connection_id: typing.Optional[str] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
+        auth_provider: typing.Optional[str] = OMIT,
+        auth_provider_config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
@@ -258,6 +273,12 @@ class SourceConnectionsClient:
         white_label_id : typing.Optional[str]
             ID of the white label integration. Used for custom OAuth integrations with your own branding.
 
+        auth_provider : typing.Optional[str]
+            Updated auth provider readable ID. Only relevant if the connection uses an auth provider.
+
+        auth_provider_config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Updated configuration for the auth provider. Only relevant if the connection uses an auth provider.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -272,6 +293,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.update_source_connection(
             source_connection_id="source_connection_id",
@@ -286,6 +308,8 @@ class SourceConnectionsClient:
             cron_schedule=cron_schedule,
             connection_id=connection_id,
             white_label_id=white_label_id,
+            auth_provider=auth_provider,
+            auth_provider_config=auth_provider_config,
             request_options=request_options,
         )
         return _response.data
@@ -328,6 +352,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.delete_source_connection(
             source_connection_id="source_connection_id",
@@ -375,6 +400,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.run_source_connection(
             source_connection_id="source_connection_id",
@@ -414,6 +440,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.list_source_connection_jobs(
             source_connection_id="source_connection_id",
@@ -450,6 +477,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.get_source_connection_job(
             source_connection_id="source_connection_id",
@@ -494,6 +522,7 @@ class SourceConnectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.source_connections.cancel_source_connection_job(
             source_connection_id="source_connection_id",
@@ -565,6 +594,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -589,6 +619,8 @@ class AsyncSourceConnectionsClient:
         collection: typing.Optional[str] = OMIT,
         cron_schedule: typing.Optional[str] = OMIT,
         auth_fields: typing.Optional[ConfigValues] = OMIT,
+        auth_provider: typing.Optional[str] = OMIT,
+        auth_provider_config: typing.Optional[ConfigValues] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
@@ -632,6 +664,12 @@ class AsyncSourceConnectionsClient:
         auth_fields : typing.Optional[ConfigValues]
             Authentication credentials required to access the data source. The required fields vary by source type. Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
 
+        auth_provider : typing.Optional[str]
+            Unique readable ID of a connected auth provider to use for authentication instead of providing auth_fields directly. When specified, credentials for the source will be obtained and refreshed automatically by Airweave interaction with the auth provider. To see which auth providers are supported and learn more about how to use them, check [this page](https://docs.airweave.ai/docs/auth-providers).
+
+        auth_provider_config : typing.Optional[ConfigValues]
+            Configuration for the auth provider when using auth_provider field. Required fields vary by auth provider. For Composio, use integration_id and  account_id to specify which integration and account from Composio you want to use to connect to the source.
+
         sync_immediately : typing.Optional[bool]
             Whether to start an initial data synchronization immediately after creating the connection.
 
@@ -651,6 +689,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -671,6 +710,8 @@ class AsyncSourceConnectionsClient:
             collection=collection,
             cron_schedule=cron_schedule,
             auth_fields=auth_fields,
+            auth_provider=auth_provider,
+            auth_provider_config=auth_provider_config,
             sync_immediately=sync_immediately,
             request_options=request_options,
         )
@@ -710,6 +751,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -737,6 +779,8 @@ class AsyncSourceConnectionsClient:
         cron_schedule: typing.Optional[str] = OMIT,
         connection_id: typing.Optional[str] = OMIT,
         white_label_id: typing.Optional[str] = OMIT,
+        auth_provider: typing.Optional[str] = OMIT,
+        auth_provider_config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
@@ -773,6 +817,12 @@ class AsyncSourceConnectionsClient:
         white_label_id : typing.Optional[str]
             ID of the white label integration. Used for custom OAuth integrations with your own branding.
 
+        auth_provider : typing.Optional[str]
+            Updated auth provider readable ID. Only relevant if the connection uses an auth provider.
+
+        auth_provider_config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Updated configuration for the auth provider. Only relevant if the connection uses an auth provider.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -789,6 +839,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -809,6 +860,8 @@ class AsyncSourceConnectionsClient:
             cron_schedule=cron_schedule,
             connection_id=connection_id,
             white_label_id=white_label_id,
+            auth_provider=auth_provider,
+            auth_provider_config=auth_provider_config,
             request_options=request_options,
         )
         return _response.data
@@ -853,6 +906,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -908,6 +962,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -955,6 +1010,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -1001,6 +1057,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -1053,6 +1110,7 @@ class AsyncSourceConnectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 

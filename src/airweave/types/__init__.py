@@ -5,6 +5,10 @@
 from .any import Any
 from .api_key import ApiKey
 from .api_key_create import ApiKeyCreate
+from .auth_provider import AuthProvider
+from .auth_provider_connection import AuthProviderConnection
+from .auth_provider_connection_create import AuthProviderConnectionCreate
+from .auth_provider_connection_update import AuthProviderConnectionUpdate
 from .auth_type import AuthType
 from .body_connect_slack_with_token_connections_direct_token_slack_post import (
     BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
@@ -83,7 +87,6 @@ from .payload_field import PayloadField
 from .query_expansion_strategy import QueryExpansionStrategy
 from .range import Range
 from .response_type import ResponseType
-from .search_request import SearchRequest
 from .search_response import SearchResponse
 from .search_status import SearchStatus
 from .should import Should
@@ -121,6 +124,10 @@ __all__ = [
     "Any",
     "ApiKey",
     "ApiKeyCreate",
+    "AuthProvider",
+    "AuthProviderConnection",
+    "AuthProviderConnectionCreate",
+    "AuthProviderConnectionUpdate",
     "AuthType",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
     "BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost",
@@ -195,7 +202,6 @@ __all__ = [
     "QueryExpansionStrategy",
     "Range",
     "ResponseType",
-    "SearchRequest",
     "SearchResponse",
     "SearchStatus",
     "Should",

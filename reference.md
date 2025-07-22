@@ -31,6 +31,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.sources.read_source(
     short_name="short_name",
@@ -104,6 +105,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.sources.read_sources()
 
@@ -165,6 +167,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.list_collections()
 
@@ -245,6 +248,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.create_collection(
     name="Finance Data",
@@ -324,6 +328,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.get_collection(
     readable_id="readable_id",
@@ -399,6 +404,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.update_collection(
     readable_id="readable_id",
@@ -484,6 +490,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.delete_collection(
     readable_id="readable_id",
@@ -565,6 +572,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.search_collection(
     readable_id="readable_id",
@@ -653,6 +661,156 @@ client.collections.search_collection(
 </dl>
 </details>
 
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search_collection_advanced</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Advanced search with comprehensive filtering and options.
+
+This endpoint supports:
+- Metadata filtering using Qdrant's native filter syntax
+- Pagination with offset and limit
+- Score threshold filtering
+- Query expansion strategies
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK, FieldCondition, Filter
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
+)
+client.collections.search_collection_advanced(
+    readable_id="readable_id",
+    query="customer payment issues",
+    filter=Filter(
+        must=FieldCondition(
+            key="key",
+        ),
+    ),
+    limit=50,
+    score_threshold=0.7,
+    response_type="completion",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` — The unique readable identifier of the collection to search
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — The search query text
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[Filter]` — Qdrant native filter for metadata-based filtering
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**offset:** `typing.Optional[int]` — Number of results to skip
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Maximum number of results to return
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**score_threshold:** `typing.Optional[float]` — Minimum similarity score threshold
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**summarize:** `typing.Optional[bool]` — Whether to summarize results
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**response_type:** `typing.Optional[ResponseType]` — Type of response (raw or completion)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**expansion_strategy:** `typing.Optional[QueryExpansionStrategy]` — Query expansion strategy. Enhances recall by expanding the query with synonyms, related terms, and other variations, but increases latency.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.collections.<a href="src/airweave/collections/client.py">refresh_all_source_connections</a>(...)</code></summary>
 <dl>
 <dd>
@@ -689,6 +847,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.refresh_all_source_connections(
     readable_id="readable_id",
@@ -766,6 +925,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.list_source_connections()
 
@@ -864,6 +1024,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.create_source_connection(
     name="Production Stripe Account",
@@ -940,6 +1101,22 @@ client.source_connections.create_source_connection(
 <dl>
 <dd>
 
+**auth_provider:** `typing.Optional[str]` — Unique readable ID of a connected auth provider to use for authentication instead of providing auth_fields directly. When specified, credentials for the source will be obtained and refreshed automatically by Airweave interaction with the auth provider. To see which auth providers are supported and learn more about how to use them, check [this page](https://docs.airweave.ai/docs/auth-providers).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**auth_provider_config:** `typing.Optional[ConfigValues]` — Configuration for the auth provider when using auth_provider field. Required fields vary by auth provider. For Composio, use integration_id and  account_id to specify which integration and account from Composio you want to use to connect to the source.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **sync_immediately:** `typing.Optional[bool]` — Whether to start an initial data synchronization immediately after creating the connection.
     
 </dd>
@@ -991,6 +1168,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.get_source_connection(
     source_connection_id="source_connection_id",
@@ -1074,6 +1252,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.update_source_connection(
     source_connection_id="source_connection_id",
@@ -1157,6 +1336,22 @@ client.source_connections.update_source_connection(
 <dl>
 <dd>
 
+**auth_provider:** `typing.Optional[str]` — Updated auth provider readable ID. Only relevant if the connection uses an auth provider.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**auth_provider_config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Updated configuration for the auth provider. Only relevant if the connection uses an auth provider.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -1206,6 +1401,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.delete_source_connection(
     source_connection_id="source_connection_id",
@@ -1289,6 +1485,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.run_source_connection(
     source_connection_id="source_connection_id",
@@ -1371,6 +1568,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.list_source_connection_jobs(
     source_connection_id="source_connection_id",
@@ -1441,6 +1639,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.get_source_connection_job(
     source_connection_id="source_connection_id",
@@ -1525,6 +1724,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.source_connections.cancel_source_connection_job(
     source_connection_id="source_connection_id",
@@ -1612,6 +1812,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.list_white_labels()
 
@@ -1680,6 +1881,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.create_white_label(
     name="Customer Portal Slack Integration",
@@ -1795,6 +1997,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.get_white_label(
     white_label_id="white_label_id",
@@ -1865,6 +2068,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.update_white_label(
     white_label_id="white_label_id",
@@ -1983,6 +2187,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.delete_white_label(
     white_label_id="white_label_id",
@@ -2058,6 +2263,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.get_white_label_oauth_2_auth_url(
     white_label_id="white_label_id",
@@ -2131,6 +2337,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.list_white_label_source_connections(
     white_label_id="white_label_id",
@@ -2208,6 +2415,7 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
+    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
     white_label_id="white_label_id",

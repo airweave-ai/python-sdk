@@ -9,8 +9,10 @@ from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
+from ..core.serialization import convert_and_respect_annotation_metadata
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.collection import Collection
+from ..types.filter import Filter
 from ..types.http_validation_error import HttpValidationError
 from ..types.query_expansion_strategy import QueryExpansionStrategy
 from ..types.response_type import ResponseType
@@ -401,6 +403,111 @@ class RawCollectionsClient:
                 "expansion_strategy": expansion_strategy,
             },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchResponse,
+                    parse_obj_as(
+                        type_=SearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def search_collection_advanced(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        filter: typing.Optional[Filter] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        score_threshold: typing.Optional[float] = OMIT,
+        summarize: typing.Optional[bool] = OMIT,
+        response_type: typing.Optional[ResponseType] = OMIT,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[SearchResponse]:
+        """
+        Advanced search with comprehensive filtering and options.
+
+        This endpoint supports:
+        - Metadata filtering using Qdrant's native filter syntax
+        - Pagination with offset and limit
+        - Score threshold filtering
+        - Query expansion strategies
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to search
+
+        query : str
+            The search query text
+
+        filter : typing.Optional[Filter]
+            Qdrant native filter for metadata-based filtering
+
+        offset : typing.Optional[int]
+            Number of results to skip
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        summarize : typing.Optional[bool]
+            Whether to summarize results
+
+        response_type : typing.Optional[ResponseType]
+            Type of response (raw or completion)
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy. Enhances recall by expanding the query with synonyms, related terms, and other variations, but increases latency.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[SearchResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="POST",
+            json={
+                "query": query,
+                "filter": convert_and_respect_annotation_metadata(object_=filter, annotation=Filter, direction="write"),
+                "offset": offset,
+                "limit": limit,
+                "score_threshold": score_threshold,
+                "summarize": summarize,
+                "response_type": response_type,
+                "expansion_strategy": expansion_strategy,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -864,6 +971,111 @@ class AsyncRawCollectionsClient:
                 "expansion_strategy": expansion_strategy,
             },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchResponse,
+                    parse_obj_as(
+                        type_=SearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search_collection_advanced(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        filter: typing.Optional[Filter] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        score_threshold: typing.Optional[float] = OMIT,
+        summarize: typing.Optional[bool] = OMIT,
+        response_type: typing.Optional[ResponseType] = OMIT,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[SearchResponse]:
+        """
+        Advanced search with comprehensive filtering and options.
+
+        This endpoint supports:
+        - Metadata filtering using Qdrant's native filter syntax
+        - Pagination with offset and limit
+        - Score threshold filtering
+        - Query expansion strategies
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to search
+
+        query : str
+            The search query text
+
+        filter : typing.Optional[Filter]
+            Qdrant native filter for metadata-based filtering
+
+        offset : typing.Optional[int]
+            Number of results to skip
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        summarize : typing.Optional[bool]
+            Whether to summarize results
+
+        response_type : typing.Optional[ResponseType]
+            Type of response (raw or completion)
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy. Enhances recall by expanding the query with synonyms, related terms, and other variations, but increases latency.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[SearchResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="POST",
+            json={
+                "query": query,
+                "filter": convert_and_respect_annotation_metadata(object_=filter, annotation=Filter, direction="write"),
+                "offset": offset,
+                "limit": limit,
+                "score_threshold": score_threshold,
+                "summarize": summarize,
+                "response_type": response_type,
+                "expansion_strategy": expansion_strategy,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:

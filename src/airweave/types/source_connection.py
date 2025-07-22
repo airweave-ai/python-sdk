@@ -41,6 +41,16 @@ class SourceConnection(UniversalBaseModel):
     Identifier for custom OAuth integrations. Only present for connections created through white label OAuth flows.
     """
 
+    auth_provider: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Readable ID of the auth provider used to create this connection. Present only if the connection was created through an auth provider.
+    """
+
+    auth_provider_config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Configuration used with the auth provider to create this connection. Present only if the connection was created through an auth provider.
+    """
+
     id: str = pydantic.Field()
     """
     Unique system identifier for this source connection. This UUID is generated automatically and used for API operations.

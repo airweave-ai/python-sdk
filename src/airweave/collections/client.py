@@ -5,6 +5,7 @@ import typing
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.collection import Collection
+from ..types.filter import Filter
 from ..types.query_expansion_strategy import QueryExpansionStrategy
 from ..types.response_type import ResponseType
 from ..types.search_response import SearchResponse
@@ -62,6 +63,7 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.list_collections()
         """
@@ -104,6 +106,7 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.create_collection(
             name="Finance Data",
@@ -140,6 +143,7 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.get_collection(
             readable_id="readable_id",
@@ -185,6 +189,7 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.update_collection(
             readable_id="readable_id",
@@ -232,6 +237,7 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.delete_collection(
             readable_id="readable_id",
@@ -297,6 +303,7 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.search_collection(
             readable_id="readable_id",
@@ -310,6 +317,101 @@ class CollectionsClient:
             limit=limit,
             offset=offset,
             score_threshold=score_threshold,
+            expansion_strategy=expansion_strategy,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def search_collection_advanced(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        filter: typing.Optional[Filter] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        score_threshold: typing.Optional[float] = OMIT,
+        summarize: typing.Optional[bool] = OMIT,
+        response_type: typing.Optional[ResponseType] = OMIT,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchResponse:
+        """
+        Advanced search with comprehensive filtering and options.
+
+        This endpoint supports:
+        - Metadata filtering using Qdrant's native filter syntax
+        - Pagination with offset and limit
+        - Score threshold filtering
+        - Query expansion strategies
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to search
+
+        query : str
+            The search query text
+
+        filter : typing.Optional[Filter]
+            Qdrant native filter for metadata-based filtering
+
+        offset : typing.Optional[int]
+            Number of results to skip
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        summarize : typing.Optional[bool]
+            Whether to summarize results
+
+        response_type : typing.Optional[ResponseType]
+            Type of response (raw or completion)
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy. Enhances recall by expanding the query with synonyms, related terms, and other variations, but increases latency.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchResponse
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK, FieldCondition, Filter
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+        client.collections.search_collection_advanced(
+            readable_id="readable_id",
+            query="customer payment issues",
+            filter=Filter(
+                must=FieldCondition(
+                    key="key",
+                ),
+            ),
+            limit=50,
+            score_threshold=0.7,
+            response_type="completion",
+        )
+        """
+        _response = self._raw_client.search_collection_advanced(
+            readable_id,
+            query=query,
+            filter=filter,
+            offset=offset,
+            limit=limit,
+            score_threshold=score_threshold,
+            summarize=summarize,
+            response_type=response_type,
             expansion_strategy=expansion_strategy,
             request_options=request_options,
         )
@@ -345,6 +447,7 @@ class CollectionsClient:
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
         client.collections.refresh_all_source_connections(
             readable_id="readable_id",
@@ -403,6 +506,7 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -453,6 +557,7 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -497,6 +602,7 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -550,6 +656,7 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -605,6 +712,7 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -678,6 +786,7 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
@@ -697,6 +806,109 @@ class AsyncCollectionsClient:
             limit=limit,
             offset=offset,
             score_threshold=score_threshold,
+            expansion_strategy=expansion_strategy,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def search_collection_advanced(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        filter: typing.Optional[Filter] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        score_threshold: typing.Optional[float] = OMIT,
+        summarize: typing.Optional[bool] = OMIT,
+        response_type: typing.Optional[ResponseType] = OMIT,
+        expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchResponse:
+        """
+        Advanced search with comprehensive filtering and options.
+
+        This endpoint supports:
+        - Metadata filtering using Qdrant's native filter syntax
+        - Pagination with offset and limit
+        - Score threshold filtering
+        - Query expansion strategies
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to search
+
+        query : str
+            The search query text
+
+        filter : typing.Optional[Filter]
+            Qdrant native filter for metadata-based filtering
+
+        offset : typing.Optional[int]
+            Number of results to skip
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        score_threshold : typing.Optional[float]
+            Minimum similarity score threshold
+
+        summarize : typing.Optional[bool]
+            Whether to summarize results
+
+        response_type : typing.Optional[ResponseType]
+            Type of response (raw or completion)
+
+        expansion_strategy : typing.Optional[QueryExpansionStrategy]
+            Query expansion strategy. Enhances recall by expanding the query with synonyms, related terms, and other variations, but increases latency.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchResponse
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK, FieldCondition, Filter
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
+        )
+
+
+        async def main() -> None:
+            await client.collections.search_collection_advanced(
+                readable_id="readable_id",
+                query="customer payment issues",
+                filter=Filter(
+                    must=FieldCondition(
+                        key="key",
+                    ),
+                ),
+                limit=50,
+                score_threshold=0.7,
+                response_type="completion",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search_collection_advanced(
+            readable_id,
+            query=query,
+            filter=filter,
+            offset=offset,
+            limit=limit,
+            score_threshold=score_threshold,
+            summarize=summarize,
+            response_type=response_type,
             expansion_strategy=expansion_strategy,
             request_options=request_options,
         )
@@ -734,6 +946,7 @@ class AsyncCollectionsClient:
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
+            organization_id="YOUR_ORGANIZATION_ID",
         )
 
 
