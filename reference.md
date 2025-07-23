@@ -1109,7 +1109,7 @@ client.source_connections.create_source_connection(
 <dl>
 <dd>
 
-**auth_provider_config:** `typing.Optional[ConfigValues]` — Configuration for the auth provider when using auth_provider field. Required fields vary by auth provider. For Composio, use integration_id and  account_id to specify which integration and account from Composio you want to use to connect to the source.
+**auth_provider_config:** `typing.Optional[ConfigValues]` — Configuration for the auth provider when using auth_provider field. Required fields vary by auth provider. For Composio, use auth_config_id and  account_id to specify which integration and account from Composio you want to use to connect to the source.
     
 </dd>
 </dl>
