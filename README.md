@@ -24,7 +24,6 @@ from airweave import AirweaveSDK
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
-    organization_id="YOUR_ORGANIZATION_ID",
 )
 client.collections.create_collection(
     name="Finance Data",
@@ -43,7 +42,6 @@ from airweave import AsyncAirweaveSDK
 
 client = AsyncAirweaveSDK(
     api_key="YOUR_API_KEY",
-    organization_id="YOUR_ORGANIZATION_ID",
 )
 
 
