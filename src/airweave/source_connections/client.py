@@ -311,28 +311,20 @@ class SourceConnectionsClient:
         return _response.data
 
     def delete_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
-        Delete a source connection.
+        Delete a source connection and all associated data.
 
         <br/><br/>
 
-        Permanently removes the source connection configuration and credentials.
-        By default, previously synced data remains in your destination systems for continuity.
-        Use delete_data=true to also remove all associated data from destination systems.
+        Permanently removes the source connection configuration, credentials, and all synced data
+        from the destination systems. This action cannot be undone.
 
         Parameters
         ----------
         source_connection_id : str
             The unique identifier of the source connection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all synced data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -353,9 +345,7 @@ class SourceConnectionsClient:
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.delete_source_connection(
-            source_connection_id, delete_data=delete_data, request_options=request_options
-        )
+        _response = self._raw_client.delete_source_connection(source_connection_id, request_options=request_options)
         return _response.data
 
     def run_source_connection(
@@ -854,28 +844,20 @@ class AsyncSourceConnectionsClient:
         return _response.data
 
     async def delete_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
-        Delete a source connection.
+        Delete a source connection and all associated data.
 
         <br/><br/>
 
-        Permanently removes the source connection configuration and credentials.
-        By default, previously synced data remains in your destination systems for continuity.
-        Use delete_data=true to also remove all associated data from destination systems.
+        Permanently removes the source connection configuration, credentials, and all synced data
+        from the destination systems. This action cannot be undone.
 
         Parameters
         ----------
         source_connection_id : str
             The unique identifier of the source connection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all synced data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -905,7 +887,7 @@ class AsyncSourceConnectionsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.delete_source_connection(
-            source_connection_id, delete_data=delete_data, request_options=request_options
+            source_connection_id, request_options=request_options
         )
         return _response.data
 

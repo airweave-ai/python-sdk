@@ -459,13 +459,11 @@ client.collections.update_collection(
 <dl>
 <dd>
 
-Delete a collection and optionally its associated data.
+Delete a collection and all associated data.
 
-<br/><br/>
-Permanently removes a collection from your organization. By default, this only
-deletes the collection metadata while preserving the actual data in the
-destination systems.<br/><br/>All source connections within this collection
-will also be deleted as part of the cleanup process.
+Permanently removes a collection from your organization including all synced data
+from the destination systems. All source connections within this collection
+will also be deleted as part of the cleanup process. This action cannot be undone.
 </dd>
 </dl>
 </dd>
@@ -504,14 +502,6 @@ client.collections.delete_collection(
 <dd>
 
 **readable_id:** `str` — The unique readable identifier of the collection to delete
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**delete_data:** `typing.Optional[bool]` — Whether to also delete all associated data from destination systems
     
 </dd>
 </dl>
@@ -1362,13 +1352,12 @@ client.source_connections.update_source_connection(
 <dl>
 <dd>
 
-Delete a source connection.
+Delete a source connection and all associated data.
 
 <br/><br/>
 
-Permanently removes the source connection configuration and credentials.
-By default, previously synced data remains in your destination systems for continuity.
-Use delete_data=true to also remove all associated data from destination systems.
+Permanently removes the source connection configuration, credentials, and all synced data
+from the destination systems. This action cannot be undone.
 </dd>
 </dl>
 </dd>
@@ -1407,14 +1396,6 @@ client.source_connections.delete_source_connection(
 <dd>
 
 **source_connection_id:** `str` — The unique identifier of the source connection to delete
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**delete_data:** `typing.Optional[bool]` — Whether to also delete all synced data from destination systems
     
 </dd>
 </dl>
@@ -2203,7 +2184,7 @@ client.white_labels.delete_white_label(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2240,7 +2221,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.white_labels.get_white_label_oauth_2_auth_url(
+client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
     white_label_id="white_label_id",
 )
 
@@ -2351,7 +2332,7 @@ client.white_labels.list_white_label_source_connections(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2390,7 +2371,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.white_labels.exchange_white_label_oauth_2_code(
+client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
     white_label_id="white_label_id",
     code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
 )

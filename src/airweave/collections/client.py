@@ -196,28 +196,19 @@ class CollectionsClient:
         return _response.data
 
     def delete_collection(
-        self,
-        readable_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Collection:
         """
-        Delete a collection and optionally its associated data.
+        Delete a collection and all associated data.
 
-        <br/><br/>
-        Permanently removes a collection from your organization. By default, this only
-        deletes the collection metadata while preserving the actual data in the
-        destination systems.<br/><br/>All source connections within this collection
-        will also be deleted as part of the cleanup process.
+        Permanently removes a collection from your organization including all synced data
+        from the destination systems. All source connections within this collection
+        will also be deleted as part of the cleanup process. This action cannot be undone.
 
         Parameters
         ----------
         readable_id : str
             The unique readable identifier of the collection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -238,9 +229,7 @@ class CollectionsClient:
             readable_id="readable_id",
         )
         """
-        _response = self._raw_client.delete_collection(
-            readable_id, delete_data=delete_data, request_options=request_options
-        )
+        _response = self._raw_client.delete_collection(readable_id, request_options=request_options)
         return _response.data
 
     def search_collection(
@@ -661,28 +650,19 @@ class AsyncCollectionsClient:
         return _response.data
 
     async def delete_collection(
-        self,
-        readable_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> Collection:
         """
-        Delete a collection and optionally its associated data.
+        Delete a collection and all associated data.
 
-        <br/><br/>
-        Permanently removes a collection from your organization. By default, this only
-        deletes the collection metadata while preserving the actual data in the
-        destination systems.<br/><br/>All source connections within this collection
-        will also be deleted as part of the cleanup process.
+        Permanently removes a collection from your organization including all synced data
+        from the destination systems. All source connections within this collection
+        will also be deleted as part of the cleanup process. This action cannot be undone.
 
         Parameters
         ----------
         readable_id : str
             The unique readable identifier of the collection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -711,9 +691,7 @@ class AsyncCollectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.delete_collection(
-            readable_id, delete_data=delete_data, request_options=request_options
-        )
+        _response = await self._raw_client.delete_collection(readable_id, request_options=request_options)
         return _response.data
 
     async def search_collection(

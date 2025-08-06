@@ -389,28 +389,20 @@ class RawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def delete_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnection]:
         """
-        Delete a source connection.
+        Delete a source connection and all associated data.
 
         <br/><br/>
 
-        Permanently removes the source connection configuration and credentials.
-        By default, previously synced data remains in your destination systems for continuity.
-        Use delete_data=true to also remove all associated data from destination systems.
+        Permanently removes the source connection configuration, credentials, and all synced data
+        from the destination systems. This action cannot be undone.
 
         Parameters
         ----------
         source_connection_id : str
             The unique identifier of the source connection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all synced data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -423,9 +415,6 @@ class RawSourceConnectionsClient:
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="DELETE",
-            params={
-                "delete_data": delete_data,
-            },
             request_options=request_options,
         )
         try:
@@ -1056,28 +1045,20 @@ class AsyncRawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def delete_source_connection(
-        self,
-        source_connection_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnection]:
         """
-        Delete a source connection.
+        Delete a source connection and all associated data.
 
         <br/><br/>
 
-        Permanently removes the source connection configuration and credentials.
-        By default, previously synced data remains in your destination systems for continuity.
-        Use delete_data=true to also remove all associated data from destination systems.
+        Permanently removes the source connection configuration, credentials, and all synced data
+        from the destination systems. This action cannot be undone.
 
         Parameters
         ----------
         source_connection_id : str
             The unique identifier of the source connection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all synced data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1090,9 +1071,6 @@ class AsyncRawSourceConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="DELETE",
-            params={
-                "delete_data": delete_data,
-            },
             request_options=request_options,
         )
         try:

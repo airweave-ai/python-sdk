@@ -277,28 +277,19 @@ class RawCollectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def delete_collection(
-        self,
-        readable_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[Collection]:
         """
-        Delete a collection and optionally its associated data.
+        Delete a collection and all associated data.
 
-        <br/><br/>
-        Permanently removes a collection from your organization. By default, this only
-        deletes the collection metadata while preserving the actual data in the
-        destination systems.<br/><br/>All source connections within this collection
-        will also be deleted as part of the cleanup process.
+        Permanently removes a collection from your organization including all synced data
+        from the destination systems. All source connections within this collection
+        will also be deleted as part of the cleanup process. This action cannot be undone.
 
         Parameters
         ----------
         readable_id : str
             The unique readable identifier of the collection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -311,9 +302,6 @@ class RawCollectionsClient:
         _response = self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}",
             method="DELETE",
-            params={
-                "delete_data": delete_data,
-            },
             request_options=request_options,
         )
         try:
@@ -845,28 +833,19 @@ class AsyncRawCollectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def delete_collection(
-        self,
-        readable_id: str,
-        *,
-        delete_data: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Collection]:
         """
-        Delete a collection and optionally its associated data.
+        Delete a collection and all associated data.
 
-        <br/><br/>
-        Permanently removes a collection from your organization. By default, this only
-        deletes the collection metadata while preserving the actual data in the
-        destination systems.<br/><br/>All source connections within this collection
-        will also be deleted as part of the cleanup process.
+        Permanently removes a collection from your organization including all synced data
+        from the destination systems. All source connections within this collection
+        will also be deleted as part of the cleanup process. This action cannot be undone.
 
         Parameters
         ----------
         readable_id : str
             The unique readable identifier of the collection to delete
-
-        delete_data : typing.Optional[bool]
-            Whether to also delete all associated data from destination systems
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -879,9 +858,6 @@ class AsyncRawCollectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}",
             method="DELETE",
-            params={
-                "delete_data": delete_data,
-            },
             request_options=request_options,
         )
         try:
