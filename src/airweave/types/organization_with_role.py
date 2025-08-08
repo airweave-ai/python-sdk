@@ -22,6 +22,7 @@ class OrganizationWithRole(UniversalBaseModel):
     role: str
     is_primary: bool
     auth_0_org_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="auth0_org_id")] = None
+    org_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

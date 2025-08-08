@@ -79,7 +79,6 @@ class CollectionsClient:
         """
         Create a new collection.
 
-        <br/><br/>
         The newly created collection is initially empty and does not contain any data
         until you explicitly add source connections to it.
 
@@ -159,7 +158,6 @@ class CollectionsClient:
         """
         Update a collection's properties.
 
-        <br/><br/>
         Modifies the display name of an existing collection.
         Note that the readable ID cannot be changed after creation to maintain stable
         API endpoints and preserve any existing integrations or bookmarks.
@@ -405,7 +403,7 @@ class CollectionsClient:
         """
         Trigger data synchronization for all source connections in the collection.
 
-        <br/><br/>The sync jobs run asynchronously in the background, so this endpoint
+        The sync jobs run asynchronously in the background, so this endpoint
         returns immediately with job details that you can use to track progress. You can
         monitor the status of individual data synchronization using the source connection
         endpoints.
@@ -509,7 +507,6 @@ class AsyncCollectionsClient:
         """
         Create a new collection.
 
-        <br/><br/>
         The newly created collection is initially empty and does not contain any data
         until you explicitly add source connections to it.
 
@@ -605,7 +602,6 @@ class AsyncCollectionsClient:
         """
         Update a collection's properties.
 
-        <br/><br/>
         Modifies the display name of an existing collection.
         Note that the readable ID cannot be changed after creation to maintain stable
         API endpoints and preserve any existing integrations or bookmarks.
@@ -883,7 +879,7 @@ class AsyncCollectionsClient:
         """
         Trigger data synchronization for all source connections in the collection.
 
-        <br/><br/>The sync jobs run asynchronously in the background, so this endpoint
+        The sync jobs run asynchronously in the background, so this endpoint
         returns immediately with job details that you can use to track progress. You can
         monitor the status of individual data synchronization using the source connection
         endpoints.

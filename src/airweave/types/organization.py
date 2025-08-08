@@ -20,6 +20,7 @@ class Organization(UniversalBaseModel):
     id: str
     created_at: dt.datetime
     modified_at: dt.datetime
+    org_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

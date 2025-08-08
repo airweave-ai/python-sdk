@@ -41,7 +41,6 @@ class SourceConnectionsClient:
         """
         List source connections across your organization.
 
-        <br/><br/>
         By default, returns ALL source connections from every collection in your
         organization. Use the 'collection' parameter to filter results to a specific
         collection. This is useful for getting an overview of all your data sources
@@ -97,8 +96,6 @@ class SourceConnectionsClient:
     ) -> SourceConnection:
         """
         Create a new source connection to sync data into your collection.
-
-        <br/><br/>
 
         **This endpoint only works for sources that do not use OAuth2.0.**
         Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
@@ -239,8 +236,6 @@ class SourceConnectionsClient:
         """
         Update a source connection's properties.
 
-        <br/><br/>
-
         Modify the configuration of an existing source connection including its name,
         authentication credentials, configuration fields, sync schedule, or source-specific settings.
 
@@ -316,10 +311,9 @@ class SourceConnectionsClient:
         """
         Delete a source connection and all associated data.
 
-        <br/><br/>
-
-        Permanently removes the source connection configuration, credentials, and all synced data
-        from the destination systems. This action cannot be undone.
+        Permanently removes the source connection configuration and credentials.
+        By default, previously synced data remains in your destination systems for continuity.
+        Use delete_data=true to also remove all associated data from destination systems.
 
         Parameters
         ----------
@@ -358,7 +352,6 @@ class SourceConnectionsClient:
         """
         Manually trigger a data sync for this source connection.
 
-        <br/><br/>
         Starts an immediate synchronization job that extracts fresh data from your source,
         transforms it according to your configuration, and updates the destination systems.
         The job runs asynchronously and endpoint returns immediately with tracking information.
@@ -401,7 +394,6 @@ class SourceConnectionsClient:
         """
         List all sync jobs for a source connection.
 
-        <br/><br/>
         Returns the complete history of data synchronization jobs including successful syncs,
         failed attempts, and currently running operations.
 
@@ -477,7 +469,6 @@ class SourceConnectionsClient:
         """
         Cancel a running sync job.
 
-        <br/><br/>
         Sends a cancellation signal to stop an in-progress data synchronization.
         The job will complete its current operation and then terminate gracefully.
         Only jobs in 'created', 'pending', or 'in_progress' states can be cancelled.
@@ -542,7 +533,6 @@ class AsyncSourceConnectionsClient:
         """
         List source connections across your organization.
 
-        <br/><br/>
         By default, returns ALL source connections from every collection in your
         organization. Use the 'collection' parameter to filter results to a specific
         collection. This is useful for getting an overview of all your data sources
@@ -606,8 +596,6 @@ class AsyncSourceConnectionsClient:
     ) -> SourceConnection:
         """
         Create a new source connection to sync data into your collection.
-
-        <br/><br/>
 
         **This endpoint only works for sources that do not use OAuth2.0.**
         Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
@@ -764,8 +752,6 @@ class AsyncSourceConnectionsClient:
         """
         Update a source connection's properties.
 
-        <br/><br/>
-
         Modify the configuration of an existing source connection including its name,
         authentication credentials, configuration fields, sync schedule, or source-specific settings.
 
@@ -849,10 +835,9 @@ class AsyncSourceConnectionsClient:
         """
         Delete a source connection and all associated data.
 
-        <br/><br/>
-
-        Permanently removes the source connection configuration, credentials, and all synced data
-        from the destination systems. This action cannot be undone.
+        Permanently removes the source connection configuration and credentials.
+        By default, previously synced data remains in your destination systems for continuity.
+        Use delete_data=true to also remove all associated data from destination systems.
 
         Parameters
         ----------
@@ -901,7 +886,6 @@ class AsyncSourceConnectionsClient:
         """
         Manually trigger a data sync for this source connection.
 
-        <br/><br/>
         Starts an immediate synchronization job that extracts fresh data from your source,
         transforms it according to your configuration, and updates the destination systems.
         The job runs asynchronously and endpoint returns immediately with tracking information.
@@ -952,7 +936,6 @@ class AsyncSourceConnectionsClient:
         """
         List all sync jobs for a source connection.
 
-        <br/><br/>
         Returns the complete history of data synchronization jobs including successful syncs,
         failed attempts, and currently running operations.
 
@@ -1046,7 +1029,6 @@ class AsyncSourceConnectionsClient:
         """
         Cancel a running sync job.
 
-        <br/><br/>
         Sends a cancellation signal to stop an in-progress data synchronization.
         The job will complete its current operation and then terminate gracefully.
         Only jobs in 'created', 'pending', or 'in_progress' states can be cancelled.

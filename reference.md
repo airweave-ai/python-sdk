@@ -224,7 +224,6 @@ client.collections.list_collections()
 
 Create a new collection.
 
-<br/><br/>
 The newly created collection is initially empty and does not contain any data
 until you explicitly add source connections to it.
 </dd>
@@ -377,7 +376,6 @@ client.collections.get_collection(
 
 Update a collection's properties.
 
-<br/><br/>
 Modifies the display name of an existing collection.
 Note that the readable ID cannot be changed after creation to maintain stable
 API endpoints and preserve any existing integrations or bookmarks.
@@ -806,7 +804,7 @@ client.collections.search_collection_advanced(
 
 Trigger data synchronization for all source connections in the collection.
 
-<br/><br/>The sync jobs run asynchronously in the background, so this endpoint
+The sync jobs run asynchronously in the background, so this endpoint
 returns immediately with job details that you can use to track progress. You can
 monitor the status of individual data synchronization using the source connection
 endpoints.
@@ -882,7 +880,6 @@ client.collections.refresh_all_source_connections(
 
 List source connections across your organization.
 
-<br/><br/>
 By default, returns ALL source connections from every collection in your
 organization. Use the 'collection' parameter to filter results to a specific
 collection. This is useful for getting an overview of all your data sources
@@ -971,8 +968,6 @@ client.source_connections.list_source_connections()
 <dd>
 
 Create a new source connection to sync data into your collection.
-
-<br/><br/>
 
 **This endpoint only works for sources that do not use OAuth2.0.**
 Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
@@ -1207,8 +1202,6 @@ client.source_connections.get_source_connection(
 
 Update a source connection's properties.
 
-<br/><br/>
-
 Modify the configuration of an existing source connection including its name,
 authentication credentials, configuration fields, sync schedule, or source-specific settings.
 </dd>
@@ -1354,10 +1347,9 @@ client.source_connections.update_source_connection(
 
 Delete a source connection and all associated data.
 
-<br/><br/>
-
-Permanently removes the source connection configuration, credentials, and all synced data
-from the destination systems. This action cannot be undone.
+Permanently removes the source connection configuration and credentials.
+By default, previously synced data remains in your destination systems for continuity.
+Use delete_data=true to also remove all associated data from destination systems.
 </dd>
 </dl>
 </dd>
@@ -1429,7 +1421,6 @@ client.source_connections.delete_source_connection(
 
 Manually trigger a data sync for this source connection.
 
-<br/><br/>
 Starts an immediate synchronization job that extracts fresh data from your source,
 transforms it according to your configuration, and updates the destination systems.
 The job runs asynchronously and endpoint returns immediately with tracking information.
@@ -1512,7 +1503,6 @@ client.source_connections.run_source_connection(
 
 List all sync jobs for a source connection.
 
-<br/><br/>
 Returns the complete history of data synchronization jobs including successful syncs,
 failed attempts, and currently running operations.
 </dd>
@@ -1665,7 +1655,6 @@ client.source_connections.get_source_connection_job(
 
 Cancel a running sync job.
 
-<br/><br/>
 Sends a cancellation signal to stop an in-progress data synchronization.
 The job will complete its current operation and then terminate gracefully.
 Only jobs in 'created', 'pending', or 'in_progress' states can be cancelled.
@@ -2184,7 +2173,7 @@ client.white_labels.delete_white_label(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2221,7 +2210,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+client.white_labels.get_white_label_oauth_2_auth_url(
     white_label_id="white_label_id",
 )
 
@@ -2332,7 +2321,7 @@ client.white_labels.list_white_label_source_connections(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2371,7 +2360,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+client.white_labels.exchange_white_label_oauth_2_code(
     white_label_id="white_label_id",
     code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
 )

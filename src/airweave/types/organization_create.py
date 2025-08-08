@@ -30,6 +30,11 @@ class OrganizationCreate(UniversalBaseModel):
     Auth0 organization ID
     """
 
+    org_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Additional organization metadata
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
