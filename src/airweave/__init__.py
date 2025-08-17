@@ -134,6 +134,7 @@ from .types import (
 from .errors import UnprocessableEntityError
 from . import collections, source_connections, sources, white_labels
 from .client import AirweaveSDK, AsyncAirweaveSDK
+from .collections import SearchRequestSearchMethod
 from .environment import AirweaveSDKEnvironment
 from .source_connections import SourceConnectionUpdateAuthFields
 from .version import __version__
@@ -232,6 +233,7 @@ __all__ = [
     "QueryExpansionStrategy",
     "Range",
     "ResponseType",
+    "SearchRequestSearchMethod",
     "SearchResponse",
     "SearchStatus",
     "Should",

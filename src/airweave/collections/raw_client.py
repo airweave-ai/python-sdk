@@ -18,6 +18,7 @@ from ..types.query_expansion_strategy import QueryExpansionStrategy
 from ..types.response_type import ResponseType
 from ..types.search_response import SearchResponse
 from ..types.source_connection_job import SourceConnectionJob
+from .types.search_request_search_method import SearchRequestSearchMethod
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -336,8 +337,7 @@ class RawCollectionsClient:
         response_type: typing.Optional[ResponseType] = None,
         limit: typing.Optional[int] = None,
         offset: typing.Optional[int] = None,
-        score_threshold: typing.Optional[float] = None,
-        expansion_strategy: typing.Optional[QueryExpansionStrategy] = None,
+        recency_bias: typing.Optional[float] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SearchResponse]:
         """
@@ -363,11 +363,8 @@ class RawCollectionsClient:
         offset : typing.Optional[int]
             Number of results to skip for pagination
 
-        score_threshold : typing.Optional[float]
-            Minimum similarity score threshold
-
-        expansion_strategy : typing.Optional[QueryExpansionStrategy]
-            Query expansion strategy (auto, llm, or no_expansion)
+        recency_bias : typing.Optional[float]
+            How much to weigh recency vs similarity (0..1). 0 = no recency effect; 1 = rank by recency only.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -385,8 +382,7 @@ class RawCollectionsClient:
                 "response_type": response_type,
                 "limit": limit,
                 "offset": offset,
-                "score_threshold": score_threshold,
-                "expansion_strategy": expansion_strategy,
+                "recency_bias": recency_bias,
             },
             request_options=request_options,
         )
@@ -425,9 +421,12 @@ class RawCollectionsClient:
         offset: typing.Optional[int] = OMIT,
         limit: typing.Optional[int] = OMIT,
         score_threshold: typing.Optional[float] = OMIT,
-        summarize: typing.Optional[bool] = OMIT,
         response_type: typing.Optional[ResponseType] = OMIT,
+        search_method: typing.Optional[SearchRequestSearchMethod] = OMIT,
+        recency_bias: typing.Optional[float] = OMIT,
         expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
+        enable_reranking: typing.Optional[bool] = OMIT,
+        enable_query_interpretation: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SearchResponse]:
         """
@@ -437,7 +436,20 @@ class RawCollectionsClient:
         - Metadata filtering using Qdrant's native filter syntax
         - Pagination with offset and limit
         - Score threshold filtering
-        - Query expansion strategies
+        - Query expansion strategies (default: AUTO, generates up to 4 variations)
+        - Automatic filter extraction from natural language (default: ON)
+        - LLM-based result reranking (default: ON)
+
+        Default behavior:
+        - Query expansion: ON (AUTO strategy)
+        - Query interpretation: ON (extracts filters from natural language)
+        - Reranking: ON (improves relevance using LLM)
+        - Score threshold: None (no filtering)
+
+        To disable features, explicitly set:
+        - enable_reranking: false
+        - enable_query_interpretation: false
+        - expansion_strategy: "no_expansion"
 
         Parameters
         ----------
@@ -451,22 +463,31 @@ class RawCollectionsClient:
             Qdrant native filter for metadata-based filtering
 
         offset : typing.Optional[int]
-            Number of results to skip
+            Number of results to skip (DEFAULT: 0)
 
         limit : typing.Optional[int]
-            Maximum number of results to return
+            Maximum number of results to return (DEFAULT: 20)
 
         score_threshold : typing.Optional[float]
-            Minimum similarity score threshold
-
-        summarize : typing.Optional[bool]
-            Whether to summarize results
+            Minimum similarity score threshold (DEFAULT: None - no filtering)
 
         response_type : typing.Optional[ResponseType]
-            Type of response (raw or completion)
+            Type of response - 'raw' or 'completion' (DEFAULT: 'raw')
+
+        search_method : typing.Optional[SearchRequestSearchMethod]
+            Search method to use (DEFAULT: 'hybrid' - combines neural + BM25)
+
+        recency_bias : typing.Optional[float]
+            How much document age penalizes the similarity score (0..1). 0 = no age penalty (pure similarity); 0.5 = old docs lose up to 50% of their score; 1 = old docs get zero score (pure recency). Applied as: score × (1 - bias + bias × age_factor). Works within top ~10,000 semantic matches. DEFAULT: 0.3
 
         expansion_strategy : typing.Optional[QueryExpansionStrategy]
-            Query expansion strategy. Enhances recall by expanding the query with synonyms, related terms, and other variations, but increases latency.
+            Query expansion strategy (DEFAULT: 'auto' - generates up to 4 query variations). Options: 'auto', 'llm', 'no_expansion'
+
+        enable_reranking : typing.Optional[bool]
+            Enable LLM-based reranking to improve result relevance (DEFAULT: True - enabled, set to False to disable)
+
+        enable_query_interpretation : typing.Optional[bool]
+            Enable automatic filter extraction from natural language query (DEFAULT: True - enabled, set to False to disable)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -485,9 +506,12 @@ class RawCollectionsClient:
                 "offset": offset,
                 "limit": limit,
                 "score_threshold": score_threshold,
-                "summarize": summarize,
                 "response_type": response_type,
+                "search_method": search_method,
+                "recency_bias": recency_bias,
                 "expansion_strategy": expansion_strategy,
+                "enable_reranking": enable_reranking,
+                "enable_query_interpretation": enable_query_interpretation,
             },
             headers={
                 "content-type": "application/json",
@@ -890,8 +914,7 @@ class AsyncRawCollectionsClient:
         response_type: typing.Optional[ResponseType] = None,
         limit: typing.Optional[int] = None,
         offset: typing.Optional[int] = None,
-        score_threshold: typing.Optional[float] = None,
-        expansion_strategy: typing.Optional[QueryExpansionStrategy] = None,
+        recency_bias: typing.Optional[float] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SearchResponse]:
         """
@@ -917,11 +940,8 @@ class AsyncRawCollectionsClient:
         offset : typing.Optional[int]
             Number of results to skip for pagination
 
-        score_threshold : typing.Optional[float]
-            Minimum similarity score threshold
-
-        expansion_strategy : typing.Optional[QueryExpansionStrategy]
-            Query expansion strategy (auto, llm, or no_expansion)
+        recency_bias : typing.Optional[float]
+            How much to weigh recency vs similarity (0..1). 0 = no recency effect; 1 = rank by recency only.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -939,8 +959,7 @@ class AsyncRawCollectionsClient:
                 "response_type": response_type,
                 "limit": limit,
                 "offset": offset,
-                "score_threshold": score_threshold,
-                "expansion_strategy": expansion_strategy,
+                "recency_bias": recency_bias,
             },
             request_options=request_options,
         )
@@ -979,9 +998,12 @@ class AsyncRawCollectionsClient:
         offset: typing.Optional[int] = OMIT,
         limit: typing.Optional[int] = OMIT,
         score_threshold: typing.Optional[float] = OMIT,
-        summarize: typing.Optional[bool] = OMIT,
         response_type: typing.Optional[ResponseType] = OMIT,
+        search_method: typing.Optional[SearchRequestSearchMethod] = OMIT,
+        recency_bias: typing.Optional[float] = OMIT,
         expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
+        enable_reranking: typing.Optional[bool] = OMIT,
+        enable_query_interpretation: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SearchResponse]:
         """
@@ -991,7 +1013,20 @@ class AsyncRawCollectionsClient:
         - Metadata filtering using Qdrant's native filter syntax
         - Pagination with offset and limit
         - Score threshold filtering
-        - Query expansion strategies
+        - Query expansion strategies (default: AUTO, generates up to 4 variations)
+        - Automatic filter extraction from natural language (default: ON)
+        - LLM-based result reranking (default: ON)
+
+        Default behavior:
+        - Query expansion: ON (AUTO strategy)
+        - Query interpretation: ON (extracts filters from natural language)
+        - Reranking: ON (improves relevance using LLM)
+        - Score threshold: None (no filtering)
+
+        To disable features, explicitly set:
+        - enable_reranking: false
+        - enable_query_interpretation: false
+        - expansion_strategy: "no_expansion"
 
         Parameters
         ----------
@@ -1005,22 +1040,31 @@ class AsyncRawCollectionsClient:
             Qdrant native filter for metadata-based filtering
 
         offset : typing.Optional[int]
-            Number of results to skip
+            Number of results to skip (DEFAULT: 0)
 
         limit : typing.Optional[int]
-            Maximum number of results to return
+            Maximum number of results to return (DEFAULT: 20)
 
         score_threshold : typing.Optional[float]
-            Minimum similarity score threshold
-
-        summarize : typing.Optional[bool]
-            Whether to summarize results
+            Minimum similarity score threshold (DEFAULT: None - no filtering)
 
         response_type : typing.Optional[ResponseType]
-            Type of response (raw or completion)
+            Type of response - 'raw' or 'completion' (DEFAULT: 'raw')
+
+        search_method : typing.Optional[SearchRequestSearchMethod]
+            Search method to use (DEFAULT: 'hybrid' - combines neural + BM25)
+
+        recency_bias : typing.Optional[float]
+            How much document age penalizes the similarity score (0..1). 0 = no age penalty (pure similarity); 0.5 = old docs lose up to 50% of their score; 1 = old docs get zero score (pure recency). Applied as: score × (1 - bias + bias × age_factor). Works within top ~10,000 semantic matches. DEFAULT: 0.3
 
         expansion_strategy : typing.Optional[QueryExpansionStrategy]
-            Query expansion strategy. Enhances recall by expanding the query with synonyms, related terms, and other variations, but increases latency.
+            Query expansion strategy (DEFAULT: 'auto' - generates up to 4 query variations). Options: 'auto', 'llm', 'no_expansion'
+
+        enable_reranking : typing.Optional[bool]
+            Enable LLM-based reranking to improve result relevance (DEFAULT: True - enabled, set to False to disable)
+
+        enable_query_interpretation : typing.Optional[bool]
+            Enable automatic filter extraction from natural language query (DEFAULT: True - enabled, set to False to disable)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1039,9 +1083,12 @@ class AsyncRawCollectionsClient:
                 "offset": offset,
                 "limit": limit,
                 "score_threshold": score_threshold,
-                "summarize": summarize,
                 "response_type": response_type,
+                "search_method": search_method,
+                "recency_bias": recency_bias,
                 "expansion_strategy": expansion_strategy,
+                "enable_reranking": enable_reranking,
+                "enable_query_interpretation": enable_query_interpretation,
             },
             headers={
                 "content-type": "application/json",

@@ -2,6 +2,6 @@
 
 # isort: skip_file
 
-from .types import SearchRequestSearchMethod
+from .search_request_search_method import SearchRequestSearchMethod
 
 __all__ = ["SearchRequestSearchMethod"]
