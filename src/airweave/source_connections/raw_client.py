@@ -117,7 +117,8 @@ class RawSourceConnectionsClient:
 
         **This endpoint only works for sources that do not use OAuth2.0.**
         Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
-        connected through the UI where you can complete the OAuth consent flow.<br/><br/>
+        connected through the UI where you can complete the OAuth consent flow
+        or using Auth Providers (see [Auth Providers](/docs/auth-providers)).<br/><br/>
 
         Credentials for a source have to be provided using the `auth_fields` field.
         Currently, it is not automatically checked if the provided credentials are valid.
@@ -764,7 +765,8 @@ class AsyncRawSourceConnectionsClient:
 
         **This endpoint only works for sources that do not use OAuth2.0.**
         Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
-        connected through the UI where you can complete the OAuth consent flow.<br/><br/>
+        connected through the UI where you can complete the OAuth consent flow
+        or using Auth Providers (see [Auth Providers](/docs/auth-providers)).<br/><br/>
 
         Credentials for a source have to be provided using the `auth_fields` field.
         Currently, it is not automatically checked if the provided credentials are valid.

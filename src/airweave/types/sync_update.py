@@ -18,6 +18,9 @@ class SyncUpdate(UniversalBaseModel):
     next_scheduled_run: typing.Optional[dt.datetime] = None
     sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     status: typing.Optional[SyncStatus] = None
+    temporal_schedule_id: typing.Optional[str] = None
+    sync_type: typing.Optional[str] = None
+    minute_level_cron_schedule: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

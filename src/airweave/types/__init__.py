@@ -84,6 +84,7 @@ from .member_response import MemberResponse
 from .message_response import MessageResponse
 from .min_should import MinShould
 from .min_should_conditions_item import MinShouldConditionsItem
+from .minute_level_schedule_config import MinuteLevelScheduleConfig
 from .must import Must
 from .nested import Nested
 from .nested_condition import NestedCondition
@@ -96,12 +97,16 @@ from .payload_field import PayloadField
 from .query_expansion_strategy import QueryExpansionStrategy
 from .range import Range
 from .response_type import ResponseType
+from .schedule_response import ScheduleResponse
 from .search_response import SearchResponse
 from .search_status import SearchStatus
 from .should import Should
 from .source import Source
 from .source_connection import SourceConnection
 from .source_connection_auth_fields import SourceConnectionAuthFields
+from .source_connection_continuous_response import SourceConnectionContinuousResponse
+from .source_connection_continuous_response_auth_fields import SourceConnectionContinuousResponseAuthFields
+from .source_connection_create_continuous import SourceConnectionCreateContinuous
 from .source_connection_create_with_credential import SourceConnectionCreateWithCredential
 from .source_connection_create_with_white_label import SourceConnectionCreateWithWhiteLabel
 from .source_connection_job import SourceConnectionJob
@@ -213,6 +218,7 @@ __all__ = [
     "MessageResponse",
     "MinShould",
     "MinShouldConditionsItem",
+    "MinuteLevelScheduleConfig",
     "Must",
     "Nested",
     "NestedCondition",
@@ -225,12 +231,16 @@ __all__ = [
     "QueryExpansionStrategy",
     "Range",
     "ResponseType",
+    "ScheduleResponse",
     "SearchResponse",
     "SearchStatus",
     "Should",
     "Source",
     "SourceConnection",
     "SourceConnectionAuthFields",
+    "SourceConnectionContinuousResponse",
+    "SourceConnectionContinuousResponseAuthFields",
+    "SourceConnectionCreateContinuous",
     "SourceConnectionCreateWithCredential",
     "SourceConnectionCreateWithWhiteLabel",
     "SourceConnectionJob",
