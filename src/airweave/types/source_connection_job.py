@@ -53,6 +53,11 @@ class SourceConnectionJob(UniversalBaseModel):
     Current execution status of the data refresh:<br/>• **created**: Operation has been created but not yet queued<br/>• **pending**: Operation is queued and waiting to start<br/>• **in_progress**: Currently running and processing data<br/>• **completed**: Finished successfully with all data processed<br/>• **failed**: Encountered errors and could not complete<br/>• **cancelled**: Manually cancelled before completion
     """
 
+    scheduled: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this data refresh was triggered by a schedule (true) or manually (false).
+    """
+
     entities_inserted: typing.Optional[int] = pydantic.Field(default=None)
     """
     Number of new data entities that were added to the collection during this refresh.

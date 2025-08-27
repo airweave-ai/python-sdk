@@ -15,6 +15,7 @@ class SyncJob(UniversalBaseModel):
 
     sync_id: str
     status: typing.Optional[SyncJobStatus] = None
+    scheduled: typing.Optional[bool] = None
     entities_inserted: typing.Optional[int] = None
     entities_updated: typing.Optional[int] = None
     entities_deleted: typing.Optional[int] = None
