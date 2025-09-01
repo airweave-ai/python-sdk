@@ -32,7 +32,7 @@ class CollectionsClient:
         """
         return self._raw_client
 
-    def list_collections(
+    def list(
         self,
         *,
         skip: typing.Optional[int] = None,
@@ -65,12 +65,12 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.list_collections()
+        client.collections.list()
         """
-        _response = self._raw_client.list_collections(skip=skip, limit=limit, request_options=request_options)
+        _response = self._raw_client.list(skip=skip, limit=limit, request_options=request_options)
         return _response.data
 
-    def create_collection(
+    def create(
         self,
         *,
         name: str,
@@ -106,19 +106,15 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.create_collection(
+        client.collections.create(
             name="Finance Data",
             readable_id="finance-data-reports",
         )
         """
-        _response = self._raw_client.create_collection(
-            name=name, readable_id=readable_id, request_options=request_options
-        )
+        _response = self._raw_client.create(name=name, readable_id=readable_id, request_options=request_options)
         return _response.data
 
-    def get_collection(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Collection:
+    def get(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
         Retrieve a specific collection by its readable ID.
 
@@ -142,14 +138,14 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.get_collection(
+        client.collections.get(
             readable_id="readable_id",
         )
         """
-        _response = self._raw_client.get_collection(readable_id, request_options=request_options)
+        _response = self._raw_client.get(readable_id, request_options=request_options)
         return _response.data
 
-    def update_collection(
+    def update(
         self,
         readable_id: str,
         *,
@@ -186,17 +182,15 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.update_collection(
+        client.collections.update(
             readable_id="readable_id",
             name="Updated Finance Data",
         )
         """
-        _response = self._raw_client.update_collection(readable_id, name=name, request_options=request_options)
+        _response = self._raw_client.update(readable_id, name=name, request_options=request_options)
         return _response.data
 
-    def delete_collection(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Collection:
+    def delete(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
         Delete a collection and all associated data.
 
@@ -224,14 +218,14 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.delete_collection(
+        client.collections.delete(
             readable_id="readable_id",
         )
         """
-        _response = self._raw_client.delete_collection(readable_id, request_options=request_options)
+        _response = self._raw_client.delete(readable_id, request_options=request_options)
         return _response.data
 
-    def search_collection(
+    def search(
         self,
         readable_id: str,
         *,
@@ -283,12 +277,12 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.search_collection(
+        client.collections.search(
             readable_id="readable_id",
             query="customer payment issues",
         )
         """
-        _response = self._raw_client.search_collection(
+        _response = self._raw_client.search(
             readable_id,
             query=query,
             response_type=response_type,
@@ -299,7 +293,7 @@ class CollectionsClient:
         )
         return _response.data
 
-    def search_collection_advanced(
+    def search_advanced(
         self,
         readable_id: str,
         *,
@@ -391,7 +385,7 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.search_collection_advanced(
+        client.collections.search_advanced(
             readable_id="readable_id",
             query="customer payment issues",
             filter=Filter(
@@ -404,7 +398,7 @@ class CollectionsClient:
             response_type="completion",
         )
         """
-        _response = self._raw_client.search_collection_advanced(
+        _response = self._raw_client.search_advanced(
             readable_id,
             query=query,
             filter=filter,
@@ -475,7 +469,7 @@ class AsyncCollectionsClient:
         """
         return self._raw_client
 
-    async def list_collections(
+    async def list(
         self,
         *,
         skip: typing.Optional[int] = None,
@@ -513,15 +507,15 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.list_collections()
+            await client.collections.list()
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_collections(skip=skip, limit=limit, request_options=request_options)
+        _response = await self._raw_client.list(skip=skip, limit=limit, request_options=request_options)
         return _response.data
 
-    async def create_collection(
+    async def create(
         self,
         *,
         name: str,
@@ -562,7 +556,7 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.create_collection(
+            await client.collections.create(
                 name="Finance Data",
                 readable_id="finance-data-reports",
             )
@@ -570,14 +564,10 @@ class AsyncCollectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.create_collection(
-            name=name, readable_id=readable_id, request_options=request_options
-        )
+        _response = await self._raw_client.create(name=name, readable_id=readable_id, request_options=request_options)
         return _response.data
 
-    async def get_collection(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Collection:
+    async def get(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
         Retrieve a specific collection by its readable ID.
 
@@ -606,17 +596,17 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.get_collection(
+            await client.collections.get(
                 readable_id="readable_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_collection(readable_id, request_options=request_options)
+        _response = await self._raw_client.get(readable_id, request_options=request_options)
         return _response.data
 
-    async def update_collection(
+    async def update(
         self,
         readable_id: str,
         *,
@@ -658,7 +648,7 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.update_collection(
+            await client.collections.update(
                 readable_id="readable_id",
                 name="Updated Finance Data",
             )
@@ -666,12 +656,10 @@ class AsyncCollectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.update_collection(readable_id, name=name, request_options=request_options)
+        _response = await self._raw_client.update(readable_id, name=name, request_options=request_options)
         return _response.data
 
-    async def delete_collection(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> Collection:
+    async def delete(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
         Delete a collection and all associated data.
 
@@ -704,17 +692,17 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.delete_collection(
+            await client.collections.delete(
                 readable_id="readable_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.delete_collection(readable_id, request_options=request_options)
+        _response = await self._raw_client.delete(readable_id, request_options=request_options)
         return _response.data
 
-    async def search_collection(
+    async def search(
         self,
         readable_id: str,
         *,
@@ -771,7 +759,7 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.search_collection(
+            await client.collections.search(
                 readable_id="readable_id",
                 query="customer payment issues",
             )
@@ -779,7 +767,7 @@ class AsyncCollectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.search_collection(
+        _response = await self._raw_client.search(
             readable_id,
             query=query,
             response_type=response_type,
@@ -790,7 +778,7 @@ class AsyncCollectionsClient:
         )
         return _response.data
 
-    async def search_collection_advanced(
+    async def search_advanced(
         self,
         readable_id: str,
         *,
@@ -887,7 +875,7 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.search_collection_advanced(
+            await client.collections.search_advanced(
                 readable_id="readable_id",
                 query="customer payment issues",
                 filter=Filter(
@@ -903,7 +891,7 @@ class AsyncCollectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.search_collection_advanced(
+        _response = await self._raw_client.search_advanced(
             readable_id,
             query=query,
             filter=filter,

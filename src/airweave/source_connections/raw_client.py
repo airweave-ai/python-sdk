@@ -26,7 +26,7 @@ class RawSourceConnectionsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_source_connections(
+    def list(
         self,
         *,
         collection: typing.Optional[str] = None,
@@ -97,7 +97,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def create_source_connection(
+    def create(
         self,
         *,
         name: str,
@@ -215,7 +215,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def get_source_connection(
+    def get(
         self,
         source_connection_id: str,
         *,
@@ -275,7 +275,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def update_source_connection(
+    def update(
         self,
         source_connection_id: str,
         *,
@@ -384,7 +384,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def delete_source_connection(
+    def delete(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnection]:
         """
@@ -438,7 +438,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def run_source_connection(
+    def run(
         self,
         source_connection_id: str,
         *,
@@ -506,7 +506,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def list_source_connection_jobs(
+    def list_jobs(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[typing.List[SourceConnectionJob]]:
         """
@@ -559,7 +559,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def get_source_connection_job(
+    def get_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnectionJob]:
         """
@@ -612,7 +612,7 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def cancel_source_connection_job(
+    def cancel_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnectionJob]:
         """
@@ -674,7 +674,7 @@ class AsyncRawSourceConnectionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def list_source_connections(
+    async def list(
         self,
         *,
         collection: typing.Optional[str] = None,
@@ -745,7 +745,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def create_source_connection(
+    async def create(
         self,
         *,
         name: str,
@@ -863,7 +863,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_source_connection(
+    async def get(
         self,
         source_connection_id: str,
         *,
@@ -923,7 +923,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def update_source_connection(
+    async def update(
         self,
         source_connection_id: str,
         *,
@@ -1032,7 +1032,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def delete_source_connection(
+    async def delete(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnection]:
         """
@@ -1086,7 +1086,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def run_source_connection(
+    async def run(
         self,
         source_connection_id: str,
         *,
@@ -1154,7 +1154,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def list_source_connection_jobs(
+    async def list_jobs(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[typing.List[SourceConnectionJob]]:
         """
@@ -1207,7 +1207,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_source_connection_job(
+    async def get_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnectionJob]:
         """
@@ -1260,7 +1260,7 @@ class AsyncRawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def cancel_source_connection_job(
+    async def cancel_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnectionJob]:
         """

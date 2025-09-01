@@ -25,7 +25,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.create_collection(
+client.collections.create(
     name="Finance Data",
     readable_id="finance-data-reports",
 )
@@ -46,7 +46,7 @@ client = AsyncAirweaveSDK(
 
 
 async def main() -> None:
-    await client.collections.create_collection(
+    await client.collections.create(
         name="Finance Data",
         readable_id="finance-data-reports",
     )
@@ -64,7 +64,7 @@ will be thrown.
 from airweave.core.api_error import ApiError
 
 try:
-    client.collections.create_collection(...)
+    client.collections.create(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -83,7 +83,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     ...,
 )
-response = client.collections.with_raw_response.create_collection(...)
+response = client.collections.with_raw_response.create(...)
 print(response.headers)  # access the response headers
 print(response.data)  # access the underlying object
 ```
@@ -103,7 +103,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.collections.create_collection(..., request_options={
+client.collections.create(..., request_options={
     "max_retries": 1
 })
 ```
@@ -123,7 +123,7 @@ client = AirweaveSDK(
 
 
 # Override timeout for a specific method
-client.collections.create_collection(..., request_options={
+client.collections.create(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

@@ -28,7 +28,7 @@ class RawCollectionsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def list_collections(
+    def list(
         self,
         *,
         skip: typing.Optional[int] = None,
@@ -89,7 +89,7 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def create_collection(
+    def create(
         self,
         *,
         name: str,
@@ -157,7 +157,7 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def get_collection(
+    def get(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[Collection]:
         """
@@ -207,7 +207,7 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def update_collection(
+    def update(
         self,
         readable_id: str,
         *,
@@ -275,7 +275,7 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def delete_collection(
+    def delete(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[Collection]:
         """
@@ -329,7 +329,7 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def search_collection(
+    def search(
         self,
         readable_id: str,
         *,
@@ -412,7 +412,7 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def search_collection_advanced(
+    def search_advanced(
         self,
         readable_id: str,
         *,
@@ -605,7 +605,7 @@ class AsyncRawCollectionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def list_collections(
+    async def list(
         self,
         *,
         skip: typing.Optional[int] = None,
@@ -666,7 +666,7 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def create_collection(
+    async def create(
         self,
         *,
         name: str,
@@ -734,7 +734,7 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_collection(
+    async def get(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Collection]:
         """
@@ -784,7 +784,7 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def update_collection(
+    async def update(
         self,
         readable_id: str,
         *,
@@ -852,7 +852,7 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def delete_collection(
+    async def delete(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Collection]:
         """
@@ -906,7 +906,7 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def search_collection(
+    async def search(
         self,
         readable_id: str,
         *,
@@ -989,7 +989,7 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def search_collection_advanced(
+    async def search_advanced(
         self,
         readable_id: str,
         *,

@@ -30,7 +30,7 @@ class SourceConnectionsClient:
         """
         return self._raw_client
 
-    def list_source_connections(
+    def list(
         self,
         *,
         collection: typing.Optional[str] = None,
@@ -72,14 +72,14 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.list_source_connections()
+        client.source_connections.list()
         """
-        _response = self._raw_client.list_source_connections(
+        _response = self._raw_client.list(
             collection=collection, skip=skip, limit=limit, request_options=request_options
         )
         return _response.data
 
-    def create_source_connection(
+    def create(
         self,
         *,
         name: str,
@@ -157,12 +157,12 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.create_source_connection(
+        client.source_connections.create(
             name="Production Stripe Account",
             short_name="stripe",
         )
         """
-        _response = self._raw_client.create_source_connection(
+        _response = self._raw_client.create(
             name=name,
             short_name=short_name,
             description=description,
@@ -177,7 +177,7 @@ class SourceConnectionsClient:
         )
         return _response.data
 
-    def get_source_connection(
+    def get(
         self,
         source_connection_id: str,
         *,
@@ -210,16 +210,16 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.get_source_connection(
+        client.source_connections.get(
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.get_source_connection(
+        _response = self._raw_client.get(
             source_connection_id, show_auth_fields=show_auth_fields, request_options=request_options
         )
         return _response.data
 
-    def update_source_connection(
+    def update(
         self,
         source_connection_id: str,
         *,
@@ -287,11 +287,11 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.update_source_connection(
+        client.source_connections.update(
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.update_source_connection(
+        _response = self._raw_client.update(
             source_connection_id,
             name=name,
             description=description,
@@ -306,7 +306,7 @@ class SourceConnectionsClient:
         )
         return _response.data
 
-    def delete_source_connection(
+    def delete(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
@@ -336,14 +336,14 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.delete_source_connection(
+        client.source_connections.delete(
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.delete_source_connection(source_connection_id, request_options=request_options)
+        _response = self._raw_client.delete(source_connection_id, request_options=request_options)
         return _response.data
 
-    def run_source_connection(
+    def run(
         self,
         source_connection_id: str,
         *,
@@ -380,16 +380,16 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.run_source_connection(
+        client.source_connections.run(
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.run_source_connection(
+        _response = self._raw_client.run(
             source_connection_id, access_token=access_token, request_options=request_options
         )
         return _response.data
 
-    def list_source_connection_jobs(
+    def list_jobs(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionJob]:
         """
@@ -418,14 +418,14 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.list_source_connection_jobs(
+        client.source_connections.list_jobs(
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.list_source_connection_jobs(source_connection_id, request_options=request_options)
+        _response = self._raw_client.list_jobs(source_connection_id, request_options=request_options)
         return _response.data
 
-    def get_source_connection_job(
+    def get_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
@@ -454,17 +454,15 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.get_source_connection_job(
+        client.source_connections.get_job(
             source_connection_id="source_connection_id",
             job_id="job_id",
         )
         """
-        _response = self._raw_client.get_source_connection_job(
-            source_connection_id, job_id, request_options=request_options
-        )
+        _response = self._raw_client.get_job(source_connection_id, job_id, request_options=request_options)
         return _response.data
 
-    def cancel_source_connection_job(
+    def cancel_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
@@ -497,14 +495,12 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.cancel_source_connection_job(
+        client.source_connections.cancel_job(
             source_connection_id="source_connection_id",
             job_id="job_id",
         )
         """
-        _response = self._raw_client.cancel_source_connection_job(
-            source_connection_id, job_id, request_options=request_options
-        )
+        _response = self._raw_client.cancel_job(source_connection_id, job_id, request_options=request_options)
         return _response.data
 
 
@@ -523,7 +519,7 @@ class AsyncSourceConnectionsClient:
         """
         return self._raw_client
 
-    async def list_source_connections(
+    async def list(
         self,
         *,
         collection: typing.Optional[str] = None,
@@ -570,17 +566,17 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.list_source_connections()
+            await client.source_connections.list()
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_source_connections(
+        _response = await self._raw_client.list(
             collection=collection, skip=skip, limit=limit, request_options=request_options
         )
         return _response.data
 
-    async def create_source_connection(
+    async def create(
         self,
         *,
         name: str,
@@ -663,7 +659,7 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.create_source_connection(
+            await client.source_connections.create(
                 name="Production Stripe Account",
                 short_name="stripe",
             )
@@ -671,7 +667,7 @@ class AsyncSourceConnectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.create_source_connection(
+        _response = await self._raw_client.create(
             name=name,
             short_name=short_name,
             description=description,
@@ -686,7 +682,7 @@ class AsyncSourceConnectionsClient:
         )
         return _response.data
 
-    async def get_source_connection(
+    async def get(
         self,
         source_connection_id: str,
         *,
@@ -724,19 +720,19 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.get_source_connection(
+            await client.source_connections.get(
                 source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_source_connection(
+        _response = await self._raw_client.get(
             source_connection_id, show_auth_fields=show_auth_fields, request_options=request_options
         )
         return _response.data
 
-    async def update_source_connection(
+    async def update(
         self,
         source_connection_id: str,
         *,
@@ -809,14 +805,14 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.update_source_connection(
+            await client.source_connections.update(
                 source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.update_source_connection(
+        _response = await self._raw_client.update(
             source_connection_id,
             name=name,
             description=description,
@@ -831,7 +827,7 @@ class AsyncSourceConnectionsClient:
         )
         return _response.data
 
-    async def delete_source_connection(
+    async def delete(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
@@ -866,19 +862,17 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.delete_source_connection(
+            await client.source_connections.delete(
                 source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.delete_source_connection(
-            source_connection_id, request_options=request_options
-        )
+        _response = await self._raw_client.delete(source_connection_id, request_options=request_options)
         return _response.data
 
-    async def run_source_connection(
+    async def run(
         self,
         source_connection_id: str,
         *,
@@ -920,19 +914,19 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.run_source_connection(
+            await client.source_connections.run(
                 source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.run_source_connection(
+        _response = await self._raw_client.run(
             source_connection_id, access_token=access_token, request_options=request_options
         )
         return _response.data
 
-    async def list_source_connection_jobs(
+    async def list_jobs(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionJob]:
         """
@@ -966,19 +960,17 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.list_source_connection_jobs(
+            await client.source_connections.list_jobs(
                 source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_source_connection_jobs(
-            source_connection_id, request_options=request_options
-        )
+        _response = await self._raw_client.list_jobs(source_connection_id, request_options=request_options)
         return _response.data
 
-    async def get_source_connection_job(
+    async def get_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
@@ -1012,7 +1004,7 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.get_source_connection_job(
+            await client.source_connections.get_job(
                 source_connection_id="source_connection_id",
                 job_id="job_id",
             )
@@ -1020,12 +1012,10 @@ class AsyncSourceConnectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_source_connection_job(
-            source_connection_id, job_id, request_options=request_options
-        )
+        _response = await self._raw_client.get_job(source_connection_id, job_id, request_options=request_options)
         return _response.data
 
-    async def cancel_source_connection_job(
+    async def cancel_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
@@ -1063,7 +1053,7 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.cancel_source_connection_job(
+            await client.source_connections.cancel_job(
                 source_connection_id="source_connection_id",
                 job_id="job_id",
             )
@@ -1071,7 +1061,5 @@ class AsyncSourceConnectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.cancel_source_connection_job(
-            source_connection_id, job_id, request_options=request_options
-        )
+        _response = await self._raw_client.cancel_job(source_connection_id, job_id, request_options=request_options)
         return _response.data

@@ -18,9 +18,7 @@ class RawSourcesClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read_source(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[Source]:
+    def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[Source]:
         """
         Get detailed information about a specific data source connector.
 
@@ -68,9 +66,7 @@ class RawSourcesClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def read_sources(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.List[Source]]:
+    def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[typing.List[Source]]:
         """
         List all available data source connectors.
 
@@ -123,7 +119,7 @@ class AsyncRawSourcesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read_source(
+    async def read(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Source]:
         """
@@ -173,7 +169,7 @@ class AsyncRawSourcesClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def read_sources(
+    async def list(
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[typing.List[Source]]:
         """

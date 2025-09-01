@@ -1,6 +1,6 @@
 # Reference
 ## sources
-<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read_source</a>(...)</code></summary>
+<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -32,7 +32,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sources.read_source(
+client.sources.read(
     short_name="short_name",
 )
 
@@ -70,7 +70,7 @@ client.sources.read_source(
 </dl>
 </details>
 
-<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read_sources</a>()</code></summary>
+<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">list</a>()</code></summary>
 <dl>
 <dd>
 
@@ -105,7 +105,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sources.read_sources()
+client.sources.list()
 
 ```
 </dd>
@@ -134,7 +134,7 @@ client.sources.read_sources()
 </details>
 
 ## collections
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">list_collections</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">list</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -166,7 +166,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.list_collections()
+client.collections.list()
 
 ```
 </dd>
@@ -210,7 +210,7 @@ client.collections.list_collections()
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">create_collection</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">create</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -245,7 +245,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.create_collection(
+client.collections.create(
     name="Finance Data",
     readable_id="finance-data-reports",
 )
@@ -292,7 +292,7 @@ client.collections.create_collection(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">get_collection</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">get</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -324,7 +324,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.get_collection(
+client.collections.get(
     readable_id="readable_id",
 )
 
@@ -362,7 +362,7 @@ client.collections.get_collection(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">update_collection</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">update</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -398,7 +398,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.update_collection(
+client.collections.update(
     readable_id="readable_id",
     name="Updated Finance Data",
 )
@@ -445,7 +445,7 @@ client.collections.update_collection(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">delete_collection</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">delete</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -481,7 +481,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.delete_collection(
+client.collections.delete(
     readable_id="readable_id",
 )
 
@@ -519,7 +519,7 @@ client.collections.delete_collection(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search_collection</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -554,7 +554,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.search_collection(
+client.collections.search(
     readable_id="readable_id",
     query="customer payment issues",
 )
@@ -633,7 +633,7 @@ client.collections.search_collection(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search_collection_advanced</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search_advanced</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -684,7 +684,7 @@ from airweave import AirweaveSDK, FieldCondition, Filter
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.search_collection_advanced(
+client.collections.search_advanced(
     readable_id="readable_id",
     query="customer payment issues",
     filter=Filter(
@@ -895,7 +895,7 @@ client.collections.refresh_all_source_connections(
 </details>
 
 ## source-connections
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list_source_connections</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -932,7 +932,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.list_source_connections()
+client.source_connections.list()
 
 ```
 </dd>
@@ -984,7 +984,7 @@ client.source_connections.list_source_connections()
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">create_source_connection</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">create</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1029,7 +1029,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.create_source_connection(
+client.source_connections.create(
     name="Production Stripe Account",
     short_name="stripe",
 )
@@ -1140,7 +1140,7 @@ client.source_connections.create_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">get_source_connection</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">get</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1172,7 +1172,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.get_source_connection(
+client.source_connections.get(
     source_connection_id="source_connection_id",
 )
 
@@ -1218,7 +1218,7 @@ client.source_connections.get_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">update_source_connection</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">update</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1253,7 +1253,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.update_source_connection(
+client.source_connections.update(
     source_connection_id="source_connection_id",
 )
 
@@ -1363,7 +1363,7 @@ client.source_connections.update_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">delete_source_connection</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">delete</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1399,7 +1399,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.delete_source_connection(
+client.source_connections.delete(
     source_connection_id="source_connection_id",
 )
 
@@ -1437,7 +1437,7 @@ client.source_connections.delete_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">run_source_connection</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">run</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1473,7 +1473,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.run_source_connection(
+client.source_connections.run(
     source_connection_id="source_connection_id",
 )
 
@@ -1519,7 +1519,7 @@ client.source_connections.run_source_connection(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list_source_connection_jobs</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list_jobs</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1554,7 +1554,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.list_source_connection_jobs(
+client.source_connections.list_jobs(
     source_connection_id="source_connection_id",
 )
 
@@ -1592,7 +1592,7 @@ client.source_connections.list_source_connection_jobs(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">get_source_connection_job</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">get_job</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1624,7 +1624,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.get_source_connection_job(
+client.source_connections.get_job(
     source_connection_id="source_connection_id",
     job_id="job_id",
 )
@@ -1671,7 +1671,7 @@ client.source_connections.get_source_connection_job(
 </dl>
 </details>
 
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">cancel_source_connection_job</a>(...)</code></summary>
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">cancel_job</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1707,7 +1707,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.cancel_source_connection_job(
+client.source_connections.cancel_job(
     source_connection_id="source_connection_id",
     job_id="job_id",
 )

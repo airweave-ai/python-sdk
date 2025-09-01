@@ -23,7 +23,7 @@ class SourcesClient:
         """
         return self._raw_client
 
-    def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
+    def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
         Get detailed information about a specific data source connector.
 
@@ -47,14 +47,14 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read_source(
+        client.sources.read(
             short_name="short_name",
         )
         """
-        _response = self._raw_client.read_source(short_name, request_options=request_options)
+        _response = self._raw_client.read(short_name, request_options=request_options)
         return _response.data
 
-    def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
+    def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
         List all available data source connectors.
 
@@ -78,9 +78,9 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read_sources()
+        client.sources.list()
         """
-        _response = self._raw_client.read_sources(request_options=request_options)
+        _response = self._raw_client.list(request_options=request_options)
         return _response.data
 
 
@@ -99,7 +99,7 @@ class AsyncSourcesClient:
         """
         return self._raw_client
 
-    async def read_source(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
+    async def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
         Get detailed information about a specific data source connector.
 
@@ -128,17 +128,17 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_source(
+            await client.sources.read(
                 short_name="short_name",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.read_source(short_name, request_options=request_options)
+        _response = await self._raw_client.read(short_name, request_options=request_options)
         return _response.data
 
-    async def read_sources(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
+    async def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
         List all available data source connectors.
 
@@ -167,10 +167,10 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read_sources()
+            await client.sources.list()
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.read_sources(request_options=request_options)
+        _response = await self._raw_client.list(request_options=request_options)
         return _response.data
