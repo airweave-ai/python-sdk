@@ -10,7 +10,6 @@ from .types import (
     ApiKeyCreate,
     AuthProvider,
     AuthProviderConnection,
-    AuthProviderConnectionCreate,
     AuthProviderConnectionUpdate,
     AuthType,
     BillingPeriodUsage,
@@ -37,12 +36,11 @@ from .types import (
     EmbeddingModel,
     EmbeddingModelWithAuthenticationFields,
     EntityCount,
+    EntityCountWithDefinition,
     EntityDefinition,
     EntityDefinitionCreate,
     EntityDefinitionCreateEntitySchema,
     EntityDefinitionEntitySchema,
-    EntityDefinitionUpdate,
-    EntityDefinitionUpdateEntitySchema,
     EntityType,
     Except,
     FieldCondition,
@@ -108,6 +106,7 @@ from .types import (
     SourceConnectionCreateWithWhiteLabel,
     SourceConnectionJob,
     SourceConnectionListItem,
+    SourceConnectionMakeContinuous,
     SourceConnectionStatus,
     SubscriptionInfo,
     Sync,
@@ -137,7 +136,7 @@ from .types import (
     WhiteLabel,
 )
 from .errors import UnprocessableEntityError
-from . import collections, source_connections, sources, white_labels
+from . import auth_providers, collections, source_connections, sources, white_labels
 from .client import AirweaveSDK, AsyncAirweaveSDK
 from .collections import SearchRequestSearchMethod
 from .environment import AirweaveSDKEnvironment
@@ -155,7 +154,6 @@ __all__ = [
     "AsyncAirweaveSDK",
     "AuthProvider",
     "AuthProviderConnection",
-    "AuthProviderConnectionCreate",
     "AuthProviderConnectionUpdate",
     "AuthType",
     "BillingPeriodUsage",
@@ -182,12 +180,11 @@ __all__ = [
     "EmbeddingModel",
     "EmbeddingModelWithAuthenticationFields",
     "EntityCount",
+    "EntityCountWithDefinition",
     "EntityDefinition",
     "EntityDefinitionCreate",
     "EntityDefinitionCreateEntitySchema",
     "EntityDefinitionEntitySchema",
-    "EntityDefinitionUpdate",
-    "EntityDefinitionUpdateEntitySchema",
     "EntityType",
     "Except",
     "FieldCondition",
@@ -254,6 +251,7 @@ __all__ = [
     "SourceConnectionCreateWithWhiteLabel",
     "SourceConnectionJob",
     "SourceConnectionListItem",
+    "SourceConnectionMakeContinuous",
     "SourceConnectionStatus",
     "SourceConnectionUpdateAuthFields",
     "SubscriptionInfo",
@@ -284,6 +282,7 @@ __all__ = [
     "ValuesCount",
     "WhiteLabel",
     "__version__",
+    "auth_providers",
     "collections",
     "source_connections",
     "sources",

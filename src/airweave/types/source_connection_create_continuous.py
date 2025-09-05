@@ -41,6 +41,11 @@ class SourceConnectionCreateContinuous(UniversalBaseModel):
     Readable ID of the collection where synced data will be stored. If not provided, a new collection will be automatically created.
     """
 
+    enable_daily_cleanup: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether to create a daily forced full sync with entity cleanup. Defaults to true for resilience; set to false to rely solely on incremental changes.
+    """
+
     auth_fields: typing.Optional[ConfigValues] = pydantic.Field(default=None)
     """
     Authentication credentials required to access the data source. The required fields vary by source type. Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.

@@ -4,22 +4,18 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .entity_definition_update_entity_schema import EntityDefinitionUpdateEntitySchema
-from .entity_type import EntityType
 
 
-class EntityDefinitionUpdate(UniversalBaseModel):
+class EntityCountWithDefinition(UniversalBaseModel):
     """
-    Schema for updating an entity.
+    Entity count with entity definition details.
     """
 
-    name: str
-    description: typing.Optional[str] = None
-    type: EntityType
-    entity_schema: EntityDefinitionUpdateEntitySchema
-    parent_id: typing.Optional[str] = None
-    module_name: str
-    class_name: str
+    count: int
+    entity_definition_id: str
+    entity_definition_name: str
+    entity_definition_type: str
+    entity_definition_description: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

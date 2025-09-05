@@ -347,7 +347,7 @@ class CollectionsClient:
             Number of results to skip (DEFAULT: 0)
 
         limit : typing.Optional[int]
-            Maximum number of results to return (DEFAULT: 20)
+            Maximum number of results to return (DEFAULT: 100)
 
         score_threshold : typing.Optional[float]
             Minimum similarity score threshold (DEFAULT: None - no filtering)
@@ -832,7 +832,7 @@ class AsyncCollectionsClient:
             Number of results to skip (DEFAULT: 0)
 
         limit : typing.Optional[int]
-            Maximum number of results to return (DEFAULT: 20)
+            Maximum number of results to return (DEFAULT: 100)
 
         score_threshold : typing.Optional[float]
             Minimum similarity score threshold (DEFAULT: None - no filtering)

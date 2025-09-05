@@ -9,7 +9,6 @@ from .api_key import ApiKey
 from .api_key_create import ApiKeyCreate
 from .auth_provider import AuthProvider
 from .auth_provider_connection import AuthProviderConnection
-from .auth_provider_connection_create import AuthProviderConnectionCreate
 from .auth_provider_connection_update import AuthProviderConnectionUpdate
 from .auth_type import AuthType
 from .billing_period_usage import BillingPeriodUsage
@@ -40,12 +39,11 @@ from .destination_with_authentication_fields import DestinationWithAuthenticatio
 from .embedding_model import EmbeddingModel
 from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
 from .entity_count import EntityCount
+from .entity_count_with_definition import EntityCountWithDefinition
 from .entity_definition import EntityDefinition
 from .entity_definition_create import EntityDefinitionCreate
 from .entity_definition_create_entity_schema import EntityDefinitionCreateEntitySchema
 from .entity_definition_entity_schema import EntityDefinitionEntitySchema
-from .entity_definition_update import EntityDefinitionUpdate
-from .entity_definition_update_entity_schema import EntityDefinitionUpdateEntitySchema
 from .entity_type import EntityType
 from .except_ import Except
 from .field_condition import FieldCondition
@@ -111,6 +109,7 @@ from .source_connection_create_with_credential import SourceConnectionCreateWith
 from .source_connection_create_with_white_label import SourceConnectionCreateWithWhiteLabel
 from .source_connection_job import SourceConnectionJob
 from .source_connection_list_item import SourceConnectionListItem
+from .source_connection_make_continuous import SourceConnectionMakeContinuous
 from .source_connection_status import SourceConnectionStatus
 from .subscription_info import SubscriptionInfo
 from .sync import Sync
@@ -147,7 +146,6 @@ __all__ = [
     "ApiKeyCreate",
     "AuthProvider",
     "AuthProviderConnection",
-    "AuthProviderConnectionCreate",
     "AuthProviderConnectionUpdate",
     "AuthType",
     "BillingPeriodUsage",
@@ -174,12 +172,11 @@ __all__ = [
     "EmbeddingModel",
     "EmbeddingModelWithAuthenticationFields",
     "EntityCount",
+    "EntityCountWithDefinition",
     "EntityDefinition",
     "EntityDefinitionCreate",
     "EntityDefinitionCreateEntitySchema",
     "EntityDefinitionEntitySchema",
-    "EntityDefinitionUpdate",
-    "EntityDefinitionUpdateEntitySchema",
     "EntityType",
     "Except",
     "FieldCondition",
@@ -245,6 +242,7 @@ __all__ = [
     "SourceConnectionCreateWithWhiteLabel",
     "SourceConnectionJob",
     "SourceConnectionListItem",
+    "SourceConnectionMakeContinuous",
     "SourceConnectionStatus",
     "SubscriptionInfo",
     "Sync",
