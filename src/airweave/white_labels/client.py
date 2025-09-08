@@ -277,7 +277,7 @@ class WhiteLabelsClient:
         _response = self._raw_client.delete_white_label(white_label_id, request_options=request_options)
         return _response.data
 
-    def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+    def get_white_label_oauth_2_auth_url(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
@@ -308,15 +308,11 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+        client.white_labels.get_white_label_oauth_2_auth_url(
             white_label_id="white_label_id",
         )
         """
-        _response = (
-            self._raw_client.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
-                white_label_id, request_options=request_options
-            )
-        )
+        _response = self._raw_client.get_white_label_oauth_2_auth_url(white_label_id, request_options=request_options)
         return _response.data
 
     def list_white_label_source_connections(
@@ -357,7 +353,7 @@ class WhiteLabelsClient:
         )
         return _response.data
 
-    def exchange_white_label_oauth_2_code(
+    def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -401,12 +397,12 @@ class WhiteLabelsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.white_labels.exchange_white_label_oauth_2_code(
+        client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id="white_label_id",
             code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
         )
         """
-        _response = self._raw_client.exchange_white_label_oauth_2_code(
+        _response = self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
             white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
         )
         return _response.data
@@ -717,7 +713,7 @@ class AsyncWhiteLabelsClient:
         _response = await self._raw_client.delete_white_label(white_label_id, request_options=request_options)
         return _response.data
 
-    async def get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+    async def get_white_label_oauth_2_auth_url(
         self, white_label_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> str:
         """
@@ -753,14 +749,14 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+            await client.white_labels.get_white_label_oauth_2_auth_url(
                 white_label_id="white_label_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+        _response = await self._raw_client.get_white_label_oauth_2_auth_url(
             white_label_id, request_options=request_options
         )
         return _response.data
@@ -811,7 +807,7 @@ class AsyncWhiteLabelsClient:
         )
         return _response.data
 
-    async def exchange_white_label_oauth_2_code(
+    async def exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
         self,
         white_label_id: str,
         *,
@@ -860,7 +856,7 @@ class AsyncWhiteLabelsClient:
 
 
         async def main() -> None:
-            await client.white_labels.exchange_white_label_oauth_2_code(
+            await client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
                 white_label_id="white_label_id",
                 code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
             )
@@ -868,7 +864,9 @@ class AsyncWhiteLabelsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.exchange_white_label_oauth_2_code(
-            white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+        _response = (
+            await self._raw_client.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+                white_label_id, code=code, source_connection_in=source_connection_in, request_options=request_options
+            )
         )
         return _response.data
