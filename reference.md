@@ -2403,7 +2403,7 @@ client.white_labels.delete_white_label(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">get_white_label_oauth_2_auth_url</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2440,7 +2440,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.white_labels.get_white_label_oauth_2_auth_url_white_labels_white_label_id_oauth_2_auth_url_options(
+client.white_labels.get_white_label_oauth_2_auth_url(
     white_label_id="white_label_id",
 )
 
@@ -2551,7 +2551,7 @@ client.white_labels.list_white_label_source_connections(
 </dl>
 </details>
 
-<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options</a>(...)</code></summary>
+<details><summary><code>client.white_labels.<a href="src/airweave/white_labels/client.py">exchange_white_label_oauth_2_code</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2590,7 +2590,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.white_labels.exchange_white_label_oauth_2_code_white_labels_white_label_id_oauth_2_code_options(
+client.white_labels.exchange_white_label_oauth_2_code(
     white_label_id="white_label_id",
     code="4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
 )
