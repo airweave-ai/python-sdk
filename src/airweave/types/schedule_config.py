@@ -4,17 +4,26 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .single_action_check_response import SingleActionCheckResponse
 
 
-class ActionCheckResponse(UniversalBaseModel):
+class ScheduleConfig(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    Schedule configuration for syncs.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
+    cron: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Dictionary of action check results keyed by action type
+    Cron expression for scheduled syncs
+    """
+
+    continuous: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Enable continuous sync mode
+    """
+
+    cursor_field: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Field for incremental sync
     """
 
     if IS_PYDANTIC_V2:

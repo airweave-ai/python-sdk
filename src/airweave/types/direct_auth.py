@@ -4,17 +4,16 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .single_action_check_response import SingleActionCheckResponse
 
 
-class ActionCheckResponse(UniversalBaseModel):
+class DirectAuth(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    Direct authentication with API keys or passwords.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
+    credentials: typing.Dict[str, typing.Optional[typing.Any]] = pydantic.Field()
     """
-    Dictionary of action check results keyed by action type
+    Direct auth credentials
     """
 
     if IS_PYDANTIC_V2:

@@ -4,17 +4,16 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .single_action_check_response import SingleActionCheckResponse
 
 
-class ActionCheckResponse(UniversalBaseModel):
+class OAuthBrowserAuth(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    OAuth authentication via browser flow.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
+    redirect_uri: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Dictionary of action check results keyed by action type
+    OAuth redirect URI
     """
 
     if IS_PYDANTIC_V2:

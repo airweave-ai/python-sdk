@@ -4,17 +4,16 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .single_action_check_response import SingleActionCheckResponse
 
 
-class ActionCheckResponse(UniversalBaseModel):
+class ActionCheckRequest(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    Request schema for checking multiple actions.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
+    actions: typing.Dict[str, int] = pydantic.Field()
     """
-    Dictionary of action check results keyed by action type
+    Dictionary of action types to check with their amounts
     """
 
     if IS_PYDANTIC_V2:

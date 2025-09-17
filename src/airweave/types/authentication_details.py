@@ -6,25 +6,26 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .authentication_method import AuthenticationMethod
-from .source_connection_status import SourceConnectionStatus
-from .sync_summary import SyncSummary
 
 
-class SourceConnectionListItem(UniversalBaseModel):
+class AuthenticationDetails(UniversalBaseModel):
     """
-    Minimal source connection for list views.
+    Authentication information.
     """
 
-    id: str
-    name: str
-    short_name: str
-    readable_collection_id: str
-    status: SourceConnectionStatus
-    auth_method: AuthenticationMethod
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    last_sync: typing.Optional[SyncSummary] = None
-    entity_count: typing.Optional[int] = None
+    method: AuthenticationMethod
+    authenticated: bool
+    authenticated_at: typing.Optional[dt.datetime] = None
+    expires_at: typing.Optional[dt.datetime] = None
+    auth_url: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    For pending OAuth flows
+    """
+
+    auth_url_expires: typing.Optional[dt.datetime] = None
+    redirect_url: typing.Optional[str] = None
+    provider_name: typing.Optional[str] = None
+    provider_id: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
