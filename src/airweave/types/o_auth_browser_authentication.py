@@ -6,19 +6,24 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class AuthProviderAuth(UniversalBaseModel):
+class OAuthBrowserAuthentication(UniversalBaseModel):
     """
-    Authentication via external provider.
-    """
-
-    provider_name: str = pydantic.Field()
-    """
-    Auth provider name
+    OAuth authentication via browser flow.
     """
 
-    provider_account_id: typing.Optional[str] = pydantic.Field(default=None)
+    redirect_uri: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Provider account ID
+    OAuth redirect URI
+    """
+
+    client_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    OAuth client ID (for custom apps)
+    """
+
+    client_secret: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    OAuth client secret (for custom apps)
     """
 
     if IS_PYDANTIC_V2:

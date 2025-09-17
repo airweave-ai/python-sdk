@@ -4,12 +4,12 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
+from ..types.schedule_config import ScheduleConfig
 from ..types.source_connection import SourceConnection
 from ..types.source_connection_job import SourceConnectionJob
 from ..types.source_connection_list_item import SourceConnectionListItem
 from .raw_client import AsyncRawSourceConnectionsClient, RawSourceConnectionsClient
 from .types.authentication import Authentication
-from .types.create_source_connections_post_request import CreateSourceConnectionsPostRequest
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -73,23 +73,54 @@ class SourceConnectionsClient:
         return _response.data
 
     def create(
-        self, *, request: CreateSourceConnectionsPostRequest, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        name: str,
+        short_name: str,
+        readable_collection_id: str,
+        authentication: Authentication,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        sync_immediately: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
         Create a new source connection.
 
-        Accepts discriminated union types for explicit auth method specification.
+        The authentication configuration determines the flow:
+        - DirectAuthentication: Immediate creation with provided credentials
+        - OAuthBrowserAuthentication: Returns shell with authentication URL
+        - OAuthTokenAuthentication: Immediate creation with provided token
+        - AuthProviderAuthentication: Using external auth provider
 
-        The authentication method determines the flow:
-        - direct: Immediate creation with provided credentials
-        - oauth_browser: Returns shell with authentication URL
-        - oauth_token: Immediate creation with provided token
-        - oauth_byoc: OAuth with custom client credentials
-        - auth_provider: Using external auth provider
+        BYOC (Bring Your Own Client) is detected when client_id and client_secret
+        are provided in OAuthBrowserAuthentication.
 
         Parameters
         ----------
-        request : CreateSourceConnectionsPostRequest
+        name : str
+            Connection name
+
+        short_name : str
+            Source identifier (e.g., 'slack', 'github')
+
+        readable_collection_id : str
+            Collection readable ID
+
+        authentication : Authentication
+            Authentication configuration
+
+        description : typing.Optional[str]
+            Connection description
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        sync_immediately : typing.Optional[bool]
+            Run initial sync after creation
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -101,24 +132,31 @@ class SourceConnectionsClient:
 
         Examples
         --------
-        from airweave import AirweaveSDK
-        from airweave.source_connections import (
-            CreateSourceConnectionsPostRequest_Direct,
-        )
+        from airweave import AirweaveSDK, DirectAuthentication
 
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
         client.source_connections.create(
-            request=CreateSourceConnectionsPostRequest_Direct(
-                name="name",
-                short_name="short_name",
-                readable_collection_id="readable_collection_id",
+            name="name",
+            short_name="short_name",
+            readable_collection_id="readable_collection_id",
+            authentication=DirectAuthentication(
                 credentials={"key": "value"},
             ),
         )
         """
-        _response = self._raw_client.create(request=request, request_options=request_options)
+        _response = self._raw_client.create(
+            name=name,
+            short_name=short_name,
+            readable_collection_id=readable_collection_id,
+            authentication=authentication,
+            description=description,
+            config=config,
+            schedule=schedule,
+            sync_immediately=sync_immediately,
+            request_options=request_options,
+        )
         return _response.data
 
     def get(
@@ -297,104 +335,6 @@ class SourceConnectionsClient:
         _response = self._raw_client.cancel_job(source_connection_id, job_id, request_options=request_options)
         return _response.data
 
-    def create_nested(
-        self,
-        *,
-        short_name: str,
-        name: str,
-        collection_id: str,
-        authentication: Authentication,
-        description: typing.Optional[str] = OMIT,
-        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        POC: Create source connection with nested auth structure.
-
-        This endpoint demonstrates a cleaner API structure where authentication
-        is a nested discriminated union field rather than spread across the root.
-
-        Example request body:
-        ```json
-        {
-            "short_name": "github",
-            "name": "My GitHub Connection",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "direct",
-                "credentials": {"token": "ghp_..."}
-            }
-        }
-        ```
-
-        Or for OAuth:
-        ```json
-        {
-            "short_name": "slack",
-            "name": "My Slack Workspace",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "oauth_browser",
-                "redirect_uri": "http://localhost:3000/callback"
-            }
-        }
-        ```
-
-        Parameters
-        ----------
-        short_name : str
-            Source identifier
-
-        name : str
-            Connection name
-
-        collection_id : str
-            Collection ID
-
-        authentication : Authentication
-            Authentication configuration
-
-        description : typing.Optional[str]
-            Connection description
-
-        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-        from airweave.source_connections import Authentication_AuthProvider
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.source_connections.create_nested(
-            short_name="short_name",
-            name="name",
-            collection_id="collection_id",
-            authentication=Authentication_AuthProvider(
-                provider_name="provider_name",
-            ),
-        )
-        """
-        _response = self._raw_client.create_nested(
-            short_name=short_name,
-            name=name,
-            collection_id=collection_id,
-            authentication=authentication,
-            description=description,
-            config=config,
-            request_options=request_options,
-        )
-        return _response.data
-
 
 class AsyncSourceConnectionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -462,23 +402,54 @@ class AsyncSourceConnectionsClient:
         return _response.data
 
     async def create(
-        self, *, request: CreateSourceConnectionsPostRequest, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        name: str,
+        short_name: str,
+        readable_collection_id: str,
+        authentication: Authentication,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        sync_immediately: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
         Create a new source connection.
 
-        Accepts discriminated union types for explicit auth method specification.
+        The authentication configuration determines the flow:
+        - DirectAuthentication: Immediate creation with provided credentials
+        - OAuthBrowserAuthentication: Returns shell with authentication URL
+        - OAuthTokenAuthentication: Immediate creation with provided token
+        - AuthProviderAuthentication: Using external auth provider
 
-        The authentication method determines the flow:
-        - direct: Immediate creation with provided credentials
-        - oauth_browser: Returns shell with authentication URL
-        - oauth_token: Immediate creation with provided token
-        - oauth_byoc: OAuth with custom client credentials
-        - auth_provider: Using external auth provider
+        BYOC (Bring Your Own Client) is detected when client_id and client_secret
+        are provided in OAuthBrowserAuthentication.
 
         Parameters
         ----------
-        request : CreateSourceConnectionsPostRequest
+        name : str
+            Connection name
+
+        short_name : str
+            Source identifier (e.g., 'slack', 'github')
+
+        readable_collection_id : str
+            Collection readable ID
+
+        authentication : Authentication
+            Authentication configuration
+
+        description : typing.Optional[str]
+            Connection description
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        sync_immediately : typing.Optional[bool]
+            Run initial sync after creation
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -492,10 +463,7 @@ class AsyncSourceConnectionsClient:
         --------
         import asyncio
 
-        from airweave import AsyncAirweaveSDK
-        from airweave.source_connections import (
-            CreateSourceConnectionsPostRequest_Direct,
-        )
+        from airweave import AsyncAirweaveSDK, DirectAuthentication
 
         client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
@@ -504,10 +472,10 @@ class AsyncSourceConnectionsClient:
 
         async def main() -> None:
             await client.source_connections.create(
-                request=CreateSourceConnectionsPostRequest_Direct(
-                    name="name",
-                    short_name="short_name",
-                    readable_collection_id="readable_collection_id",
+                name="name",
+                short_name="short_name",
+                readable_collection_id="readable_collection_id",
+                authentication=DirectAuthentication(
                     credentials={"key": "value"},
                 ),
             )
@@ -515,7 +483,17 @@ class AsyncSourceConnectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.create(request=request, request_options=request_options)
+        _response = await self._raw_client.create(
+            name=name,
+            short_name=short_name,
+            readable_collection_id=readable_collection_id,
+            authentication=authentication,
+            description=description,
+            config=config,
+            schedule=schedule,
+            sync_immediately=sync_immediately,
+            request_options=request_options,
+        )
         return _response.data
 
     async def get(
@@ -732,110 +710,4 @@ class AsyncSourceConnectionsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.cancel_job(source_connection_id, job_id, request_options=request_options)
-        return _response.data
-
-    async def create_nested(
-        self,
-        *,
-        short_name: str,
-        name: str,
-        collection_id: str,
-        authentication: Authentication,
-        description: typing.Optional[str] = OMIT,
-        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        POC: Create source connection with nested auth structure.
-
-        This endpoint demonstrates a cleaner API structure where authentication
-        is a nested discriminated union field rather than spread across the root.
-
-        Example request body:
-        ```json
-        {
-            "short_name": "github",
-            "name": "My GitHub Connection",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "direct",
-                "credentials": {"token": "ghp_..."}
-            }
-        }
-        ```
-
-        Or for OAuth:
-        ```json
-        {
-            "short_name": "slack",
-            "name": "My Slack Workspace",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "oauth_browser",
-                "redirect_uri": "http://localhost:3000/callback"
-            }
-        }
-        ```
-
-        Parameters
-        ----------
-        short_name : str
-            Source identifier
-
-        name : str
-            Connection name
-
-        collection_id : str
-            Collection ID
-
-        authentication : Authentication
-            Authentication configuration
-
-        description : typing.Optional[str]
-            Connection description
-
-        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-        from airweave.source_connections import Authentication_AuthProvider
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.source_connections.create_nested(
-                short_name="short_name",
-                name="name",
-                collection_id="collection_id",
-                authentication=Authentication_AuthProvider(
-                    provider_name="provider_name",
-                ),
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.create_nested(
-            short_name=short_name,
-            name=name,
-            collection_id=collection_id,
-            authentication=authentication,
-            description=description,
-            config=config,
-            request_options=request_options,
-        )
         return _response.data

@@ -6,24 +6,14 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class OAuthByocAuth(UniversalBaseModel):
+class DirectAuthentication(UniversalBaseModel):
     """
-    OAuth with custom client credentials.
-    """
-
-    client_id: str = pydantic.Field()
-    """
-    OAuth client ID
+    Direct authentication with API keys or passwords.
     """
 
-    client_secret: str = pydantic.Field()
+    credentials: typing.Dict[str, typing.Optional[typing.Any]] = pydantic.Field()
     """
-    OAuth client secret
-    """
-
-    redirect_uri: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    OAuth redirect URI
+    Authentication credentials
     """
 
     if IS_PYDANTIC_V2:

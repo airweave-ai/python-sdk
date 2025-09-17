@@ -12,11 +12,11 @@ from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.http_validation_error import HttpValidationError
+from ..types.schedule_config import ScheduleConfig
 from ..types.source_connection import SourceConnection
 from ..types.source_connection_job import SourceConnectionJob
 from ..types.source_connection_list_item import SourceConnectionListItem
 from .types.authentication import Authentication
-from .types.create_source_connections_post_request import CreateSourceConnectionsPostRequest
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -91,23 +91,54 @@ class RawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def create(
-        self, *, request: CreateSourceConnectionsPostRequest, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        name: str,
+        short_name: str,
+        readable_collection_id: str,
+        authentication: Authentication,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        sync_immediately: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnection]:
         """
         Create a new source connection.
 
-        Accepts discriminated union types for explicit auth method specification.
+        The authentication configuration determines the flow:
+        - DirectAuthentication: Immediate creation with provided credentials
+        - OAuthBrowserAuthentication: Returns shell with authentication URL
+        - OAuthTokenAuthentication: Immediate creation with provided token
+        - AuthProviderAuthentication: Using external auth provider
 
-        The authentication method determines the flow:
-        - direct: Immediate creation with provided credentials
-        - oauth_browser: Returns shell with authentication URL
-        - oauth_token: Immediate creation with provided token
-        - oauth_byoc: OAuth with custom client credentials
-        - auth_provider: Using external auth provider
+        BYOC (Bring Your Own Client) is detected when client_id and client_secret
+        are provided in OAuthBrowserAuthentication.
 
         Parameters
         ----------
-        request : CreateSourceConnectionsPostRequest
+        name : str
+            Connection name
+
+        short_name : str
+            Source identifier (e.g., 'slack', 'github')
+
+        readable_collection_id : str
+            Collection readable ID
+
+        authentication : Authentication
+            Authentication configuration
+
+        description : typing.Optional[str]
+            Connection description
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        sync_immediately : typing.Optional[bool]
+            Run initial sync after creation
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -120,9 +151,20 @@ class RawSourceConnectionsClient:
         _response = self._client_wrapper.httpx_client.request(
             "source-connections",
             method="POST",
-            json=convert_and_respect_annotation_metadata(
-                object_=request, annotation=CreateSourceConnectionsPostRequest, direction="write"
-            ),
+            json={
+                "name": name,
+                "short_name": short_name,
+                "readable_collection_id": readable_collection_id,
+                "description": description,
+                "config": config,
+                "schedule": convert_and_respect_annotation_metadata(
+                    object_=schedule, annotation=ScheduleConfig, direction="write"
+                ),
+                "sync_immediately": sync_immediately,
+                "authentication": convert_and_respect_annotation_metadata(
+                    object_=authentication, annotation=Authentication, direction="write"
+                ),
+            },
             headers={
                 "content-type": "application/json",
             },
@@ -416,121 +458,6 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def create_nested(
-        self,
-        *,
-        short_name: str,
-        name: str,
-        collection_id: str,
-        authentication: Authentication,
-        description: typing.Optional[str] = OMIT,
-        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[SourceConnection]:
-        """
-        POC: Create source connection with nested auth structure.
-
-        This endpoint demonstrates a cleaner API structure where authentication
-        is a nested discriminated union field rather than spread across the root.
-
-        Example request body:
-        ```json
-        {
-            "short_name": "github",
-            "name": "My GitHub Connection",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "direct",
-                "credentials": {"token": "ghp_..."}
-            }
-        }
-        ```
-
-        Or for OAuth:
-        ```json
-        {
-            "short_name": "slack",
-            "name": "My Slack Workspace",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "oauth_browser",
-                "redirect_uri": "http://localhost:3000/callback"
-            }
-        }
-        ```
-
-        Parameters
-        ----------
-        short_name : str
-            Source identifier
-
-        name : str
-            Connection name
-
-        collection_id : str
-            Collection ID
-
-        authentication : Authentication
-            Authentication configuration
-
-        description : typing.Optional[str]
-            Connection description
-
-        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[SourceConnection]
-            Successful Response
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "source-connections/nested",
-            method="POST",
-            json={
-                "short_name": short_name,
-                "name": name,
-                "description": description,
-                "collection_id": collection_id,
-                "config": config,
-                "authentication": convert_and_respect_annotation_metadata(
-                    object_=authentication, annotation=Authentication, direction="write"
-                ),
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
 
 class AsyncRawSourceConnectionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -601,23 +528,54 @@ class AsyncRawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def create(
-        self, *, request: CreateSourceConnectionsPostRequest, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        name: str,
+        short_name: str,
+        readable_collection_id: str,
+        authentication: Authentication,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        sync_immediately: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnection]:
         """
         Create a new source connection.
 
-        Accepts discriminated union types for explicit auth method specification.
+        The authentication configuration determines the flow:
+        - DirectAuthentication: Immediate creation with provided credentials
+        - OAuthBrowserAuthentication: Returns shell with authentication URL
+        - OAuthTokenAuthentication: Immediate creation with provided token
+        - AuthProviderAuthentication: Using external auth provider
 
-        The authentication method determines the flow:
-        - direct: Immediate creation with provided credentials
-        - oauth_browser: Returns shell with authentication URL
-        - oauth_token: Immediate creation with provided token
-        - oauth_byoc: OAuth with custom client credentials
-        - auth_provider: Using external auth provider
+        BYOC (Bring Your Own Client) is detected when client_id and client_secret
+        are provided in OAuthBrowserAuthentication.
 
         Parameters
         ----------
-        request : CreateSourceConnectionsPostRequest
+        name : str
+            Connection name
+
+        short_name : str
+            Source identifier (e.g., 'slack', 'github')
+
+        readable_collection_id : str
+            Collection readable ID
+
+        authentication : Authentication
+            Authentication configuration
+
+        description : typing.Optional[str]
+            Connection description
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        sync_immediately : typing.Optional[bool]
+            Run initial sync after creation
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -630,9 +588,20 @@ class AsyncRawSourceConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             "source-connections",
             method="POST",
-            json=convert_and_respect_annotation_metadata(
-                object_=request, annotation=CreateSourceConnectionsPostRequest, direction="write"
-            ),
+            json={
+                "name": name,
+                "short_name": short_name,
+                "readable_collection_id": readable_collection_id,
+                "description": description,
+                "config": config,
+                "schedule": convert_and_respect_annotation_metadata(
+                    object_=schedule, annotation=ScheduleConfig, direction="write"
+                ),
+                "sync_immediately": sync_immediately,
+                "authentication": convert_and_respect_annotation_metadata(
+                    object_=authentication, annotation=Authentication, direction="write"
+                ),
+            },
             headers={
                 "content-type": "application/json",
             },
@@ -906,121 +875,6 @@ class AsyncRawSourceConnectionsClient:
                     SourceConnectionJob,
                     parse_obj_as(
                         type_=SourceConnectionJob,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def create_nested(
-        self,
-        *,
-        short_name: str,
-        name: str,
-        collection_id: str,
-        authentication: Authentication,
-        description: typing.Optional[str] = OMIT,
-        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[SourceConnection]:
-        """
-        POC: Create source connection with nested auth structure.
-
-        This endpoint demonstrates a cleaner API structure where authentication
-        is a nested discriminated union field rather than spread across the root.
-
-        Example request body:
-        ```json
-        {
-            "short_name": "github",
-            "name": "My GitHub Connection",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "direct",
-                "credentials": {"token": "ghp_..."}
-            }
-        }
-        ```
-
-        Or for OAuth:
-        ```json
-        {
-            "short_name": "slack",
-            "name": "My Slack Workspace",
-            "collection_id": "...",
-            "authentication": {
-                "auth_method": "oauth_browser",
-                "redirect_uri": "http://localhost:3000/callback"
-            }
-        }
-        ```
-
-        Parameters
-        ----------
-        short_name : str
-            Source identifier
-
-        name : str
-            Connection name
-
-        collection_id : str
-            Collection ID
-
-        authentication : Authentication
-            Authentication configuration
-
-        description : typing.Optional[str]
-            Connection description
-
-        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[SourceConnection]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "source-connections/nested",
-            method="POST",
-            json={
-                "short_name": short_name,
-                "name": name,
-                "description": description,
-                "collection_id": collection_id,
-                "config": config,
-                "authentication": convert_and_respect_annotation_metadata(
-                    object_=authentication, annotation=Authentication, direction="write"
-                ),
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    SourceConnection,
-                    parse_obj_as(
-                        type_=SourceConnection,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -8,10 +8,9 @@ from .any import Any
 from .api_key import ApiKey
 from .api_key_create import ApiKeyCreate
 from .auth_provider import AuthProvider
-from .auth_provider_auth import AuthProviderAuth
+from .auth_provider_authentication import AuthProviderAuthentication
 from .auth_provider_connection import AuthProviderConnection
 from .auth_provider_connection_update import AuthProviderConnectionUpdate
-from .auth_provider_create import AuthProviderCreate
 from .authentication_details import AuthenticationDetails
 from .authentication_method import AuthenticationMethod
 from .billing_period_usage import BillingPeriodUsage
@@ -36,8 +35,7 @@ from .dag_node_create import DagNodeCreate
 from .datetime_range import DatetimeRange
 from .destination import Destination
 from .destination_with_authentication_fields import DestinationWithAuthenticationFields
-from .direct_auth import DirectAuth
-from .direct_auth_create import DirectAuthCreate
+from .direct_authentication import DirectAuthentication
 from .embedding_model import EmbeddingModel
 from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
 from .entity_count import EntityCount
@@ -91,12 +89,8 @@ from .must import Must
 from .nested import Nested
 from .nested_condition import NestedCondition
 from .node_type import NodeType
-from .o_auth_browser_auth import OAuthBrowserAuth
-from .o_auth_browser_create import OAuthBrowserCreate
-from .o_auth_byoc_auth import OAuthByocAuth
-from .o_auth_byoc_create import OAuthByocCreate
-from .o_auth_token_auth import OAuthTokenAuth
-from .o_auth_token_create import OAuthTokenCreate
+from .o_auth_browser_authentication import OAuthBrowserAuthentication
+from .o_auth_token_authentication import OAuthTokenAuthentication
 from .o_auth_type import OAuthType
 from .organization import Organization
 from .organization_create import OrganizationCreate
@@ -115,7 +109,6 @@ from .single_action_check_response import SingleActionCheckResponse
 from .single_action_check_response_reason import SingleActionCheckResponseReason
 from .source import Source
 from .source_connection import SourceConnection
-from .source_connection_create import SourceConnectionCreate
 from .source_connection_job import SourceConnectionJob
 from .source_connection_list_item import SourceConnectionListItem
 from .source_connection_status import SourceConnectionStatus
@@ -157,10 +150,9 @@ __all__ = [
     "ApiKey",
     "ApiKeyCreate",
     "AuthProvider",
-    "AuthProviderAuth",
+    "AuthProviderAuthentication",
     "AuthProviderConnection",
     "AuthProviderConnectionUpdate",
-    "AuthProviderCreate",
     "AuthenticationDetails",
     "AuthenticationMethod",
     "BillingPeriodUsage",
@@ -183,8 +175,7 @@ __all__ = [
     "DatetimeRange",
     "Destination",
     "DestinationWithAuthenticationFields",
-    "DirectAuth",
-    "DirectAuthCreate",
+    "DirectAuthentication",
     "EmbeddingModel",
     "EmbeddingModelWithAuthenticationFields",
     "EntityCount",
@@ -238,12 +229,8 @@ __all__ = [
     "Nested",
     "NestedCondition",
     "NodeType",
-    "OAuthBrowserAuth",
-    "OAuthBrowserCreate",
-    "OAuthByocAuth",
-    "OAuthByocCreate",
-    "OAuthTokenAuth",
-    "OAuthTokenCreate",
+    "OAuthBrowserAuthentication",
+    "OAuthTokenAuthentication",
     "OAuthType",
     "Organization",
     "OrganizationCreate",
@@ -262,7 +249,6 @@ __all__ = [
     "SingleActionCheckResponseReason",
     "Source",
     "SourceConnection",
-    "SourceConnectionCreate",
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",

@@ -2,32 +2,6 @@
 
 # isort: skip_file
 
-from .types import (
-    Authentication,
-    Authentication_AuthProvider,
-    Authentication_Direct,
-    Authentication_OauthBrowser,
-    Authentication_OauthByoc,
-    Authentication_OauthToken,
-    CreateSourceConnectionsPostRequest,
-    CreateSourceConnectionsPostRequest_AuthProvider,
-    CreateSourceConnectionsPostRequest_Direct,
-    CreateSourceConnectionsPostRequest_OauthBrowser,
-    CreateSourceConnectionsPostRequest_OauthByoc,
-    CreateSourceConnectionsPostRequest_OauthToken,
-)
+from .types import Authentication
 
-__all__ = [
-    "Authentication",
-    "Authentication_AuthProvider",
-    "Authentication_Direct",
-    "Authentication_OauthBrowser",
-    "Authentication_OauthByoc",
-    "Authentication_OauthToken",
-    "CreateSourceConnectionsPostRequest",
-    "CreateSourceConnectionsPostRequest_AuthProvider",
-    "CreateSourceConnectionsPostRequest_Direct",
-    "CreateSourceConnectionsPostRequest_OauthBrowser",
-    "CreateSourceConnectionsPostRequest_OauthByoc",
-    "CreateSourceConnectionsPostRequest_OauthToken",
-]
+__all__ = ["Authentication"]

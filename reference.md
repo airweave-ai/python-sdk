@@ -1193,14 +1193,14 @@ client.source_connections.list()
 
 Create a new source connection.
 
-Accepts discriminated union types for explicit auth method specification.
+The authentication configuration determines the flow:
+- DirectAuthentication: Immediate creation with provided credentials
+- OAuthBrowserAuthentication: Returns shell with authentication URL
+- OAuthTokenAuthentication: Immediate creation with provided token
+- AuthProviderAuthentication: Using external auth provider
 
-The authentication method determines the flow:
-- direct: Immediate creation with provided credentials
-- oauth_browser: Returns shell with authentication URL
-- oauth_token: Immediate creation with provided token
-- oauth_byoc: OAuth with custom client credentials
-- auth_provider: Using external auth provider
+BYOC (Bring Your Own Client) is detected when client_id and client_secret
+are provided in OAuthBrowserAuthentication.
 </dd>
 </dl>
 </dd>
@@ -1215,19 +1215,16 @@ The authentication method determines the flow:
 <dd>
 
 ```python
-from airweave import AirweaveSDK
-from airweave.source_connections import (
-    CreateSourceConnectionsPostRequest_Direct,
-)
+from airweave import AirweaveSDK, DirectAuthentication
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
 client.source_connections.create(
-    request=CreateSourceConnectionsPostRequest_Direct(
-        name="name",
-        short_name="short_name",
-        readable_collection_id="readable_collection_id",
+    name="name",
+    short_name="short_name",
+    readable_collection_id="readable_collection_id",
+    authentication=DirectAuthentication(
         credentials={"key": "value"},
     ),
 )
@@ -1246,7 +1243,63 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**request:** `CreateSourceConnectionsPostRequest` 
+**name:** `str` — Connection name
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**short_name:** `str` — Source identifier (e.g., 'slack', 'github')
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**readable_collection_id:** `str` — Collection readable ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**authentication:** `Authentication` — Authentication configuration
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — Connection description
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Source-specific configuration
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**schedule:** `typing.Optional[ScheduleConfig]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sync_immediately:** `typing.Optional[bool]` — Run initial sync after creation
     
 </dd>
 </dl>
@@ -1619,151 +1672,6 @@ client.source_connections.cancel_job(
 <dd>
 
 **job_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">create_nested</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-POC: Create source connection with nested auth structure.
-
-This endpoint demonstrates a cleaner API structure where authentication
-is a nested discriminated union field rather than spread across the root.
-
-Example request body:
-```json
-{
-    "short_name": "github",
-    "name": "My GitHub Connection",
-    "collection_id": "...",
-    "authentication": {
-        "auth_method": "direct",
-        "credentials": {"token": "ghp_..."}
-    }
-}
-```
-
-Or for OAuth:
-```json
-{
-    "short_name": "slack",
-    "name": "My Slack Workspace",
-    "collection_id": "...",
-    "authentication": {
-        "auth_method": "oauth_browser",
-        "redirect_uri": "http://localhost:3000/callback"
-    }
-}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-from airweave.source_connections import Authentication_AuthProvider
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.source_connections.create_nested(
-    short_name="short_name",
-    name="name",
-    collection_id="collection_id",
-    authentication=Authentication_AuthProvider(
-        provider_name="provider_name",
-    ),
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**short_name:** `str` — Source identifier
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**name:** `str` — Connection name
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**collection_id:** `str` — Collection ID
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**authentication:** `Authentication` — Authentication configuration
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `typing.Optional[str]` — Connection description
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` 
     
 </dd>
 </dl>
