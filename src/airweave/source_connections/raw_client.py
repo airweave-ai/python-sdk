@@ -247,7 +247,7 @@ class RawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def delete(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, source_connection_id: str, *, delete_data: typing.Optional[bool] = False, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnection]:
         """
         Delete a source connection and all related data.
@@ -255,6 +255,9 @@ class RawSourceConnectionsClient:
         Parameters
         ----------
         source_connection_id : str
+
+        delete_data : typing.Optional[bool]
+            Whether to delete the source connection data
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -267,6 +270,9 @@ class RawSourceConnectionsClient:
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
             request_options=request_options,
         )
         try:
@@ -684,7 +690,7 @@ class AsyncRawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def delete(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, source_connection_id: str, *, delete_data: typing.Optional[bool] = False, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnection]:
         """
         Delete a source connection and all related data.
@@ -692,6 +698,9 @@ class AsyncRawSourceConnectionsClient:
         Parameters
         ----------
         source_connection_id : str
+
+        delete_data : typing.Optional[bool]
+            Whether to delete the source connection data
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -704,6 +713,9 @@ class AsyncRawSourceConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="DELETE",
+            params={
+                "delete_data": delete_data,
+            },
             request_options=request_options,
         )
         try:
