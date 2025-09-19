@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .auth_type import AuthType
 
 
 class EmbeddingModel(UniversalBaseModel):
@@ -18,6 +19,7 @@ class EmbeddingModel(UniversalBaseModel):
     provider: str
     model_name: typing.Optional[str] = None
     model_version: typing.Optional[str] = None
+    auth_type: typing.Optional[AuthType] = None
     auth_config_class: typing.Optional[str] = None
     id: str
     created_at: dt.datetime

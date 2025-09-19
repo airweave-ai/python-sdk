@@ -6,14 +6,14 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .config_values import ConfigValues
-from .source_connection_auth_fields import SourceConnectionAuthFields
+from .source_connection_continuous_response_auth_fields import SourceConnectionContinuousResponseAuthFields
 from .source_connection_status import SourceConnectionStatus
 from .sync_job_status import SyncJobStatus
 
 
-class SourceConnection(UniversalBaseModel):
+class SourceConnectionContinuousResponse(UniversalBaseModel):
     """
-    Complete source connection representation returned by the API.
+    Response schema for continuous source connection creation.
     """
 
     name: str = pydantic.Field()
@@ -96,7 +96,7 @@ class SourceConnection(UniversalBaseModel):
     Email address of the user who last modified this source connection.
     """
 
-    auth_fields: typing.Optional[SourceConnectionAuthFields] = pydantic.Field(default=None)
+    auth_fields: typing.Optional[SourceConnectionContinuousResponseAuthFields] = pydantic.Field(default=None)
     """
     Authentication credentials for the data source. Returns '********' by default for security.
     """
@@ -139,6 +139,11 @@ class SourceConnection(UniversalBaseModel):
     next_scheduled_run: typing.Optional[dt.datetime] = pydantic.Field(default=None)
     """
     Timestamp when the next automatic sync is scheduled to run (ISO 8601 format). Null if no automatic schedule is configured.
+    """
+
+    minute_level_schedule: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Information about the created minute-level schedule including schedule ID, cron expression, and current status.
     """
 
     if IS_PYDANTIC_V2:

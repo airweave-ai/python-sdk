@@ -2,6 +2,4 @@
 
 import typing
 
-SourceConnectionStatus = typing.Union[
-    typing.Literal["active", "pending_auth", "syncing", "error", "inactive"], typing.Any
-]
+SourceConnectionStatus = typing.Union[typing.Literal["active", "in_progress", "failing"], typing.Any]

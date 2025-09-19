@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .auth_type import AuthType
 from .fields import Fields
 
 
@@ -36,6 +37,11 @@ class AuthProvider(UniversalBaseModel):
     config_class: str = pydantic.Field()
     """
     Python class name that defines the auth provider-specific configuration
+    """
+
+    auth_type: AuthType = pydantic.Field()
+    """
+    Type of authentication mechanism used by this provider
     """
 
     description: typing.Optional[str] = pydantic.Field(default=None)

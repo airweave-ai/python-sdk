@@ -4,17 +4,32 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .single_action_check_response import SingleActionCheckResponse
+from .action_check_response_reason import ActionCheckResponseReason
 
 
 class ActionCheckResponse(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    Response schema for action permission checks.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
+    allowed: bool = pydantic.Field()
     """
-    Dictionary of action check results keyed by action type
+    Whether the action is allowed for the organization
+    """
+
+    action: str = pydantic.Field()
+    """
+    The action type that was checked
+    """
+
+    reason: typing.Optional[ActionCheckResponseReason] = pydantic.Field(default=None)
+    """
+    Reason why the action is not allowed (if applicable)
+    """
+
+    details: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Additional details about why the action is not allowed
     """
 
     if IS_PYDANTIC_V2:

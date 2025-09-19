@@ -6,24 +6,27 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class OAuthBrowserAuthentication(UniversalBaseModel):
+class BodyCreateCredentialsFromAuthorizationCodeSourceConnectionsSourceShortNameCodeToTokenCredentialsPost(
+    UniversalBaseModel
+):
+    credential_name: typing.Optional[str] = pydantic.Field(default=None)
     """
-    OAuth authentication via browser flow.
+    Custom name for the stored credential
     """
 
-    redirect_uri: typing.Optional[str] = pydantic.Field(default=None)
+    credential_description: typing.Optional[str] = pydantic.Field(default=None)
     """
-    OAuth redirect URI
+    Description to help identify this credential
     """
 
     client_id: typing.Optional[str] = pydantic.Field(default=None)
     """
-    OAuth client ID (for custom apps)
+    OAuth client ID (required for bring-your-own-credentials)
     """
 
     client_secret: typing.Optional[str] = pydantic.Field(default=None)
     """
-    OAuth client secret (for custom apps)
+    OAuth client secret (required for bring-your-own-credentials)
     """
 
     if IS_PYDANTIC_V2:

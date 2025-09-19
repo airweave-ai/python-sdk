@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .auth_type import AuthType
 from .fields import Fields
 
 
@@ -23,27 +24,17 @@ class Source(UniversalBaseModel):
     Detailed description explaining what data this source can extract and its typical use cases.
     """
 
-    auth_methods: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    auth_type: typing.Optional[AuthType] = pydantic.Field(default=None)
     """
-    List of supported authentication methods (e.g., 'direct', 'oauth_browser').
-    """
-
-    oauth_type: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    OAuth token type for OAuth sources (e.g., 'access_only', 'with_refresh').
+    Type of authentication mechanism required by this source (e.g., 'oauth2').
     """
 
-    requires_byoc: typing.Optional[bool] = pydantic.Field(default=None)
+    auth_config_class: str = pydantic.Field()
     """
-    Whether this OAuth source requires users to bring their own client.
-    """
-
-    auth_config_class: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Python class name that defines the authentication configuration fields required for this source (only for DIRECT auth).
+    Python class name that defines the authentication configuration fields required for this source.
     """
 
-    config_class: typing.Optional[str] = pydantic.Field(default=None)
+    config_class: str = pydantic.Field()
     """
     Python class name that defines the source-specific configuration options and parameters.
     """
@@ -88,9 +79,9 @@ class Source(UniversalBaseModel):
     Timestamp when this source type was last updated (ISO 8601 format).
     """
 
-    auth_fields: typing.Optional[Fields] = pydantic.Field(default=None)
+    auth_fields: Fields = pydantic.Field()
     """
-    Schema definition for authentication fields required to connect to this source. Only present for sources using DIRECT authentication. OAuth sources handle authentication through browser flows.
+    Schema definition for authentication fields required to connect to this source. Describes field types, validation rules, and user interface hints.
     """
 
     config_fields: Fields = pydantic.Field()
