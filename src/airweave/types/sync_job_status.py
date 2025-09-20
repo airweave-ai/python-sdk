@@ -3,5 +3,5 @@
 import typing
 
 SyncJobStatus = typing.Union[
-    typing.Literal["created", "pending", "in_progress", "completed", "failed", "cancelled"], typing.Any
+    typing.Literal["created", "pending", "running", "completed", "failed", "cancelled"], typing.Any
 ]

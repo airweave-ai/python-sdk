@@ -5,7 +5,6 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .auth_type import AuthType
 from .fields import Fields
 
 
@@ -18,7 +17,6 @@ class DestinationWithAuthenticationFields(UniversalBaseModel):
     description: typing.Optional[str] = None
     short_name: str
     class_name: str
-    auth_type: typing.Optional[AuthType] = None
     auth_config_class: typing.Optional[str] = None
     input_entity_definition_ids: typing.Optional[typing.List[str]] = None
     organization_id: typing.Optional[str] = None

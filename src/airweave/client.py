@@ -9,7 +9,6 @@ from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .environment import AirweaveSDKEnvironment
 from .source_connections.client import AsyncSourceConnectionsClient, SourceConnectionsClient
 from .sources.client import AsyncSourcesClient, SourcesClient
-from .white_labels.client import AsyncWhiteLabelsClient, WhiteLabelsClient
 
 
 class AirweaveSDK:
@@ -81,7 +80,6 @@ class AirweaveSDK:
         self.auth_providers = AuthProvidersClient(client_wrapper=self._client_wrapper)
         self.collections = CollectionsClient(client_wrapper=self._client_wrapper)
         self.source_connections = SourceConnectionsClient(client_wrapper=self._client_wrapper)
-        self.white_labels = WhiteLabelsClient(client_wrapper=self._client_wrapper)
 
 
 class AsyncAirweaveSDK:
@@ -153,7 +151,6 @@ class AsyncAirweaveSDK:
         self.auth_providers = AsyncAuthProvidersClient(client_wrapper=self._client_wrapper)
         self.collections = AsyncCollectionsClient(client_wrapper=self._client_wrapper)
         self.source_connections = AsyncSourceConnectionsClient(client_wrapper=self._client_wrapper)
-        self.white_labels = AsyncWhiteLabelsClient(client_wrapper=self._client_wrapper)
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:

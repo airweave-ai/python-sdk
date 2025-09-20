@@ -5,62 +5,38 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .authentication_method import AuthenticationMethod
 from .source_connection_status import SourceConnectionStatus
+from .sync_job_status import SyncJobStatus
+from .sync_summary import SyncSummary
 
 
 class SourceConnectionListItem(UniversalBaseModel):
     """
-    Simplified source connection representation for list operations.
+    Minimal source connection for list views with computed fields.
     """
 
-    id: str = pydantic.Field()
+    id: str
+    name: str
+    short_name: str
+    readable_collection_id: str
+    created_at: dt.datetime
+    modified_at: dt.datetime
+    is_authenticated: bool
+    readable_auth_provider_id: typing.Optional[str] = None
+    connection_init_session_id: typing.Optional[str] = None
+    is_active: typing.Optional[bool] = None
+    last_sync: typing.Optional[SyncSummary] = None
+    entity_count: typing.Optional[int] = None
+    last_job_status: typing.Optional[SyncJobStatus] = None
+    auth_method: AuthenticationMethod = pydantic.Field()
     """
-    Unique identifier for the source connection.
-    """
-
-    name: str = pydantic.Field()
-    """
-    Human-readable name of the source connection.
-    """
-
-    description: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Brief description of what data this connection provides.
-    """
-
-    short_name: str = pydantic.Field()
-    """
-    Technical identifier of the source type (e.g., 'stripe', 'postgresql').
+    Compute authentication method from database fields.
     """
 
     status: SourceConnectionStatus = pydantic.Field()
     """
-    Current operational status: active, in_progress, or failing.
-    """
-
-    created_at: dt.datetime = pydantic.Field()
-    """
-    When the source connection was created (ISO 8601 format).
-    """
-
-    modified_at: dt.datetime = pydantic.Field()
-    """
-    When the source connection was last modified (ISO 8601 format).
-    """
-
-    sync_id: str = pydantic.Field()
-    """
-    Internal identifier for the sync configuration.
-    """
-
-    collection: str = pydantic.Field()
-    """
-    Readable ID of the collection where this connection syncs data.
-    """
-
-    white_label_id: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Identifier for custom OAuth integrations, if applicable.
+    Compute connection status from current state.
     """
 
     if IS_PYDANTIC_V2:

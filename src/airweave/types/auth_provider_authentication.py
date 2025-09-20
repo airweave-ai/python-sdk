@@ -4,17 +4,21 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .single_action_check_response import SingleActionCheckResponse
 
 
-class ActionCheckResponse(UniversalBaseModel):
+class AuthProviderAuthentication(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    Authentication via external provider.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
+    provider_name: str = pydantic.Field()
     """
-    Dictionary of action check results keyed by action type
+    Auth provider identifier
+    """
+
+    provider_config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Provider-specific configuration
     """
 
     if IS_PYDANTIC_V2:

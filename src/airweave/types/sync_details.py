@@ -4,18 +4,18 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .single_action_check_response import SingleActionCheckResponse
+from .sync_job_details import SyncJobDetails
 
 
-class ActionCheckResponse(UniversalBaseModel):
+class SyncDetails(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    Sync execution details.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
-    """
-    Dictionary of action check results keyed by action type
-    """
+    total_runs: typing.Optional[int] = None
+    successful_runs: typing.Optional[int] = None
+    failed_runs: typing.Optional[int] = None
+    last_job: typing.Optional[SyncJobDetails] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

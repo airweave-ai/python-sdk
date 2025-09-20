@@ -8,13 +8,12 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .sync_job_status import SyncJobStatus
 
 
-class SourceConnectionJob(UniversalBaseModel):
+class SyncJobDetails(UniversalBaseModel):
     """
-    Individual sync job for a source connection.
+    Sync job details.
     """
 
     id: str
-    source_connection_id: str
     status: SyncJobStatus
     started_at: typing.Optional[dt.datetime] = None
     completed_at: typing.Optional[dt.datetime] = None
@@ -25,7 +24,6 @@ class SourceConnectionJob(UniversalBaseModel):
     entities_deleted: typing.Optional[int] = None
     entities_failed: typing.Optional[int] = None
     error: typing.Optional[str] = None
-    error_details: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

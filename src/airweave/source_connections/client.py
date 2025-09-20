@@ -4,12 +4,12 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.config_values import ConfigValues
+from ..types.schedule_config import ScheduleConfig
 from ..types.source_connection import SourceConnection
 from ..types.source_connection_job import SourceConnectionJob
 from ..types.source_connection_list_item import SourceConnectionListItem
 from .raw_client import AsyncRawSourceConnectionsClient, RawSourceConnectionsClient
-from .types.source_connection_update_auth_fields import SourceConnectionUpdateAuthFields
+from .types.authentication import Authentication
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -39,23 +39,16 @@ class SourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List source connections across your organization.
-
-        By default, returns ALL source connections from every collection in your
-        organization. Use the 'collection' parameter to filter results to a specific
-        collection. This is useful for getting an overview of all your data sources
-        or managing connections within a particular collection.
+        List source connections with minimal fields for performance.
 
         Parameters
         ----------
         collection : typing.Optional[str]
-            Filter source connections by collection readable ID
+            Filter by collection readable ID
 
         skip : typing.Optional[int]
-            Number of source connections to skip for pagination
 
         limit : typing.Optional[int]
-            Maximum number of source connections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -82,65 +75,52 @@ class SourceConnectionsClient:
     def create(
         self,
         *,
-        name: str,
         short_name: str,
+        readable_collection_id: str,
+        name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        collection: typing.Optional[str] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[ConfigValues] = OMIT,
-        auth_provider: typing.Optional[str] = OMIT,
-        auth_provider_config: typing.Optional[ConfigValues] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
+        authentication: typing.Optional[Authentication] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Create a new source connection to sync data into your collection.
+        Create a new source connection.
 
-        **This endpoint only works for sources that do not use OAuth2.0.**
-        Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
-        connected through the UI where you can complete the OAuth consent flow
-        or using Auth Providers (see [Auth Providers](/docs/auth-providers)).<br/><br/>
+        The authentication configuration determines the flow:
+        - DirectAuthentication: Immediate creation with provided credentials
+        - OAuthBrowserAuthentication: Returns shell with authentication URL
+        - OAuthTokenAuthentication: Immediate creation with provided token
+        - AuthProviderAuthentication: Using external auth provider
 
-        Credentials for a source have to be provided using the `auth_fields` field.
-        Currently, it is not automatically checked if the provided credentials are valid.
-        If they are not valid, the data synchronization will fail.<br/><br/>
-
-        Check the documentation of a specific source (for example
-        [Github](https://docs.airweave.ai/docs/connectors/github)) to see what kind
-        of authentication is used.
+        BYOC (Bring Your Own Client) is detected when client_id and client_secret
+        are provided in OAuthBrowserAuthentication.
 
         Parameters
         ----------
-        name : str
-            Human-readable name for the source connection. This helps you identify the connection in the UI and should clearly describe what data it connects to.
-
         short_name : str
-            Technical identifier of the source type that determines which connector to use for data synchronization.
+            Source identifier (e.g., 'slack', 'github')
+
+        readable_collection_id : str
+            Collection readable ID
+
+        name : typing.Optional[str]
+            Connection name (defaults to '{Source Name} Connection')
 
         description : typing.Optional[str]
-            Optional detailed description of what this source connection provides. Use this to document the purpose, data types, or any special considerations for this connection.
+            Connection description
 
-        config_fields : typing.Optional[ConfigValues]
-            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
 
-        collection : typing.Optional[str]
-            Readable ID of the collection where synced data will be stored. If not provided, a new collection will be automatically created.
-
-        cron_schedule : typing.Optional[str]
-            Cron expression for automatic data synchronization schedule. If not provided, data will only sync when manually triggered. Use standard cron format: minute hour day month weekday.
-
-        auth_fields : typing.Optional[ConfigValues]
-            Authentication credentials required to access the data source. The required fields vary by source type. Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
-
-        auth_provider : typing.Optional[str]
-            Unique readable ID of a connected auth provider to use for authentication instead of providing auth_fields directly. When specified, credentials for the source will be obtained and refreshed automatically by Airweave interaction with the auth provider. To see which auth providers are supported and learn more about how to use them, check [this page](https://docs.airweave.ai/docs/auth-providers).
-
-        auth_provider_config : typing.Optional[ConfigValues]
-            Configuration for the auth provider when using auth_provider field. Required fields vary by auth provider. For Composio, use auth_config_id and  account_id to specify which integration and account from Composio you want to use to connect to the source.
+        schedule : typing.Optional[ScheduleConfig]
 
         sync_immediately : typing.Optional[bool]
-            Whether to start an initial data synchronization immediately after creating the connection.
+            Run initial sync after creation
+
+        authentication : typing.Optional[Authentication]
+            Authentication config (defaults to OAuth browser flow for OAuth sources)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -158,42 +138,32 @@ class SourceConnectionsClient:
             api_key="YOUR_API_KEY",
         )
         client.source_connections.create(
-            name="Production Stripe Account",
-            short_name="stripe",
+            short_name="short_name",
+            readable_collection_id="readable_collection_id",
         )
         """
         _response = self._raw_client.create(
-            name=name,
             short_name=short_name,
+            readable_collection_id=readable_collection_id,
+            name=name,
             description=description,
-            config_fields=config_fields,
-            collection=collection,
-            cron_schedule=cron_schedule,
-            auth_fields=auth_fields,
-            auth_provider=auth_provider,
-            auth_provider_config=auth_provider_config,
+            config=config,
+            schedule=schedule,
             sync_immediately=sync_immediately,
+            authentication=authentication,
             request_options=request_options,
         )
         return _response.data
 
     def get(
-        self,
-        source_connection_id: str,
-        *,
-        show_auth_fields: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
-        Retrieve a specific source connection by its ID.
+        Get a source connection with optional depth expansion.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection
-
-        show_auth_fields : typing.Optional[bool]
-            Whether to reveal authentication credentials.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -214,112 +184,18 @@ class SourceConnectionsClient:
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.get(
-            source_connection_id, show_auth_fields=show_auth_fields, request_options=request_options
-        )
-        return _response.data
-
-    def update(
-        self,
-        source_connection_id: str,
-        *,
-        name: typing.Optional[str] = OMIT,
-        description: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[SourceConnectionUpdateAuthFields] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        connection_id: typing.Optional[str] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
-        auth_provider: typing.Optional[str] = OMIT,
-        auth_provider_config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Update a source connection's properties.
-
-        Modify the configuration of an existing source connection including its name,
-        authentication credentials, configuration fields, sync schedule, or source-specific settings.
-
-        Parameters
-        ----------
-        source_connection_id : str
-            The unique identifier of the source connection to update
-
-        name : typing.Optional[str]
-            Updated name for the source connection. Must be between 4 and 42 characters.
-
-        description : typing.Optional[str]
-            Updated description of what this source connection provides.
-
-        auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
-            Updated authentication credentials for the data source. Provide new credentials to refresh or update authentication.
-
-        config_fields : typing.Optional[ConfigValues]
-            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
-
-        cron_schedule : typing.Optional[str]
-            Updated cron expression for automatic synchronization schedule. Set to null to disable automatic syncing.
-
-        connection_id : typing.Optional[str]
-            Internal connection identifier. This is typically managed automatically and should not be modified manually.
-
-        white_label_id : typing.Optional[str]
-            ID of the white label integration. Used for custom OAuth integrations with your own branding.
-
-        auth_provider : typing.Optional[str]
-            Updated auth provider readable ID. Only relevant if the connection uses an auth provider.
-
-        auth_provider_config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Updated configuration for the auth provider. Only relevant if the connection uses an auth provider.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.source_connections.update(
-            source_connection_id="source_connection_id",
-        )
-        """
-        _response = self._raw_client.update(
-            source_connection_id,
-            name=name,
-            description=description,
-            auth_fields=auth_fields,
-            config_fields=config_fields,
-            cron_schedule=cron_schedule,
-            connection_id=connection_id,
-            white_label_id=white_label_id,
-            auth_provider=auth_provider,
-            auth_provider_config=auth_provider_config,
-            request_options=request_options,
-        )
+        _response = self._raw_client.get(source_connection_id, request_options=request_options)
         return _response.data
 
     def delete(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
-        Delete a source connection and all associated data.
-
-        Permanently removes the source connection configuration and credentials.
-        By default, previously synced data remains in your destination systems for continuity.
-        Use delete_data=true to also remove all associated data from destination systems.
+        Delete a source connection and all related data.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection to delete
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -344,26 +220,16 @@ class SourceConnectionsClient:
         return _response.data
 
     def run(
-        self,
-        source_connection_id: str,
-        *,
-        access_token: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
-        Manually trigger a data sync for this source connection.
+        Trigger a sync run for a source connection.
 
-        Starts an immediate synchronization job that extracts fresh data from your source,
-        transforms it according to your configuration, and updates the destination systems.
-        The job runs asynchronously and endpoint returns immediately with tracking information.
+        Runs are always executed through Temporal workflow engine.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection to sync
-
-        access_token : typing.Optional[str]
-            This parameter gives you the ability to start a sync job with an access token for an OAuth2.0 source directly instead of using the credentials that Airweave has stored for you. Learn more about direct token injection [here](https://docs.airweave.ai/direct-token-injection).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -384,24 +250,24 @@ class SourceConnectionsClient:
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.run(
-            source_connection_id, access_token=access_token, request_options=request_options
-        )
+        _response = self._raw_client.run(source_connection_id, request_options=request_options)
         return _response.data
 
-    def list_jobs(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    def get_source_connection_jobs(
+        self,
+        source_connection_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionJob]:
         """
-        List all sync jobs for a source connection.
-
-        Returns the complete history of data synchronization jobs including successful syncs,
-        failed attempts, and currently running operations.
+        Get sync jobs for a source connection.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection
+
+        limit : typing.Optional[int]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -418,67 +284,29 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.list_jobs(
+        client.source_connections.get_source_connection_jobs(
             source_connection_id="source_connection_id",
         )
         """
-        _response = self._raw_client.list_jobs(source_connection_id, request_options=request_options)
-        return _response.data
-
-    def get_job(
-        self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceConnectionJob:
-        """
-        Get detailed information about a specific sync job.
-
-        Parameters
-        ----------
-        source_connection_id : str
-            The unique identifier of the source connection
-
-        job_id : str
-            The unique identifier of the sync job
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnectionJob
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
+        _response = self._raw_client.get_source_connection_jobs(
+            source_connection_id, limit=limit, request_options=request_options
         )
-        client.source_connections.get_job(
-            source_connection_id="source_connection_id",
-            job_id="job_id",
-        )
-        """
-        _response = self._raw_client.get_job(source_connection_id, job_id, request_options=request_options)
         return _response.data
 
     def cancel_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
-        Cancel a running sync job.
+        Cancel a running sync job for a source connection.
 
-        Sends a cancellation signal to stop an in-progress data synchronization.
-        The job will complete its current operation and then terminate gracefully.
-        Only jobs in 'created', 'pending', or 'in_progress' states can be cancelled.
+        This will update the job status in the database to CANCELLED and
+        send a cancellation request to the Temporal workflow if it's running.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection
 
         job_id : str
-            The unique identifier of the sync job to cancel
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -528,23 +356,16 @@ class AsyncSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionListItem]:
         """
-        List source connections across your organization.
-
-        By default, returns ALL source connections from every collection in your
-        organization. Use the 'collection' parameter to filter results to a specific
-        collection. This is useful for getting an overview of all your data sources
-        or managing connections within a particular collection.
+        List source connections with minimal fields for performance.
 
         Parameters
         ----------
         collection : typing.Optional[str]
-            Filter source connections by collection readable ID
+            Filter by collection readable ID
 
         skip : typing.Optional[int]
-            Number of source connections to skip for pagination
 
         limit : typing.Optional[int]
-            Maximum number of source connections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -579,65 +400,52 @@ class AsyncSourceConnectionsClient:
     async def create(
         self,
         *,
-        name: str,
         short_name: str,
+        readable_collection_id: str,
+        name: typing.Optional[str] = OMIT,
         description: typing.Optional[str] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        collection: typing.Optional[str] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[ConfigValues] = OMIT,
-        auth_provider: typing.Optional[str] = OMIT,
-        auth_provider_config: typing.Optional[ConfigValues] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
+        authentication: typing.Optional[Authentication] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
-        Create a new source connection to sync data into your collection.
+        Create a new source connection.
 
-        **This endpoint only works for sources that do not use OAuth2.0.**
-        Sources that do use OAuth2.0 like Google Drive, Slack, or HubSpot must be
-        connected through the UI where you can complete the OAuth consent flow
-        or using Auth Providers (see [Auth Providers](/docs/auth-providers)).<br/><br/>
+        The authentication configuration determines the flow:
+        - DirectAuthentication: Immediate creation with provided credentials
+        - OAuthBrowserAuthentication: Returns shell with authentication URL
+        - OAuthTokenAuthentication: Immediate creation with provided token
+        - AuthProviderAuthentication: Using external auth provider
 
-        Credentials for a source have to be provided using the `auth_fields` field.
-        Currently, it is not automatically checked if the provided credentials are valid.
-        If they are not valid, the data synchronization will fail.<br/><br/>
-
-        Check the documentation of a specific source (for example
-        [Github](https://docs.airweave.ai/docs/connectors/github)) to see what kind
-        of authentication is used.
+        BYOC (Bring Your Own Client) is detected when client_id and client_secret
+        are provided in OAuthBrowserAuthentication.
 
         Parameters
         ----------
-        name : str
-            Human-readable name for the source connection. This helps you identify the connection in the UI and should clearly describe what data it connects to.
-
         short_name : str
-            Technical identifier of the source type that determines which connector to use for data synchronization.
+            Source identifier (e.g., 'slack', 'github')
+
+        readable_collection_id : str
+            Collection readable ID
+
+        name : typing.Optional[str]
+            Connection name (defaults to '{Source Name} Connection')
 
         description : typing.Optional[str]
-            Optional detailed description of what this source connection provides. Use this to document the purpose, data types, or any special considerations for this connection.
+            Connection description
 
-        config_fields : typing.Optional[ConfigValues]
-            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
 
-        collection : typing.Optional[str]
-            Readable ID of the collection where synced data will be stored. If not provided, a new collection will be automatically created.
-
-        cron_schedule : typing.Optional[str]
-            Cron expression for automatic data synchronization schedule. If not provided, data will only sync when manually triggered. Use standard cron format: minute hour day month weekday.
-
-        auth_fields : typing.Optional[ConfigValues]
-            Authentication credentials required to access the data source. The required fields vary by source type. Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
-
-        auth_provider : typing.Optional[str]
-            Unique readable ID of a connected auth provider to use for authentication instead of providing auth_fields directly. When specified, credentials for the source will be obtained and refreshed automatically by Airweave interaction with the auth provider. To see which auth providers are supported and learn more about how to use them, check [this page](https://docs.airweave.ai/docs/auth-providers).
-
-        auth_provider_config : typing.Optional[ConfigValues]
-            Configuration for the auth provider when using auth_provider field. Required fields vary by auth provider. For Composio, use auth_config_id and  account_id to specify which integration and account from Composio you want to use to connect to the source.
+        schedule : typing.Optional[ScheduleConfig]
 
         sync_immediately : typing.Optional[bool]
-            Whether to start an initial data synchronization immediately after creating the connection.
+            Run initial sync after creation
+
+        authentication : typing.Optional[Authentication]
+            Authentication config (defaults to OAuth browser flow for OAuth sources)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -660,45 +468,35 @@ class AsyncSourceConnectionsClient:
 
         async def main() -> None:
             await client.source_connections.create(
-                name="Production Stripe Account",
-                short_name="stripe",
+                short_name="short_name",
+                readable_collection_id="readable_collection_id",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.create(
-            name=name,
             short_name=short_name,
+            readable_collection_id=readable_collection_id,
+            name=name,
             description=description,
-            config_fields=config_fields,
-            collection=collection,
-            cron_schedule=cron_schedule,
-            auth_fields=auth_fields,
-            auth_provider=auth_provider,
-            auth_provider_config=auth_provider_config,
+            config=config,
+            schedule=schedule,
             sync_immediately=sync_immediately,
+            authentication=authentication,
             request_options=request_options,
         )
         return _response.data
 
     async def get(
-        self,
-        source_connection_id: str,
-        *,
-        show_auth_fields: typing.Optional[bool] = None,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
-        Retrieve a specific source connection by its ID.
+        Get a source connection with optional depth expansion.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection
-
-        show_auth_fields : typing.Optional[bool]
-            Whether to reveal authentication credentials.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -727,120 +525,18 @@ class AsyncSourceConnectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get(
-            source_connection_id, show_auth_fields=show_auth_fields, request_options=request_options
-        )
-        return _response.data
-
-    async def update(
-        self,
-        source_connection_id: str,
-        *,
-        name: typing.Optional[str] = OMIT,
-        description: typing.Optional[str] = OMIT,
-        auth_fields: typing.Optional[SourceConnectionUpdateAuthFields] = OMIT,
-        config_fields: typing.Optional[ConfigValues] = OMIT,
-        cron_schedule: typing.Optional[str] = OMIT,
-        connection_id: typing.Optional[str] = OMIT,
-        white_label_id: typing.Optional[str] = OMIT,
-        auth_provider: typing.Optional[str] = OMIT,
-        auth_provider_config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> SourceConnection:
-        """
-        Update a source connection's properties.
-
-        Modify the configuration of an existing source connection including its name,
-        authentication credentials, configuration fields, sync schedule, or source-specific settings.
-
-        Parameters
-        ----------
-        source_connection_id : str
-            The unique identifier of the source connection to update
-
-        name : typing.Optional[str]
-            Updated name for the source connection. Must be between 4 and 42 characters.
-
-        description : typing.Optional[str]
-            Updated description of what this source connection provides.
-
-        auth_fields : typing.Optional[SourceConnectionUpdateAuthFields]
-            Updated authentication credentials for the data source. Provide new credentials to refresh or update authentication.
-
-        config_fields : typing.Optional[ConfigValues]
-            Source-specific configuration parameters required for data extraction. These vary by source type and control how data is retrieved (e.g., database queries, API filters, file paths). Check the documentation of a specific source (for example [Github](https://docs.airweave.ai/docs/connectors/github)) to see what is required.
-
-        cron_schedule : typing.Optional[str]
-            Updated cron expression for automatic synchronization schedule. Set to null to disable automatic syncing.
-
-        connection_id : typing.Optional[str]
-            Internal connection identifier. This is typically managed automatically and should not be modified manually.
-
-        white_label_id : typing.Optional[str]
-            ID of the white label integration. Used for custom OAuth integrations with your own branding.
-
-        auth_provider : typing.Optional[str]
-            Updated auth provider readable ID. Only relevant if the connection uses an auth provider.
-
-        auth_provider_config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Updated configuration for the auth provider. Only relevant if the connection uses an auth provider.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.source_connections.update(
-                source_connection_id="source_connection_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.update(
-            source_connection_id,
-            name=name,
-            description=description,
-            auth_fields=auth_fields,
-            config_fields=config_fields,
-            cron_schedule=cron_schedule,
-            connection_id=connection_id,
-            white_label_id=white_label_id,
-            auth_provider=auth_provider,
-            auth_provider_config=auth_provider_config,
-            request_options=request_options,
-        )
+        _response = await self._raw_client.get(source_connection_id, request_options=request_options)
         return _response.data
 
     async def delete(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
-        Delete a source connection and all associated data.
-
-        Permanently removes the source connection configuration and credentials.
-        By default, previously synced data remains in your destination systems for continuity.
-        Use delete_data=true to also remove all associated data from destination systems.
+        Delete a source connection and all related data.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection to delete
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -873,26 +569,16 @@ class AsyncSourceConnectionsClient:
         return _response.data
 
     async def run(
-        self,
-        source_connection_id: str,
-        *,
-        access_token: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
-        Manually trigger a data sync for this source connection.
+        Trigger a sync run for a source connection.
 
-        Starts an immediate synchronization job that extracts fresh data from your source,
-        transforms it according to your configuration, and updates the destination systems.
-        The job runs asynchronously and endpoint returns immediately with tracking information.
+        Runs are always executed through Temporal workflow engine.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection to sync
-
-        access_token : typing.Optional[str]
-            This parameter gives you the ability to start a sync job with an access token for an OAuth2.0 source directly instead of using the credentials that Airweave has stored for you. Learn more about direct token injection [here](https://docs.airweave.ai/direct-token-injection).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -921,24 +607,24 @@ class AsyncSourceConnectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.run(
-            source_connection_id, access_token=access_token, request_options=request_options
-        )
+        _response = await self._raw_client.run(source_connection_id, request_options=request_options)
         return _response.data
 
-    async def list_jobs(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    async def get_source_connection_jobs(
+        self,
+        source_connection_id: str,
+        *,
+        limit: typing.Optional[int] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[SourceConnectionJob]:
         """
-        List all sync jobs for a source connection.
-
-        Returns the complete history of data synchronization jobs including successful syncs,
-        failed attempts, and currently running operations.
+        Get sync jobs for a source connection.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection
+
+        limit : typing.Optional[int]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -960,78 +646,32 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.list_jobs(
+            await client.source_connections.get_source_connection_jobs(
                 source_connection_id="source_connection_id",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_jobs(source_connection_id, request_options=request_options)
-        return _response.data
-
-    async def get_job(
-        self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SourceConnectionJob:
-        """
-        Get detailed information about a specific sync job.
-
-        Parameters
-        ----------
-        source_connection_id : str
-            The unique identifier of the source connection
-
-        job_id : str
-            The unique identifier of the sync job
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        SourceConnectionJob
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
+        _response = await self._raw_client.get_source_connection_jobs(
+            source_connection_id, limit=limit, request_options=request_options
         )
-
-
-        async def main() -> None:
-            await client.source_connections.get_job(
-                source_connection_id="source_connection_id",
-                job_id="job_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.get_job(source_connection_id, job_id, request_options=request_options)
         return _response.data
 
     async def cancel_job(
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
         """
-        Cancel a running sync job.
+        Cancel a running sync job for a source connection.
 
-        Sends a cancellation signal to stop an in-progress data synchronization.
-        The job will complete its current operation and then terminate gracefully.
-        Only jobs in 'created', 'pending', or 'in_progress' states can be cancelled.
+        This will update the job status in the database to CANCELLED and
+        send a cancellation request to the Temporal workflow if it's running.
 
         Parameters
         ----------
         source_connection_id : str
-            The unique identifier of the source connection
 
         job_id : str
-            The unique identifier of the sync job to cancel
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

@@ -4,8 +4,9 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .auth_type import AuthType
+from .authentication_method import AuthenticationMethod
 from .integration_type import IntegrationType
+from .o_auth_type import OAuthType
 
 
 class IntegrationCredentialInDb(UniversalBaseModel):
@@ -17,7 +18,8 @@ class IntegrationCredentialInDb(UniversalBaseModel):
     integration_short_name: str
     description: typing.Optional[str] = None
     integration_type: IntegrationType
-    auth_type: AuthType
+    authentication_method: AuthenticationMethod
+    oauth_type: typing.Optional[OAuthType] = None
     auth_config_class: typing.Optional[str] = None
     id: str
     organization_id: str

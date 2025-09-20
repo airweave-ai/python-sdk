@@ -2,6 +2,6 @@
 
 # isort: skip_file
 
-from .types import SourceConnectionUpdateAuthFields
+from .types import Authentication
 
-__all__ = ["SourceConnectionUpdateAuthFields"]
+__all__ = ["Authentication"]
