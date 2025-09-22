@@ -24,7 +24,7 @@ class AuthenticationDetails(UniversalBaseModel):
 
     auth_url_expires: typing.Optional[dt.datetime] = None
     redirect_url: typing.Optional[str] = None
-    provider_name: typing.Optional[str] = None
+    provider_readable_id: typing.Optional[str] = None
     provider_id: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:

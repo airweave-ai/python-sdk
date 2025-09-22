@@ -11,9 +11,9 @@ class AuthProviderAuthentication(UniversalBaseModel):
     Authentication via external provider.
     """
 
-    provider_name: str = pydantic.Field()
+    provider_readable_id: str = pydantic.Field()
     """
-    Auth provider identifier
+    Auth provider readable ID
     """
 
     provider_config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
