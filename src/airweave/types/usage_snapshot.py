@@ -12,11 +12,6 @@ class UsageSnapshot(UniversalBaseModel):
     Point-in-time usage data with limits.
     """
 
-    syncs: int = pydantic.Field()
-    """
-    Number of syncs executed
-    """
-
     entities: int = pydantic.Field()
     """
     Total entities processed
@@ -27,19 +22,14 @@ class UsageSnapshot(UniversalBaseModel):
     Search queries executed
     """
 
-    collections: int = pydantic.Field()
-    """
-    Collections created
-    """
-
     source_connections: int = pydantic.Field()
     """
     Source connections configured
     """
 
-    max_syncs: typing.Optional[int] = pydantic.Field(default=None)
+    team_members: int = pydantic.Field()
     """
-    Maximum syncs allowed
+    Team members in the organization
     """
 
     max_entities: typing.Optional[int] = pydantic.Field(default=None)
@@ -52,14 +42,14 @@ class UsageSnapshot(UniversalBaseModel):
     Maximum queries allowed
     """
 
-    max_collections: typing.Optional[int] = pydantic.Field(default=None)
-    """
-    Maximum collections allowed
-    """
-
     max_source_connections: typing.Optional[int] = pydantic.Field(default=None)
     """
     Maximum source connections allowed
+    """
+
+    max_team_members: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Maximum team members allowed
     """
 
     timestamp: dt.datetime = pydantic.Field()

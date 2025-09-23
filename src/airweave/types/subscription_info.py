@@ -92,6 +92,36 @@ class SubscriptionInfo(UniversalBaseModel):
     When the pending plan change takes effect
     """
 
+    has_yearly_prepay: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether organization has an active yearly prepay credit
+    """
+
+    yearly_prepay_started_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    When yearly prepay was started
+    """
+
+    yearly_prepay_expires_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    When yearly prepay expires
+    """
+
+    yearly_prepay_amount_cents: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Total amount (in cents) credited for yearly prepay
+    """
+
+    yearly_prepay_coupon_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Coupon ID used for yearly prepay
+    """
+
+    yearly_prepay_payment_intent_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Payment intent ID used for yearly prepay
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

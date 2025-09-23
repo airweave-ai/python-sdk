@@ -9,13 +9,10 @@ from .single_action_check_response import SingleActionCheckResponse
 
 class ActionCheckResponse(UniversalBaseModel):
     """
-    Response schema for multiple action checks.
+    Response containing per-action check results.
     """
 
-    results: typing.Dict[str, SingleActionCheckResponse] = pydantic.Field()
-    """
-    Dictionary of action check results keyed by action type
-    """
+    results: typing.Dict[str, SingleActionCheckResponse]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

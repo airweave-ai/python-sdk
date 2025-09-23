@@ -8,12 +8,12 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 class ActionCheckRequest(UniversalBaseModel):
     """
-    Request schema for checking multiple actions.
+    Request body for checking multiple actions at once.
     """
 
     actions: typing.Dict[str, int] = pydantic.Field()
     """
-    Dictionary of action types to check with their amounts
+    Map of action short name to amount to check
     """
 
     if IS_PYDANTIC_V2:

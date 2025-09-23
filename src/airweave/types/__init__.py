@@ -17,7 +17,6 @@ from .billing_period_usage import BillingPeriodUsage
 from .body_connect_slack_with_token_connections_direct_token_slack_post import (
     BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
 )
-from .cancel_subscription_request import CancelSubscriptionRequest
 from .checkout_session_request import CheckoutSessionRequest
 from .checkout_session_response import CheckoutSessionResponse
 from .collection import Collection
@@ -156,7 +155,6 @@ __all__ = [
     "AuthenticationMethod",
     "BillingPeriodUsage",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
-    "CancelSubscriptionRequest",
     "CheckoutSessionRequest",
     "CheckoutSessionResponse",
     "Collection",
