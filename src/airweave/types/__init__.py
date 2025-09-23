@@ -10,6 +10,7 @@ from .api_key_create import ApiKeyCreate
 from .auth_provider import AuthProvider
 from .auth_provider_authentication import AuthProviderAuthentication
 from .auth_provider_connection import AuthProviderConnection
+from .auth_provider_connection_create import AuthProviderConnectionCreate
 from .auth_provider_connection_update import AuthProviderConnectionUpdate
 from .authentication_details import AuthenticationDetails
 from .authentication_method import AuthenticationMethod
@@ -111,7 +112,6 @@ from .source_connection import SourceConnection
 from .source_connection_job import SourceConnectionJob
 from .source_connection_list_item import SourceConnectionListItem
 from .source_connection_status import SourceConnectionStatus
-from .source_connection_update import SourceConnectionUpdate
 from .subscription_info import SubscriptionInfo
 from .sync import Sync
 from .sync_create import SyncCreate
@@ -123,7 +123,6 @@ from .sync_job import SyncJob
 from .sync_job_details import SyncJobDetails
 from .sync_job_status import SyncJobStatus
 from .sync_status import SyncStatus
-from .sync_summary import SyncSummary
 from .sync_update import SyncUpdate
 from .sync_with_source_connection import SyncWithSourceConnection
 from .transformer import Transformer
@@ -150,6 +149,7 @@ __all__ = [
     "AuthProvider",
     "AuthProviderAuthentication",
     "AuthProviderConnection",
+    "AuthProviderConnectionCreate",
     "AuthProviderConnectionUpdate",
     "AuthenticationDetails",
     "AuthenticationMethod",
@@ -249,7 +249,6 @@ __all__ = [
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
-    "SourceConnectionUpdate",
     "SubscriptionInfo",
     "Sync",
     "SyncCreate",
@@ -261,7 +260,6 @@ __all__ = [
     "SyncJobDetails",
     "SyncJobStatus",
     "SyncStatus",
-    "SyncSummary",
     "SyncUpdate",
     "SyncWithSourceConnection",
     "Transformer",

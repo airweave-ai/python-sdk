@@ -7,13 +7,11 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .authentication_method import AuthenticationMethod
 from .source_connection_status import SourceConnectionStatus
-from .sync_job_status import SyncJobStatus
-from .sync_summary import SyncSummary
 
 
 class SourceConnectionListItem(UniversalBaseModel):
     """
-    Minimal source connection for list views with computed fields.
+    Clean source connection for list views.
     """
 
     id: str
@@ -23,15 +21,10 @@ class SourceConnectionListItem(UniversalBaseModel):
     created_at: dt.datetime
     modified_at: dt.datetime
     is_authenticated: bool
-    readable_auth_provider_id: typing.Optional[str] = None
-    connection_init_session_id: typing.Optional[str] = None
-    is_active: typing.Optional[bool] = None
-    last_sync: typing.Optional[SyncSummary] = None
     entity_count: typing.Optional[int] = None
-    last_job_status: typing.Optional[SyncJobStatus] = None
     auth_method: AuthenticationMethod = pydantic.Field()
     """
-    Compute authentication method from database fields.
+    Get authentication method from database value.
     """
 
     status: SourceConnectionStatus = pydantic.Field()

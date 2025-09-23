@@ -11,6 +11,7 @@ from .types import (
     AuthProvider,
     AuthProviderAuthentication,
     AuthProviderConnection,
+    AuthProviderConnectionCreate,
     AuthProviderConnectionUpdate,
     AuthenticationDetails,
     AuthenticationMethod,
@@ -110,7 +111,6 @@ from .types import (
     SourceConnectionJob,
     SourceConnectionListItem,
     SourceConnectionStatus,
-    SourceConnectionUpdate,
     SubscriptionInfo,
     Sync,
     SyncCreate,
@@ -122,7 +122,6 @@ from .types import (
     SyncJobDetails,
     SyncJobStatus,
     SyncStatus,
-    SyncSummary,
     SyncUpdate,
     SyncWithSourceConnection,
     Transformer,
@@ -141,7 +140,7 @@ from .types import (
     ValuesCount,
 )
 from .errors import UnprocessableEntityError
-from . import auth_providers, collections, source_connections, sources
+from . import collections, source_connections, sources
 from .client import AirweaveSDK, AsyncAirweaveSDK
 from .collections import SearchRequestSearchMethod
 from .environment import AirweaveSDKEnvironment
@@ -160,6 +159,7 @@ __all__ = [
     "AuthProvider",
     "AuthProviderAuthentication",
     "AuthProviderConnection",
+    "AuthProviderConnectionCreate",
     "AuthProviderConnectionUpdate",
     "Authentication",
     "AuthenticationDetails",
@@ -261,7 +261,6 @@ __all__ = [
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
-    "SourceConnectionUpdate",
     "SubscriptionInfo",
     "Sync",
     "SyncCreate",
@@ -273,7 +272,6 @@ __all__ = [
     "SyncJobDetails",
     "SyncJobStatus",
     "SyncStatus",
-    "SyncSummary",
     "SyncUpdate",
     "SyncWithSourceConnection",
     "Transformer",
@@ -292,7 +290,6 @@ __all__ = [
     "Value",
     "ValuesCount",
     "__version__",
-    "auth_providers",
     "collections",
     "source_connections",
     "sources",

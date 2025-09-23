@@ -219,6 +219,72 @@ class SourceConnectionsClient:
         _response = self._raw_client.delete(source_connection_id, request_options=request_options)
         return _response.data
 
+    def update(
+        self,
+        source_connection_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        credentials: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SourceConnection:
+        """
+        Update a source connection.
+
+        Updateable fields:
+        - name, description
+        - config_fields
+        - cron_schedule
+        - auth_fields (direct auth only)
+
+        Parameters
+        ----------
+        source_connection_id : str
+
+        name : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        credentials : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Update credentials (direct auth only)
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SourceConnection
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.source_connections.update(
+            source_connection_id="source_connection_id",
+        )
+        """
+        _response = self._raw_client.update(
+            source_connection_id,
+            name=name,
+            description=description,
+            config=config,
+            schedule=schedule,
+            credentials=credentials,
+            request_options=request_options,
+        )
+        return _response.data
+
     def run(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnectionJob:
@@ -566,6 +632,80 @@ class AsyncSourceConnectionsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.delete(source_connection_id, request_options=request_options)
+        return _response.data
+
+    async def update(
+        self,
+        source_connection_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        credentials: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SourceConnection:
+        """
+        Update a source connection.
+
+        Updateable fields:
+        - name, description
+        - config_fields
+        - cron_schedule
+        - auth_fields (direct auth only)
+
+        Parameters
+        ----------
+        source_connection_id : str
+
+        name : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        credentials : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Update credentials (direct auth only)
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SourceConnection
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.source_connections.update(
+                source_connection_id="source_connection_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.update(
+            source_connection_id,
+            name=name,
+            description=description,
+            config=config,
+            schedule=schedule,
+            credentials=credentials,
+            request_options=request_options,
+        )
         return _response.data
 
     async def run(

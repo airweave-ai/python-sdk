@@ -295,6 +295,94 @@ class RawSourceConnectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def update(
+        self,
+        source_connection_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        credentials: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[SourceConnection]:
+        """
+        Update a source connection.
+
+        Updateable fields:
+        - name, description
+        - config_fields
+        - cron_schedule
+        - auth_fields (direct auth only)
+
+        Parameters
+        ----------
+        source_connection_id : str
+
+        name : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        credentials : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Update credentials (direct auth only)
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[SourceConnection]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "description": description,
+                "config": config,
+                "schedule": convert_and_respect_annotation_metadata(
+                    object_=schedule, annotation=ScheduleConfig, direction="write"
+                ),
+                "credentials": credentials,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SourceConnection,
+                    parse_obj_as(
+                        type_=SourceConnection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def run(
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnectionJob]:
@@ -705,6 +793,94 @@ class AsyncRawSourceConnectionsClient:
             f"source-connections/{jsonable_encoder(source_connection_id)}",
             method="DELETE",
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SourceConnection,
+                    parse_obj_as(
+                        type_=SourceConnection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def update(
+        self,
+        source_connection_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        schedule: typing.Optional[ScheduleConfig] = OMIT,
+        credentials: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[SourceConnection]:
+        """
+        Update a source connection.
+
+        Updateable fields:
+        - name, description
+        - config_fields
+        - cron_schedule
+        - auth_fields (direct auth only)
+
+        Parameters
+        ----------
+        source_connection_id : str
+
+        name : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Source-specific configuration
+
+        schedule : typing.Optional[ScheduleConfig]
+
+        credentials : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Update credentials (direct auth only)
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[SourceConnection]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"source-connections/{jsonable_encoder(source_connection_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "description": description,
+                "config": config,
+                "schedule": convert_and_respect_annotation_metadata(
+                    object_=schedule, annotation=ScheduleConfig, direction="write"
+                ),
+                "credentials": credentials,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:

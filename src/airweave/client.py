@@ -3,7 +3,6 @@
 import typing
 
 import httpx
-from .auth_providers.client import AsyncAuthProvidersClient, AuthProvidersClient
 from .collections.client import AsyncCollectionsClient, CollectionsClient
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .environment import AirweaveSDKEnvironment
@@ -77,7 +76,6 @@ class AirweaveSDK:
             timeout=_defaulted_timeout,
         )
         self.sources = SourcesClient(client_wrapper=self._client_wrapper)
-        self.auth_providers = AuthProvidersClient(client_wrapper=self._client_wrapper)
         self.collections = CollectionsClient(client_wrapper=self._client_wrapper)
         self.source_connections = SourceConnectionsClient(client_wrapper=self._client_wrapper)
 
@@ -148,7 +146,6 @@ class AsyncAirweaveSDK:
             timeout=_defaulted_timeout,
         )
         self.sources = AsyncSourcesClient(client_wrapper=self._client_wrapper)
-        self.auth_providers = AsyncAuthProvidersClient(client_wrapper=self._client_wrapper)
         self.collections = AsyncCollectionsClient(client_wrapper=self._client_wrapper)
         self.source_connections = AsyncSourceConnectionsClient(client_wrapper=self._client_wrapper)
 

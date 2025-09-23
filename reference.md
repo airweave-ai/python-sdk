@@ -133,206 +133,6 @@ client.sources.list()
 </dl>
 </details>
 
-## AuthProviders
-<details><summary><code>client.auth_providers.<a href="src/airweave/auth_providers/client.py">connect_or_update_auth_provider</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Create or update an auth provider connection.
-
-If a connection for this auth provider already exists for the organization,
-it will be updated with the new credentials and fields.
-If no connection exists, a new one will be created.
-
-Args:
------
-    db: The database session
-    ctx: The current authentication context
-    auth_provider_connection_in: The auth provider connection data
-
-Returns:
---------
-    schemas.AuthProviderConnection: The created or updated connection
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.auth_providers.connect_or_update_auth_provider(
-    name="My Composio Connection",
-    description="My Composio Connection",
-    short_name="composio",
-    auth_fields={"api_key": "comp_1234567890abcdef"},
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**name:** `str` — Human-readable name for this auth provider connection
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**short_name:** `str` — Technical identifier of the auth provider
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**readable_id:** `typing.Optional[str]` — URL-safe unique identifier for the connection. Must contain only lowercase letters, numbers, and hyphens. If not provided, it will be automatically generated from the connection name with a random suffix for uniqueness (e.g., 'composio-connection-ab123').
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `typing.Optional[str]` — Optional detailed description of what this auth provider connection provides.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**auth_fields:** `typing.Optional[ConfigValues]` — Authentication credentials required to access the auth provider. The required fields vary by auth provider type.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.auth_providers.<a href="src/airweave/auth_providers/client.py">get_auth_provider</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get details of a specific auth provider.
-
-Args:
------
-    db: The database session
-    short_name: The short name of the auth provider
-    ctx: The current authentication context
-
-Returns:
---------
-    schemas.AuthProvider: The auth provider details
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.auth_providers.get_auth_provider(
-    short_name="short_name",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**short_name:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 ## collections
 <details><summary><code>client.collections.<a href="src/airweave/collections/client.py">list</a>(...)</code></summary>
 <dl>
@@ -1436,6 +1236,122 @@ client.source_connections.delete(
 <dd>
 
 **source_connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a source connection.
+
+Updateable fields:
+- name, description
+- config_fields
+- cron_schedule
+- auth_fields (direct auth only)
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.source_connections.update(
+    source_connection_id="source_connection_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**source_connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Source-specific configuration
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**schedule:** `typing.Optional[ScheduleConfig]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**credentials:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Update credentials (direct auth only)
     
 </dd>
 </dl>
