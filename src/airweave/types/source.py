@@ -63,14 +63,14 @@ class Source(UniversalBaseModel):
     List of entity definition IDs that this source can produce. Defines the data schema and structure that this connector outputs.
     """
 
-    organization_id: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Organization identifier for custom source connectors. System sources have this set to null.
-    """
-
     labels: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
     Categorization tags to help users discover and filter sources by domain or use case.
+    """
+
+    supports_continuous: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this source supports cursor-based continuous syncing for incremental data extraction. Sources with this capability can track their sync position and resume from where they left off.
     """
 
     id: str = pydantic.Field()
