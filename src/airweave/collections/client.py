@@ -145,51 +145,6 @@ class CollectionsClient:
         _response = self._raw_client.get(readable_id, request_options=request_options)
         return _response.data
 
-    def update(
-        self,
-        readable_id: str,
-        *,
-        name: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> Collection:
-        """
-        Update a collection's properties.
-
-        Modifies the display name of an existing collection.
-        Note that the readable ID cannot be changed after creation to maintain stable
-        API endpoints and preserve any existing integrations or bookmarks.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to update
-
-        name : typing.Optional[str]
-            Updated display name for the collection. Must be between 4 and 64 characters.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Collection
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.collections.update(
-            readable_id="readable_id",
-            name="Updated Finance Data",
-        )
-        """
-        _response = self._raw_client.update(readable_id, name=name, request_options=request_options)
-        return _response.data
-
     def delete(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
         Delete a collection and all associated data.
@@ -604,59 +559,6 @@ class AsyncCollectionsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(readable_id, request_options=request_options)
-        return _response.data
-
-    async def update(
-        self,
-        readable_id: str,
-        *,
-        name: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> Collection:
-        """
-        Update a collection's properties.
-
-        Modifies the display name of an existing collection.
-        Note that the readable ID cannot be changed after creation to maintain stable
-        API endpoints and preserve any existing integrations or bookmarks.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to update
-
-        name : typing.Optional[str]
-            Updated display name for the collection. Must be between 4 and 64 characters.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        Collection
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.collections.update(
-                readable_id="readable_id",
-                name="Updated Finance Data",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.update(readable_id, name=name, request_options=request_options)
         return _response.data
 
     async def delete(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:

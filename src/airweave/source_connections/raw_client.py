@@ -115,6 +115,10 @@ class RawSourceConnectionsClient:
         BYOC (Bring Your Own Client) is detected when client_id and client_secret
         are provided in OAuthBrowserAuthentication.
 
+        sync_immediately defaults:
+        - True for: direct, oauth_token, auth_provider
+        - False for: oauth_browser, oauth_byoc (these sync after authentication)
+
         Parameters
         ----------
         short_name : str
@@ -135,7 +139,7 @@ class RawSourceConnectionsClient:
         schedule : typing.Optional[ScheduleConfig]
 
         sync_immediately : typing.Optional[bool]
-            Run initial sync after creation
+            Run initial sync after creation. Defaults to True for direct/token/auth_provider, False for OAuth browser/BYOC flows (which sync after authentication)
 
         authentication : typing.Optional[Authentication]
             Authentication config (defaults to OAuth browser flow for OAuth sources)
@@ -303,7 +307,7 @@ class RawSourceConnectionsClient:
         description: typing.Optional[str] = OMIT,
         config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         schedule: typing.Optional[ScheduleConfig] = OMIT,
-        credentials: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        authentication: typing.Optional[Authentication] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnection]:
         """
@@ -328,8 +332,8 @@ class RawSourceConnectionsClient:
 
         schedule : typing.Optional[ScheduleConfig]
 
-        credentials : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Update credentials (direct auth only)
+        authentication : typing.Optional[Authentication]
+            Authentication config (defaults to OAuth browser flow for OAuth sources)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -349,7 +353,9 @@ class RawSourceConnectionsClient:
                 "schedule": convert_and_respect_annotation_metadata(
                     object_=schedule, annotation=ScheduleConfig, direction="write"
                 ),
-                "credentials": credentials,
+                "authentication": convert_and_respect_annotation_metadata(
+                    object_=authentication, annotation=Authentication, direction="write"
+                ),
             },
             headers={
                 "content-type": "application/json",
@@ -498,8 +504,9 @@ class RawSourceConnectionsClient:
         """
         Cancel a running sync job for a source connection.
 
-        This will update the job status in the database to CANCELLED and
-        send a cancellation request to the Temporal workflow if it's running.
+        This endpoint requests cancellation and marks the job as CANCELLING.
+        The workflow updates the final status to CANCELLED when it processes
+        the cancellation request.
 
         Parameters
         ----------
@@ -640,6 +647,10 @@ class AsyncRawSourceConnectionsClient:
         BYOC (Bring Your Own Client) is detected when client_id and client_secret
         are provided in OAuthBrowserAuthentication.
 
+        sync_immediately defaults:
+        - True for: direct, oauth_token, auth_provider
+        - False for: oauth_browser, oauth_byoc (these sync after authentication)
+
         Parameters
         ----------
         short_name : str
@@ -660,7 +671,7 @@ class AsyncRawSourceConnectionsClient:
         schedule : typing.Optional[ScheduleConfig]
 
         sync_immediately : typing.Optional[bool]
-            Run initial sync after creation
+            Run initial sync after creation. Defaults to True for direct/token/auth_provider, False for OAuth browser/BYOC flows (which sync after authentication)
 
         authentication : typing.Optional[Authentication]
             Authentication config (defaults to OAuth browser flow for OAuth sources)
@@ -828,7 +839,7 @@ class AsyncRawSourceConnectionsClient:
         description: typing.Optional[str] = OMIT,
         config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
         schedule: typing.Optional[ScheduleConfig] = OMIT,
-        credentials: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        authentication: typing.Optional[Authentication] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnection]:
         """
@@ -853,8 +864,8 @@ class AsyncRawSourceConnectionsClient:
 
         schedule : typing.Optional[ScheduleConfig]
 
-        credentials : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Update credentials (direct auth only)
+        authentication : typing.Optional[Authentication]
+            Authentication config (defaults to OAuth browser flow for OAuth sources)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -874,7 +885,9 @@ class AsyncRawSourceConnectionsClient:
                 "schedule": convert_and_respect_annotation_metadata(
                     object_=schedule, annotation=ScheduleConfig, direction="write"
                 ),
-                "credentials": credentials,
+                "authentication": convert_and_respect_annotation_metadata(
+                    object_=authentication, annotation=Authentication, direction="write"
+                ),
             },
             headers={
                 "content-type": "application/json",
@@ -1023,8 +1036,9 @@ class AsyncRawSourceConnectionsClient:
         """
         Cancel a running sync job for a source connection.
 
-        This will update the job status in the database to CANCELLED and
-        send a cancellation request to the Temporal workflow if it's running.
+        This endpoint requests cancellation and marks the job as CANCELLING.
+        The workflow updates the final status to CANCELLED when it processes
+        the cancellation request.
 
         Parameters
         ----------

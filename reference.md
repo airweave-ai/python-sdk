@@ -362,89 +362,6 @@ client.collections.get(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">update</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Update a collection's properties.
-
-Modifies the display name of an existing collection.
-Note that the readable ID cannot be changed after creation to maintain stable
-API endpoints and preserve any existing integrations or bookmarks.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.collections.update(
-    readable_id="readable_id",
-    name="Updated Finance Data",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**readable_id:** `str` — The unique readable identifier of the collection to update
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**name:** `typing.Optional[str]` — Updated display name for the collection. Must be between 4 and 64 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.collections.<a href="src/airweave/collections/client.py">delete</a>(...)</code></summary>
 <dl>
 <dd>
@@ -1001,6 +918,10 @@ The authentication configuration determines the flow:
 
 BYOC (Bring Your Own Client) is detected when client_id and client_secret
 are provided in OAuthBrowserAuthentication.
+
+sync_immediately defaults:
+- True for: direct, oauth_token, auth_provider
+- False for: oauth_browser, oauth_byoc (these sync after authentication)
 </dd>
 </dl>
 </dd>
@@ -1087,7 +1008,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**sync_immediately:** `typing.Optional[bool]` — Run initial sync after creation
+**sync_immediately:** `typing.Optional[bool]` — Run initial sync after creation. Defaults to True for direct/token/auth_provider, False for OAuth browser/BYOC flows (which sync after authentication)
     
 </dd>
 </dl>
@@ -1351,7 +1272,7 @@ client.source_connections.update(
 <dl>
 <dd>
 
-**credentials:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Update credentials (direct auth only)
+**authentication:** `typing.Optional[Authentication]` — Authentication config (defaults to OAuth browser flow for OAuth sources)
     
 </dd>
 </dl>
@@ -1535,8 +1456,9 @@ client.source_connections.get_source_connection_jobs(
 
 Cancel a running sync job for a source connection.
 
-This will update the job status in the database to CANCELLED and
-send a cancellation request to the Temporal workflow if it's running.
+This endpoint requests cancellation and marks the job as CANCELLING.
+The workflow updates the final status to CANCELLED when it processes
+the cancellation request.
 </dd>
 </dl>
 </dd>

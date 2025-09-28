@@ -22,6 +22,7 @@ from .checkout_session_request import CheckoutSessionRequest
 from .checkout_session_response import CheckoutSessionResponse
 from .collection import Collection
 from .collection_status import CollectionStatus
+from .collection_update import CollectionUpdate
 from .config_field import ConfigField
 from .config_values import ConfigValues
 from .connection import Connection
@@ -159,6 +160,7 @@ __all__ = [
     "CheckoutSessionResponse",
     "Collection",
     "CollectionStatus",
+    "CollectionUpdate",
     "ConfigField",
     "ConfigValues",
     "Connection",
