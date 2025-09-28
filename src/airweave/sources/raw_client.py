@@ -18,34 +18,34 @@ class RawSourcesClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[Source]:
+    def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[typing.List[Source]]:
         """
-        Get detailed information about a specific data source connector.
+        List all available data source connectors.
+
+        <br/><br/>
+        Returns the complete catalog of source types that Airweave can connect to.
 
         Parameters
         ----------
-        short_name : str
-            Technical identifier of the source type (e.g., 'github', 'stripe', 'slack')
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[Source]
+        HttpResponse[typing.List[Source]]
             Successful Response
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
+            "sources",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    Source,
+                    typing.List[Source],
                     parse_obj_as(
-                        type_=Source,  # type: ignore
+                        type_=typing.List[Source],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -66,34 +66,34 @@ class RawSourcesClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[typing.List[Source]]:
+    def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[Source]:
         """
-        List all available data source connectors.
-
-        <br/><br/>
-        Returns the complete catalog of source types that Airweave can connect to.
+        Get detailed information about a specific data source connector.
 
         Parameters
         ----------
+        short_name : str
+            Technical identifier of the source type (e.g., 'github', 'stripe', 'slack')
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[typing.List[Source]]
+        HttpResponse[Source]
             Successful Response
         """
         _response = self._client_wrapper.httpx_client.request(
-            "sources/list",
+            f"sources/{jsonable_encoder(short_name)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[Source],
+                    Source,
                     parse_obj_as(
-                        type_=typing.List[Source],  # type: ignore
+                        type_=Source,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -119,56 +119,6 @@ class AsyncRawSourcesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def read(
-        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[Source]:
-        """
-        Get detailed information about a specific data source connector.
-
-        Parameters
-        ----------
-        short_name : str
-            Technical identifier of the source type (e.g., 'github', 'stripe', 'slack')
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[Source]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"sources/detail/{jsonable_encoder(short_name)}",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    Source,
-                    parse_obj_as(
-                        type_=Source,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     async def list(
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[typing.List[Source]]:
@@ -189,7 +139,7 @@ class AsyncRawSourcesClient:
             Successful Response
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "sources/list",
+            "sources",
             method="GET",
             request_options=request_options,
         )
@@ -199,6 +149,56 @@ class AsyncRawSourcesClient:
                     typing.List[Source],
                     parse_obj_as(
                         type_=typing.List[Source],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def read(
+        self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[Source]:
+        """
+        Get detailed information about a specific data source connector.
+
+        Parameters
+        ----------
+        short_name : str
+            Technical identifier of the source type (e.g., 'github', 'stripe', 'slack')
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Source]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sources/{jsonable_encoder(short_name)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Source,
+                    parse_obj_as(
+                        type_=Source,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

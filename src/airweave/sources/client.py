@@ -23,6 +23,35 @@ class SourcesClient:
         """
         return self._raw_client
 
+    def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
+        """
+        List all available data source connectors.
+
+        <br/><br/>
+        Returns the complete catalog of source types that Airweave can connect to.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[Source]
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.sources.list()
+        """
+        _response = self._raw_client.list(request_options=request_options)
+        return _response.data
+
     def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
         Get detailed information about a specific data source connector.
@@ -54,7 +83,23 @@ class SourcesClient:
         _response = self._raw_client.read(short_name, request_options=request_options)
         return _response.data
 
-    def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
+
+class AsyncSourcesClient:
+    def __init__(self, *, client_wrapper: AsyncClientWrapper):
+        self._raw_client = AsyncRawSourcesClient(client_wrapper=client_wrapper)
+
+    @property
+    def with_raw_response(self) -> AsyncRawSourcesClient:
+        """
+        Retrieves a raw implementation of this client that returns raw responses.
+
+        Returns
+        -------
+        AsyncRawSourcesClient
+        """
+        return self._raw_client
+
+    async def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
         List all available data source connectors.
 
@@ -73,31 +118,23 @@ class SourcesClient:
 
         Examples
         --------
-        from airweave import AirweaveSDK
+        import asyncio
 
-        client = AirweaveSDK(
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.list()
+
+
+        async def main() -> None:
+            await client.sources.list()
+
+
+        asyncio.run(main())
         """
-        _response = self._raw_client.list(request_options=request_options)
+        _response = await self._raw_client.list(request_options=request_options)
         return _response.data
-
-
-class AsyncSourcesClient:
-    def __init__(self, *, client_wrapper: AsyncClientWrapper):
-        self._raw_client = AsyncRawSourcesClient(client_wrapper=client_wrapper)
-
-    @property
-    def with_raw_response(self) -> AsyncRawSourcesClient:
-        """
-        Retrieves a raw implementation of this client that returns raw responses.
-
-        Returns
-        -------
-        AsyncRawSourcesClient
-        """
-        return self._raw_client
 
     async def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
@@ -136,41 +173,4 @@ class AsyncSourcesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.read(short_name, request_options=request_options)
-        return _response.data
-
-    async def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
-        """
-        List all available data source connectors.
-
-        <br/><br/>
-        Returns the complete catalog of source types that Airweave can connect to.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[Source]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.sources.list()
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.list(request_options=request_options)
         return _response.data
