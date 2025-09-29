@@ -79,6 +79,7 @@ from .lte import Lte
 from .match import Match
 from .match_any import MatchAny
 from .match_except import MatchExcept
+from .match_phrase import MatchPhrase
 from .match_text import MatchText
 from .match_value import MatchValue
 from .member_response import MemberResponse
@@ -217,6 +218,7 @@ __all__ = [
     "Match",
     "MatchAny",
     "MatchExcept",
+    "MatchPhrase",
     "MatchText",
     "MatchValue",
     "MemberResponse",

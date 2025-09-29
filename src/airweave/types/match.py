@@ -4,7 +4,8 @@ import typing
 
 from .match_any import MatchAny
 from .match_except import MatchExcept
+from .match_phrase import MatchPhrase
 from .match_text import MatchText
 from .match_value import MatchValue
 
-Match = typing.Union[MatchValue, MatchText, MatchAny, MatchExcept]
+Match = typing.Union[MatchValue, MatchText, MatchPhrase, MatchAny, MatchExcept]

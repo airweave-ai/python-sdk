@@ -54,12 +54,12 @@ class FieldCondition(UniversalBaseModel):
 
     is_empty: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Check that the field is empty, alternative syntax for `is_empty: \&quot;field_name\&quot;`
+    Check that the field is empty, alternative syntax for `is_empty: 'field_name'`
     """
 
     is_null: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Check that the field is null, alternative syntax for `is_null: \&quot;field_name\&quot;`
+    Check that the field is null, alternative syntax for `is_null: 'field_name'`
     """
 
     if IS_PYDANTIC_V2:
