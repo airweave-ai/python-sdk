@@ -37,6 +37,10 @@ class AuthProviderConnection(UniversalBaseModel):
 
     created_at: dt.datetime
     modified_at: dt.datetime
+    masked_client_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Masked client ID for OAuth providers (first 7 and last 4 characters visible)
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
