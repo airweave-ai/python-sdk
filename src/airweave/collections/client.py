@@ -65,7 +65,10 @@ class CollectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.collections.list()
+        client.collections.list(
+            skip=1,
+            limit=1,
+        )
         """
         _response = self._raw_client.list(skip=skip, limit=limit, request_options=request_options)
         return _response.data
@@ -235,6 +238,10 @@ class CollectionsClient:
         client.collections.search(
             readable_id="readable_id",
             query="customer payment issues",
+            response_type="raw",
+            limit=1,
+            offset=1,
+            recency_bias=1.1,
         )
         """
         _response = self._raw_client.search(
@@ -462,7 +469,10 @@ class AsyncCollectionsClient:
 
 
         async def main() -> None:
-            await client.collections.list()
+            await client.collections.list(
+                skip=1,
+                limit=1,
+            )
 
 
         asyncio.run(main())
@@ -664,6 +674,10 @@ class AsyncCollectionsClient:
             await client.collections.search(
                 readable_id="readable_id",
                 query="customer payment issues",
+                response_type="raw",
+                limit=1,
+                offset=1,
+                recency_bias=1.1,
             )
 
 

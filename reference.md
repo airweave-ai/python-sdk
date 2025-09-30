@@ -1,6 +1,6 @@
 # Reference
 ## sources
-<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">get_sources</a>()</code></summary>
+<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">list</a>()</code></summary>
 <dl>
 <dd>
 
@@ -35,7 +35,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sources.get_sources()
+client.sources.list()
 
 ```
 </dd>
@@ -166,7 +166,10 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.list()
+client.collections.list(
+    skip=1,
+    limit=1,
+)
 
 ```
 </dd>
@@ -474,6 +477,10 @@ client = AirweaveSDK(
 client.collections.search(
     readable_id="readable_id",
     query="customer payment issues",
+    response_type="raw",
+    limit=1,
+    offset=1,
+    recency_bias=1.1,
 )
 
 ```
@@ -844,7 +851,11 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.source_connections.list()
+client.source_connections.list(
+    collection="collection",
+    skip=1,
+    limit=1,
+)
 
 ```
 </dd>
@@ -1398,6 +1409,7 @@ client = AirweaveSDK(
 )
 client.source_connections.get_source_connection_jobs(
     source_connection_id="source_connection_id",
+    limit=1,
 )
 
 ```

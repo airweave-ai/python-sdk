@@ -2,145 +2,310 @@
 
 # isort: skip_file
 
-from .action_check_request import ActionCheckRequest
-from .action_check_response import ActionCheckResponse
-from .any import Any
-from .api_key import ApiKey
-from .api_key_create import ApiKeyCreate
-from .auth_provider import AuthProvider
-from .auth_provider_authentication import AuthProviderAuthentication
-from .auth_provider_connection import AuthProviderConnection
-from .auth_provider_connection_create import AuthProviderConnectionCreate
-from .auth_provider_connection_update import AuthProviderConnectionUpdate
-from .authentication_details import AuthenticationDetails
-from .authentication_method import AuthenticationMethod
-from .billing_period_usage import BillingPeriodUsage
-from .body_connect_slack_with_token_connections_direct_token_slack_post import (
-    BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
-)
-from .checkout_session_request import CheckoutSessionRequest
-from .checkout_session_response import CheckoutSessionResponse
-from .collection import Collection
-from .collection_status import CollectionStatus
-from .collection_update import CollectionUpdate
-from .config_field import ConfigField
-from .config_values import ConfigValues
-from .connection import Connection
-from .connection_status import ConnectionStatus
-from .customer_portal_request import CustomerPortalRequest
-from .customer_portal_response import CustomerPortalResponse
-from .dag_edge import DagEdge
-from .dag_edge_create import DagEdgeCreate
-from .dag_node import DagNode
-from .dag_node_create import DagNodeCreate
-from .datetime_range import DatetimeRange
-from .destination import Destination
-from .destination_with_authentication_fields import DestinationWithAuthenticationFields
-from .direct_authentication import DirectAuthentication
-from .embedding_model import EmbeddingModel
-from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
-from .entity_count import EntityCount
-from .entity_count_with_definition import EntityCountWithDefinition
-from .entity_definition import EntityDefinition
-from .entity_definition_create import EntityDefinitionCreate
-from .entity_definition_create_entity_schema import EntityDefinitionCreateEntitySchema
-from .entity_definition_entity_schema import EntityDefinitionEntitySchema
-from .entity_summary import EntitySummary
-from .entity_type import EntityType
-from .entity_type_stats import EntityTypeStats
-from .except_ import Except
-from .field_condition import FieldCondition
-from .fields import Fields
-from .filter import Filter
-from .filter_must_item import FilterMustItem
-from .filter_must_not import FilterMustNot
-from .filter_must_not_item import FilterMustNotItem
-from .filter_should_item import FilterShouldItem
-from .geo_bounding_box import GeoBoundingBox
-from .geo_line_string import GeoLineString
-from .geo_point import GeoPoint
-from .geo_polygon import GeoPolygon
-from .geo_radius import GeoRadius
-from .gt import Gt
-from .gte import Gte
-from .has_id_condition import HasIdCondition
-from .has_id_condition_has_id_item import HasIdConditionHasIdItem
-from .has_vector_condition import HasVectorCondition
-from .http_validation_error import HttpValidationError
-from .integration_credential_in_db import IntegrationCredentialInDb
-from .integration_credential_raw_create import IntegrationCredentialRawCreate
-from .integration_type import IntegrationType
-from .invitation_create import InvitationCreate
-from .invitation_response import InvitationResponse
-from .is_empty_condition import IsEmptyCondition
-from .is_null_condition import IsNullCondition
-from .lt import Lt
-from .lte import Lte
-from .match import Match
-from .match_any import MatchAny
-from .match_except import MatchExcept
-from .match_phrase import MatchPhrase
-from .match_text import MatchText
-from .match_value import MatchValue
-from .member_response import MemberResponse
-from .message_response import MessageResponse
-from .min_should import MinShould
-from .min_should_conditions_item import MinShouldConditionsItem
-from .minute_level_schedule_config import MinuteLevelScheduleConfig
-from .must import Must
-from .nested import Nested
-from .nested_condition import NestedCondition
-from .node_type import NodeType
-from .o_auth_browser_authentication import OAuthBrowserAuthentication
-from .o_auth_token_authentication import OAuthTokenAuthentication
-from .o_auth_type import OAuthType
-from .organization import Organization
-from .organization_create import OrganizationCreate
-from .organization_with_role import OrganizationWithRole
-from .payload_field import PayloadField
-from .query_expansion_strategy import QueryExpansionStrategy
-from .range import Range
-from .response_type import ResponseType
-from .schedule_config import ScheduleConfig
-from .schedule_details import ScheduleDetails
-from .schedule_response import ScheduleResponse
-from .search_response import SearchResponse
-from .search_status import SearchStatus
-from .should import Should
-from .single_action_check_response import SingleActionCheckResponse
-from .single_action_check_response_reason import SingleActionCheckResponseReason
-from .source import Source
-from .source_connection import SourceConnection
-from .source_connection_job import SourceConnectionJob
-from .source_connection_list_item import SourceConnectionListItem
-from .source_connection_status import SourceConnectionStatus
-from .subscription_info import SubscriptionInfo
-from .sync import Sync
-from .sync_create import SyncCreate
-from .sync_dag import SyncDag
-from .sync_dag_create import SyncDagCreate
-from .sync_dag_update import SyncDagUpdate
-from .sync_details import SyncDetails
-from .sync_job import SyncJob
-from .sync_job_details import SyncJobDetails
-from .sync_job_status import SyncJobStatus
-from .sync_status import SyncStatus
-from .sync_update import SyncUpdate
-from .sync_with_source_connection import SyncWithSourceConnection
-from .transformer import Transformer
-from .transformer_create import TransformerCreate
-from .transformer_update import TransformerUpdate
-from .update_plan_request import UpdatePlanRequest
-from .usage_dashboard import UsageDashboard
-from .usage_snapshot import UsageSnapshot
-from .usage_trend import UsageTrend
-from .user import User
-from .user_create import UserCreate
-from .user_organization import UserOrganization
-from .validation_error import ValidationError
-from .validation_error_loc_item import ValidationErrorLocItem
-from .value import Value
-from .values_count import ValuesCount
+import typing
+from importlib import import_module
+
+if typing.TYPE_CHECKING:
+    from .action_check_request import ActionCheckRequest
+    from .action_check_response import ActionCheckResponse
+    from .any import Any
+    from .api_key import ApiKey
+    from .api_key_create import ApiKeyCreate
+    from .auth_provider import AuthProvider
+    from .auth_provider_authentication import AuthProviderAuthentication
+    from .auth_provider_connection import AuthProviderConnection
+    from .auth_provider_connection_create import AuthProviderConnectionCreate
+    from .auth_provider_connection_update import AuthProviderConnectionUpdate
+    from .authentication_details import AuthenticationDetails
+    from .authentication_method import AuthenticationMethod
+    from .billing_period_usage import BillingPeriodUsage
+    from .body_connect_slack_with_token_connections_direct_token_slack_post import (
+        BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
+    )
+    from .checkout_session_request import CheckoutSessionRequest
+    from .checkout_session_response import CheckoutSessionResponse
+    from .collection import Collection
+    from .collection_status import CollectionStatus
+    from .collection_update import CollectionUpdate
+    from .config_field import ConfigField
+    from .config_values import ConfigValues
+    from .connection import Connection
+    from .connection_status import ConnectionStatus
+    from .customer_portal_request import CustomerPortalRequest
+    from .customer_portal_response import CustomerPortalResponse
+    from .dag_edge import DagEdge
+    from .dag_edge_create import DagEdgeCreate
+    from .dag_node import DagNode
+    from .dag_node_create import DagNodeCreate
+    from .datetime_range import DatetimeRange
+    from .destination import Destination
+    from .destination_with_authentication_fields import DestinationWithAuthenticationFields
+    from .direct_authentication import DirectAuthentication
+    from .embedding_model import EmbeddingModel
+    from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
+    from .entity_count import EntityCount
+    from .entity_count_with_definition import EntityCountWithDefinition
+    from .entity_definition import EntityDefinition
+    from .entity_definition_create import EntityDefinitionCreate
+    from .entity_definition_create_entity_schema import EntityDefinitionCreateEntitySchema
+    from .entity_definition_entity_schema import EntityDefinitionEntitySchema
+    from .entity_summary import EntitySummary
+    from .entity_type import EntityType
+    from .entity_type_stats import EntityTypeStats
+    from .except_ import Except
+    from .field_condition import FieldCondition
+    from .fields import Fields
+    from .filter import Filter
+    from .filter_must_item import FilterMustItem
+    from .filter_must_not import FilterMustNot
+    from .filter_must_not_item import FilterMustNotItem
+    from .filter_should_item import FilterShouldItem
+    from .geo_bounding_box import GeoBoundingBox
+    from .geo_line_string import GeoLineString
+    from .geo_point import GeoPoint
+    from .geo_polygon import GeoPolygon
+    from .geo_radius import GeoRadius
+    from .gt import Gt
+    from .gte import Gte
+    from .has_id_condition import HasIdCondition
+    from .has_id_condition_has_id_item import HasIdConditionHasIdItem
+    from .has_vector_condition import HasVectorCondition
+    from .http_validation_error import HttpValidationError
+    from .integration_credential_in_db import IntegrationCredentialInDb
+    from .integration_credential_raw_create import IntegrationCredentialRawCreate
+    from .integration_type import IntegrationType
+    from .invitation_create import InvitationCreate
+    from .invitation_response import InvitationResponse
+    from .is_empty_condition import IsEmptyCondition
+    from .is_null_condition import IsNullCondition
+    from .lt import Lt
+    from .lte import Lte
+    from .match import Match
+    from .match_any import MatchAny
+    from .match_except import MatchExcept
+    from .match_phrase import MatchPhrase
+    from .match_text import MatchText
+    from .match_value import MatchValue
+    from .member_response import MemberResponse
+    from .message_response import MessageResponse
+    from .min_should import MinShould
+    from .min_should_conditions_item import MinShouldConditionsItem
+    from .minute_level_schedule_config import MinuteLevelScheduleConfig
+    from .must import Must
+    from .nested import Nested
+    from .nested_condition import NestedCondition
+    from .node_type import NodeType
+    from .o_auth_browser_authentication import OAuthBrowserAuthentication
+    from .o_auth_token_authentication import OAuthTokenAuthentication
+    from .o_auth_type import OAuthType
+    from .organization import Organization
+    from .organization_create import OrganizationCreate
+    from .organization_with_role import OrganizationWithRole
+    from .payload_field import PayloadField
+    from .query_expansion_strategy import QueryExpansionStrategy
+    from .range import Range
+    from .response_type import ResponseType
+    from .schedule_config import ScheduleConfig
+    from .schedule_details import ScheduleDetails
+    from .schedule_response import ScheduleResponse
+    from .search_response import SearchResponse
+    from .search_status import SearchStatus
+    from .should import Should
+    from .single_action_check_response import SingleActionCheckResponse
+    from .single_action_check_response_reason import SingleActionCheckResponseReason
+    from .source import Source
+    from .source_connection import SourceConnection
+    from .source_connection_job import SourceConnectionJob
+    from .source_connection_list_item import SourceConnectionListItem
+    from .source_connection_status import SourceConnectionStatus
+    from .subscription_info import SubscriptionInfo
+    from .sync import Sync
+    from .sync_create import SyncCreate
+    from .sync_dag import SyncDag
+    from .sync_dag_create import SyncDagCreate
+    from .sync_dag_update import SyncDagUpdate
+    from .sync_details import SyncDetails
+    from .sync_job import SyncJob
+    from .sync_job_details import SyncJobDetails
+    from .sync_job_status import SyncJobStatus
+    from .sync_status import SyncStatus
+    from .sync_update import SyncUpdate
+    from .sync_with_source_connection import SyncWithSourceConnection
+    from .transformer import Transformer
+    from .transformer_create import TransformerCreate
+    from .transformer_update import TransformerUpdate
+    from .update_plan_request import UpdatePlanRequest
+    from .usage_dashboard import UsageDashboard
+    from .usage_snapshot import UsageSnapshot
+    from .usage_trend import UsageTrend
+    from .user import User
+    from .user_create import UserCreate
+    from .user_organization import UserOrganization
+    from .validation_error import ValidationError
+    from .validation_error_loc_item import ValidationErrorLocItem
+    from .value import Value
+    from .values_count import ValuesCount
+_dynamic_imports: typing.Dict[str, str] = {
+    "ActionCheckRequest": ".action_check_request",
+    "ActionCheckResponse": ".action_check_response",
+    "Any": ".any",
+    "ApiKey": ".api_key",
+    "ApiKeyCreate": ".api_key_create",
+    "AuthProvider": ".auth_provider",
+    "AuthProviderAuthentication": ".auth_provider_authentication",
+    "AuthProviderConnection": ".auth_provider_connection",
+    "AuthProviderConnectionCreate": ".auth_provider_connection_create",
+    "AuthProviderConnectionUpdate": ".auth_provider_connection_update",
+    "AuthenticationDetails": ".authentication_details",
+    "AuthenticationMethod": ".authentication_method",
+    "BillingPeriodUsage": ".billing_period_usage",
+    "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost": ".body_connect_slack_with_token_connections_direct_token_slack_post",
+    "CheckoutSessionRequest": ".checkout_session_request",
+    "CheckoutSessionResponse": ".checkout_session_response",
+    "Collection": ".collection",
+    "CollectionStatus": ".collection_status",
+    "CollectionUpdate": ".collection_update",
+    "ConfigField": ".config_field",
+    "ConfigValues": ".config_values",
+    "Connection": ".connection",
+    "ConnectionStatus": ".connection_status",
+    "CustomerPortalRequest": ".customer_portal_request",
+    "CustomerPortalResponse": ".customer_portal_response",
+    "DagEdge": ".dag_edge",
+    "DagEdgeCreate": ".dag_edge_create",
+    "DagNode": ".dag_node",
+    "DagNodeCreate": ".dag_node_create",
+    "DatetimeRange": ".datetime_range",
+    "Destination": ".destination",
+    "DestinationWithAuthenticationFields": ".destination_with_authentication_fields",
+    "DirectAuthentication": ".direct_authentication",
+    "EmbeddingModel": ".embedding_model",
+    "EmbeddingModelWithAuthenticationFields": ".embedding_model_with_authentication_fields",
+    "EntityCount": ".entity_count",
+    "EntityCountWithDefinition": ".entity_count_with_definition",
+    "EntityDefinition": ".entity_definition",
+    "EntityDefinitionCreate": ".entity_definition_create",
+    "EntityDefinitionCreateEntitySchema": ".entity_definition_create_entity_schema",
+    "EntityDefinitionEntitySchema": ".entity_definition_entity_schema",
+    "EntitySummary": ".entity_summary",
+    "EntityType": ".entity_type",
+    "EntityTypeStats": ".entity_type_stats",
+    "Except": ".except_",
+    "FieldCondition": ".field_condition",
+    "Fields": ".fields",
+    "Filter": ".filter",
+    "FilterMustItem": ".filter_must_item",
+    "FilterMustNot": ".filter_must_not",
+    "FilterMustNotItem": ".filter_must_not_item",
+    "FilterShouldItem": ".filter_should_item",
+    "GeoBoundingBox": ".geo_bounding_box",
+    "GeoLineString": ".geo_line_string",
+    "GeoPoint": ".geo_point",
+    "GeoPolygon": ".geo_polygon",
+    "GeoRadius": ".geo_radius",
+    "Gt": ".gt",
+    "Gte": ".gte",
+    "HasIdCondition": ".has_id_condition",
+    "HasIdConditionHasIdItem": ".has_id_condition_has_id_item",
+    "HasVectorCondition": ".has_vector_condition",
+    "HttpValidationError": ".http_validation_error",
+    "IntegrationCredentialInDb": ".integration_credential_in_db",
+    "IntegrationCredentialRawCreate": ".integration_credential_raw_create",
+    "IntegrationType": ".integration_type",
+    "InvitationCreate": ".invitation_create",
+    "InvitationResponse": ".invitation_response",
+    "IsEmptyCondition": ".is_empty_condition",
+    "IsNullCondition": ".is_null_condition",
+    "Lt": ".lt",
+    "Lte": ".lte",
+    "Match": ".match",
+    "MatchAny": ".match_any",
+    "MatchExcept": ".match_except",
+    "MatchPhrase": ".match_phrase",
+    "MatchText": ".match_text",
+    "MatchValue": ".match_value",
+    "MemberResponse": ".member_response",
+    "MessageResponse": ".message_response",
+    "MinShould": ".min_should",
+    "MinShouldConditionsItem": ".min_should_conditions_item",
+    "MinuteLevelScheduleConfig": ".minute_level_schedule_config",
+    "Must": ".must",
+    "Nested": ".nested",
+    "NestedCondition": ".nested_condition",
+    "NodeType": ".node_type",
+    "OAuthBrowserAuthentication": ".o_auth_browser_authentication",
+    "OAuthTokenAuthentication": ".o_auth_token_authentication",
+    "OAuthType": ".o_auth_type",
+    "Organization": ".organization",
+    "OrganizationCreate": ".organization_create",
+    "OrganizationWithRole": ".organization_with_role",
+    "PayloadField": ".payload_field",
+    "QueryExpansionStrategy": ".query_expansion_strategy",
+    "Range": ".range",
+    "ResponseType": ".response_type",
+    "ScheduleConfig": ".schedule_config",
+    "ScheduleDetails": ".schedule_details",
+    "ScheduleResponse": ".schedule_response",
+    "SearchResponse": ".search_response",
+    "SearchStatus": ".search_status",
+    "Should": ".should",
+    "SingleActionCheckResponse": ".single_action_check_response",
+    "SingleActionCheckResponseReason": ".single_action_check_response_reason",
+    "Source": ".source",
+    "SourceConnection": ".source_connection",
+    "SourceConnectionJob": ".source_connection_job",
+    "SourceConnectionListItem": ".source_connection_list_item",
+    "SourceConnectionStatus": ".source_connection_status",
+    "SubscriptionInfo": ".subscription_info",
+    "Sync": ".sync",
+    "SyncCreate": ".sync_create",
+    "SyncDag": ".sync_dag",
+    "SyncDagCreate": ".sync_dag_create",
+    "SyncDagUpdate": ".sync_dag_update",
+    "SyncDetails": ".sync_details",
+    "SyncJob": ".sync_job",
+    "SyncJobDetails": ".sync_job_details",
+    "SyncJobStatus": ".sync_job_status",
+    "SyncStatus": ".sync_status",
+    "SyncUpdate": ".sync_update",
+    "SyncWithSourceConnection": ".sync_with_source_connection",
+    "Transformer": ".transformer",
+    "TransformerCreate": ".transformer_create",
+    "TransformerUpdate": ".transformer_update",
+    "UpdatePlanRequest": ".update_plan_request",
+    "UsageDashboard": ".usage_dashboard",
+    "UsageSnapshot": ".usage_snapshot",
+    "UsageTrend": ".usage_trend",
+    "User": ".user",
+    "UserCreate": ".user_create",
+    "UserOrganization": ".user_organization",
+    "ValidationError": ".validation_error",
+    "ValidationErrorLocItem": ".validation_error_loc_item",
+    "Value": ".value",
+    "ValuesCount": ".values_count",
+}
+
+
+def __getattr__(attr_name: str) -> typing.Any:
+    module_name = _dynamic_imports.get(attr_name)
+    if module_name is None:
+        raise AttributeError(f"No {attr_name} found in _dynamic_imports for module name -> {__name__}")
+    try:
+        module = import_module(module_name, __package__)
+        if module_name == f".{attr_name}":
+            return module
+        else:
+            return getattr(module, attr_name)
+    except ImportError as e:
+        raise ImportError(f"Failed to import {attr_name} from {module_name}: {e}") from e
+    except AttributeError as e:
+        raise AttributeError(f"Failed to get {attr_name} from {module_name}: {e}") from e
+
+
+def __dir__():
+    lazy_attrs = list(_dynamic_imports.keys())
+    return sorted(lazy_attrs)
+
 
 __all__ = [
     "ActionCheckRequest",

@@ -65,7 +65,11 @@ class SourceConnectionsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.source_connections.list()
+        client.source_connections.list(
+            collection="collection",
+            skip=1,
+            limit=1,
+        )
         """
         _response = self._raw_client.list(
             collection=collection, skip=skip, limit=limit, request_options=request_options
@@ -356,6 +360,7 @@ class SourceConnectionsClient:
         )
         client.source_connections.get_source_connection_jobs(
             source_connection_id="source_connection_id",
+            limit=1,
         )
         """
         _response = self._raw_client.get_source_connection_jobs(
@@ -458,7 +463,11 @@ class AsyncSourceConnectionsClient:
 
 
         async def main() -> None:
-            await client.source_connections.list()
+            await client.source_connections.list(
+                collection="collection",
+                skip=1,
+                limit=1,
+            )
 
 
         asyncio.run(main())
@@ -797,6 +806,7 @@ class AsyncSourceConnectionsClient:
         async def main() -> None:
             await client.source_connections.get_source_connection_jobs(
                 source_connection_id="source_connection_id",
+                limit=1,
             )
 
 
