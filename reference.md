@@ -63,7 +63,7 @@ client.sources.list()
 </dl>
 </details>
 
-<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">read</a>(...)</code></summary>
+<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">get</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -95,7 +95,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sources.read(
+client.sources.get(
     short_name="short_name",
 )
 

@@ -52,7 +52,7 @@ class SourcesClient:
         _response = self._raw_client.list(request_options=request_options)
         return _response.data
 
-    def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
+    def get(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
         Get detailed information about a specific data source connector.
 
@@ -76,11 +76,11 @@ class SourcesClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.sources.read(
+        client.sources.get(
             short_name="short_name",
         )
         """
-        _response = self._raw_client.read(short_name, request_options=request_options)
+        _response = self._raw_client.get(short_name, request_options=request_options)
         return _response.data
 
 
@@ -136,7 +136,7 @@ class AsyncSourcesClient:
         _response = await self._raw_client.list(request_options=request_options)
         return _response.data
 
-    async def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
+    async def get(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
         Get detailed information about a specific data source connector.
 
@@ -165,12 +165,12 @@ class AsyncSourcesClient:
 
 
         async def main() -> None:
-            await client.sources.read(
+            await client.sources.get(
                 short_name="short_name",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.read(short_name, request_options=request_options)
+        _response = await self._raw_client.get(short_name, request_options=request_options)
         return _response.data

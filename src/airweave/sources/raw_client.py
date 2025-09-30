@@ -66,7 +66,7 @@ class RawSourcesClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def read(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[Source]:
+    def get(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[Source]:
         """
         Get detailed information about a specific data source connector.
 
@@ -169,7 +169,7 @@ class AsyncRawSourcesClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def read(
+    async def get(
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Source]:
         """
