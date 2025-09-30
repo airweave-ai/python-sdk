@@ -1,6 +1,6 @@
 # Reference
 ## sources
-<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">list</a>()</code></summary>
+<details><summary><code>client.sources.<a href="src/airweave/sources/client.py">get_sources</a>()</code></summary>
 <dl>
 <dd>
 
@@ -35,7 +35,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.sources.list()
+client.sources.get_sources()
 
 ```
 </dd>
