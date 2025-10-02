@@ -98,6 +98,11 @@ class Source(UniversalBaseModel):
     Schema definition for configuration fields required to customize this source. Describes field types, validation rules, and user interface hints.
     """
 
+    supported_auth_providers: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    List of auth provider short names that support this source (e.g., ['composio', 'pipedream']). Computed dynamically for API responses. This field is not stored in the database.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
