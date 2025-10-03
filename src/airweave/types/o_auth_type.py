@@ -2,4 +2,4 @@
 
 import typing
 
-OAuthType = typing.Union[typing.Literal["access_only", "with_refresh", "with_rotating_refresh"], typing.Any]
+OAuthType = typing.Union[typing.Literal["oauth1", "access_only", "with_refresh", "with_rotating_refresh"], typing.Any]

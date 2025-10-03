@@ -18,7 +18,6 @@ class SyncJobDetails(UniversalBaseModel):
     started_at: typing.Optional[dt.datetime] = None
     completed_at: typing.Optional[dt.datetime] = None
     duration_seconds: typing.Optional[float] = None
-    entities_processed: typing.Optional[int] = None
     entities_inserted: typing.Optional[int] = None
     entities_updated: typing.Optional[int] = None
     entities_deleted: typing.Optional[int] = None
