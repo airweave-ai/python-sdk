@@ -2,4 +2,4 @@
 
 import typing
 
-CollectionStatus = typing.Union[typing.Literal["ACTIVE", "PARTIAL ERROR", "NEEDS SOURCE", "ERROR"], typing.Any]
+CollectionStatus = typing.Union[typing.Literal["ACTIVE", "NEEDS SOURCE", "ERROR"], typing.Any]
