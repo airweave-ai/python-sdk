@@ -100,6 +100,7 @@ if typing.TYPE_CHECKING:
     from .o_auth_type import OAuthType
     from .organization import Organization
     from .organization_create import OrganizationCreate
+    from .organization_metrics import OrganizationMetrics
     from .organization_with_role import OrganizationWithRole
     from .payload_field import PayloadField
     from .query_expansion_strategy import QueryExpansionStrategy
@@ -238,6 +239,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "OAuthType": ".o_auth_type",
     "Organization": ".organization",
     "OrganizationCreate": ".organization_create",
+    "OrganizationMetrics": ".organization_metrics",
     "OrganizationWithRole": ".organization_with_role",
     "PayloadField": ".payload_field",
     "QueryExpansionStrategy": ".query_expansion_strategy",
@@ -400,6 +402,7 @@ __all__ = [
     "OAuthType",
     "Organization",
     "OrganizationCreate",
+    "OrganizationMetrics",
     "OrganizationWithRole",
     "PayloadField",
     "QueryExpansionStrategy",

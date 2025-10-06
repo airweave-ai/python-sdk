@@ -20,6 +20,7 @@ class User(UniversalBaseModel):
     auth_0_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="auth0_id")] = None
     primary_organization_id: typing.Optional[str] = None
     user_organizations: typing.Optional[typing.List[UserOrganization]] = None
+    is_admin: typing.Optional[bool] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
