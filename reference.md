@@ -1035,6 +1035,14 @@ client.source_connections.create(
 <dl>
 <dd>
 
+**redirect_url:** `typing.Optional[str]` — URL to redirect to after OAuth flow completes (only used for OAuth flows)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>

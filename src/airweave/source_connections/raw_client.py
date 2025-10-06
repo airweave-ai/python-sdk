@@ -101,6 +101,7 @@ class RawSourceConnectionsClient:
         schedule: typing.Optional[ScheduleConfig] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         authentication: typing.Optional[Authentication] = OMIT,
+        redirect_url: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnection]:
         """
@@ -144,6 +145,9 @@ class RawSourceConnectionsClient:
         authentication : typing.Optional[Authentication]
             Authentication config (defaults to OAuth browser flow for OAuth sources)
 
+        redirect_url : typing.Optional[str]
+            URL to redirect to after OAuth flow completes (only used for OAuth flows)
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -168,6 +172,7 @@ class RawSourceConnectionsClient:
                 "authentication": convert_and_respect_annotation_metadata(
                     object_=authentication, annotation=Authentication, direction="write"
                 ),
+                "redirect_url": redirect_url,
             },
             headers={
                 "content-type": "application/json",
@@ -633,6 +638,7 @@ class AsyncRawSourceConnectionsClient:
         schedule: typing.Optional[ScheduleConfig] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         authentication: typing.Optional[Authentication] = OMIT,
+        redirect_url: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnection]:
         """
@@ -676,6 +682,9 @@ class AsyncRawSourceConnectionsClient:
         authentication : typing.Optional[Authentication]
             Authentication config (defaults to OAuth browser flow for OAuth sources)
 
+        redirect_url : typing.Optional[str]
+            URL to redirect to after OAuth flow completes (only used for OAuth flows)
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -700,6 +709,7 @@ class AsyncRawSourceConnectionsClient:
                 "authentication": convert_and_respect_annotation_metadata(
                     object_=authentication, annotation=Authentication, direction="write"
                 ),
+                "redirect_url": redirect_url,
             },
             headers={
                 "content-type": "application/json",

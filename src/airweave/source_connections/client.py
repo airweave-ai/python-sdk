@@ -87,6 +87,7 @@ class SourceConnectionsClient:
         schedule: typing.Optional[ScheduleConfig] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         authentication: typing.Optional[Authentication] = OMIT,
+        redirect_url: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
@@ -130,6 +131,9 @@ class SourceConnectionsClient:
         authentication : typing.Optional[Authentication]
             Authentication config (defaults to OAuth browser flow for OAuth sources)
 
+        redirect_url : typing.Optional[str]
+            URL to redirect to after OAuth flow completes (only used for OAuth flows)
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -159,6 +163,7 @@ class SourceConnectionsClient:
             schedule=schedule,
             sync_immediately=sync_immediately,
             authentication=authentication,
+            redirect_url=redirect_url,
             request_options=request_options,
         )
         return _response.data
@@ -488,6 +493,7 @@ class AsyncSourceConnectionsClient:
         schedule: typing.Optional[ScheduleConfig] = OMIT,
         sync_immediately: typing.Optional[bool] = OMIT,
         authentication: typing.Optional[Authentication] = OMIT,
+        redirect_url: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SourceConnection:
         """
@@ -531,6 +537,9 @@ class AsyncSourceConnectionsClient:
         authentication : typing.Optional[Authentication]
             Authentication config (defaults to OAuth browser flow for OAuth sources)
 
+        redirect_url : typing.Optional[str]
+            URL to redirect to after OAuth flow completes (only used for OAuth flows)
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -568,6 +577,7 @@ class AsyncSourceConnectionsClient:
             schedule=schedule,
             sync_immediately=sync_immediately,
             authentication=authentication,
+            redirect_url=redirect_url,
             request_options=request_options,
         )
         return _response.data
