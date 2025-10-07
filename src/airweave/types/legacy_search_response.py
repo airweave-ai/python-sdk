@@ -4,21 +4,33 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .response_type import ResponseType
+from .search_status import SearchStatus
 
 
-class SearchResponse(UniversalBaseModel):
+class LegacySearchResponse(UniversalBaseModel):
     """
-    Comprehensive search response containing results and metadata.
+    Legacy search response schema for backwards compatibility.
     """
 
     results: typing.List[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field()
     """
-    Array of search result objects containing the found documents, records, or data entities.
+    Array of search result objects
+    """
+
+    response_type: ResponseType = pydantic.Field()
+    """
+    Indicates whether results are raw search matches or AI-generated completions
     """
 
     completion: typing.Optional[str] = pydantic.Field(default=None)
     """
-    This provides natural language answers to your query based on the content found across your connected data sources when generate_answer is true.
+    AI-generated natural language answer when response_type is 'completion'
+    """
+
+    status: SearchStatus = pydantic.Field()
+    """
+    Status of the search operation
     """
 
     if IS_PYDANTIC_V2:

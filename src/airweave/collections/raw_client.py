@@ -12,13 +12,12 @@ from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.collection import Collection
-from ..types.filter import Filter
 from ..types.http_validation_error import HttpValidationError
-from ..types.query_expansion_strategy import QueryExpansionStrategy
+from ..types.legacy_search_response import LegacySearchResponse
 from ..types.response_type import ResponseType
-from ..types.search_response import SearchResponse
 from ..types.source_connection_job import SourceConnectionJob
-from .types.search_request_search_method import SearchRequestSearchMethod
+from .types.search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
+from .types.search_collections_readable_id_search_post_response import SearchCollectionsReadableIdSearchPostResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -261,222 +260,6 @@ class RawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def search(
-        self,
-        readable_id: str,
-        *,
-        query: str,
-        response_type: typing.Optional[ResponseType] = None,
-        limit: typing.Optional[int] = None,
-        offset: typing.Optional[int] = None,
-        recency_bias: typing.Optional[float] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[SearchResponse]:
-        """
-        Search across all data sources within the specified collection.
-
-        This GET endpoint provides basic search functionality. For advanced filtering
-        and options, use the POST /search endpoint.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to search
-
-        query : str
-            The search query text to find relevant documents and data
-
-        response_type : typing.Optional[ResponseType]
-            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
-
-        limit : typing.Optional[int]
-            Maximum number of results to return
-
-        offset : typing.Optional[int]
-            Number of results to skip for pagination
-
-        recency_bias : typing.Optional[float]
-            How much to weigh recency vs similarity (0..1). 0 = no recency effect; 1 = rank by recency only.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[SearchResponse]
-            Successful Response
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"collections/{jsonable_encoder(readable_id)}/search",
-            method="GET",
-            params={
-                "query": query,
-                "response_type": response_type,
-                "limit": limit,
-                "offset": offset,
-                "recency_bias": recency_bias,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    SearchResponse,
-                    parse_obj_as(
-                        type_=SearchResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def search_advanced(
-        self,
-        readable_id: str,
-        *,
-        query: str,
-        filter: typing.Optional[Filter] = OMIT,
-        offset: typing.Optional[int] = OMIT,
-        limit: typing.Optional[int] = OMIT,
-        score_threshold: typing.Optional[float] = OMIT,
-        response_type: typing.Optional[ResponseType] = OMIT,
-        search_method: typing.Optional[SearchRequestSearchMethod] = OMIT,
-        recency_bias: typing.Optional[float] = OMIT,
-        expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
-        enable_reranking: typing.Optional[bool] = OMIT,
-        enable_query_interpretation: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[SearchResponse]:
-        """
-        Advanced search with comprehensive filtering and options.
-
-        This endpoint supports:
-        - Metadata filtering using Qdrant's native filter syntax
-        - Pagination with offset and limit
-        - Score threshold filtering
-        - Query expansion strategies (default: AUTO, generates up to 4 variations)
-        - Automatic filter extraction from natural language (default: ON)
-        - LLM-based result reranking (default: ON)
-
-        Default behavior:
-        - Query expansion: ON (AUTO strategy)
-        - Query interpretation: ON (extracts filters from natural language)
-        - Reranking: ON (improves relevance using LLM)
-        - Score threshold: None (no filtering)
-
-        To disable features, explicitly set:
-        - enable_reranking: false
-        - enable_query_interpretation: false
-        - expansion_strategy: "no_expansion"
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to search
-
-        query : str
-            The search query text
-
-        filter : typing.Optional[Filter]
-            Qdrant native filter for metadata-based filtering
-
-        offset : typing.Optional[int]
-            Number of results to skip (DEFAULT: 0)
-
-        limit : typing.Optional[int]
-            Maximum number of results to return (DEFAULT: 100)
-
-        score_threshold : typing.Optional[float]
-            Minimum similarity score threshold (DEFAULT: None - no filtering)
-
-        response_type : typing.Optional[ResponseType]
-            Type of response - 'raw' or 'completion' (DEFAULT: 'raw')
-
-        search_method : typing.Optional[SearchRequestSearchMethod]
-            Search method to use (DEFAULT: 'hybrid' - combines neural + BM25)
-
-        recency_bias : typing.Optional[float]
-            How much document age penalizes the similarity score (0..1). 0 = no age penalty (pure similarity); 0.5 = old docs lose up to 50% of their score; 1 = old docs get zero score (pure recency). Applied as: score × (1 - bias + bias × age_factor). Works within top ~10,000 semantic matches. DEFAULT: 0.3
-
-        expansion_strategy : typing.Optional[QueryExpansionStrategy]
-            Query expansion strategy (DEFAULT: 'auto' - generates up to 4 query variations). Options: 'auto', 'llm', 'no_expansion'
-
-        enable_reranking : typing.Optional[bool]
-            Enable LLM-based reranking to improve result relevance (DEFAULT: True - enabled, set to False to disable)
-
-        enable_query_interpretation : typing.Optional[bool]
-            Enable automatic filter extraction from natural language query (DEFAULT: True - enabled, set to False to disable)
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[SearchResponse]
-            Successful Response
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"collections/{jsonable_encoder(readable_id)}/search",
-            method="POST",
-            json={
-                "query": query,
-                "filter": convert_and_respect_annotation_metadata(object_=filter, annotation=Filter, direction="write"),
-                "offset": offset,
-                "limit": limit,
-                "score_threshold": score_threshold,
-                "response_type": response_type,
-                "search_method": search_method,
-                "recency_bias": recency_bias,
-                "expansion_strategy": expansion_strategy,
-                "enable_reranking": enable_reranking,
-                "enable_query_interpretation": enable_query_interpretation,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    SearchResponse,
-                    parse_obj_as(
-                        type_=SearchResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     def refresh_all_source_connections(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[typing.List[SourceConnectionJob]]:
@@ -512,6 +295,155 @@ class RawCollectionsClient:
                     typing.List[SourceConnectionJob],
                     parse_obj_as(
                         type_=typing.List[SourceConnectionJob],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def search_get_legacy(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        response_type: typing.Optional[ResponseType] = None,
+        limit: typing.Optional[int] = None,
+        offset: typing.Optional[int] = None,
+        recency_bias: typing.Optional[float] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[LegacySearchResponse]:
+        """
+        Legacy GET search endpoint for backwards compatibility.
+
+        DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
+        SearchRequest format for access to all features.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to search
+
+        query : str
+            The search query text to find relevant documents and data
+
+        response_type : typing.Optional[ResponseType]
+            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        offset : typing.Optional[int]
+            Number of results to skip for pagination
+
+        recency_bias : typing.Optional[float]
+            How much to weigh recency vs similarity (0..1)
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[LegacySearchResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="GET",
+            params={
+                "query": query,
+                "response_type": response_type,
+                "limit": limit,
+                "offset": offset,
+                "recency_bias": recency_bias,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LegacySearchResponse,
+                    parse_obj_as(
+                        type_=LegacySearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def search(
+        self,
+        readable_id: str,
+        *,
+        request: SearchCollectionsReadableIdSearchPostRequest,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[SearchCollectionsReadableIdSearchPostResponse]:
+        """
+        Search your collection.
+
+        Accepts both new SearchRequest and legacy LegacySearchRequest formats
+        for backwards compatibility.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection
+
+        request : SearchCollectionsReadableIdSearchPostRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[SearchCollectionsReadableIdSearchPostResponse]
+            Successful Response
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="POST",
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=SearchCollectionsReadableIdSearchPostRequest, direction="write"
+            ),
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchCollectionsReadableIdSearchPostResponse,
+                    parse_obj_as(
+                        type_=SearchCollectionsReadableIdSearchPostResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -770,222 +702,6 @@ class AsyncRawCollectionsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def search(
-        self,
-        readable_id: str,
-        *,
-        query: str,
-        response_type: typing.Optional[ResponseType] = None,
-        limit: typing.Optional[int] = None,
-        offset: typing.Optional[int] = None,
-        recency_bias: typing.Optional[float] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[SearchResponse]:
-        """
-        Search across all data sources within the specified collection.
-
-        This GET endpoint provides basic search functionality. For advanced filtering
-        and options, use the POST /search endpoint.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to search
-
-        query : str
-            The search query text to find relevant documents and data
-
-        response_type : typing.Optional[ResponseType]
-            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
-
-        limit : typing.Optional[int]
-            Maximum number of results to return
-
-        offset : typing.Optional[int]
-            Number of results to skip for pagination
-
-        recency_bias : typing.Optional[float]
-            How much to weigh recency vs similarity (0..1). 0 = no recency effect; 1 = rank by recency only.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[SearchResponse]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"collections/{jsonable_encoder(readable_id)}/search",
-            method="GET",
-            params={
-                "query": query,
-                "response_type": response_type,
-                "limit": limit,
-                "offset": offset,
-                "recency_bias": recency_bias,
-            },
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    SearchResponse,
-                    parse_obj_as(
-                        type_=SearchResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def search_advanced(
-        self,
-        readable_id: str,
-        *,
-        query: str,
-        filter: typing.Optional[Filter] = OMIT,
-        offset: typing.Optional[int] = OMIT,
-        limit: typing.Optional[int] = OMIT,
-        score_threshold: typing.Optional[float] = OMIT,
-        response_type: typing.Optional[ResponseType] = OMIT,
-        search_method: typing.Optional[SearchRequestSearchMethod] = OMIT,
-        recency_bias: typing.Optional[float] = OMIT,
-        expansion_strategy: typing.Optional[QueryExpansionStrategy] = OMIT,
-        enable_reranking: typing.Optional[bool] = OMIT,
-        enable_query_interpretation: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[SearchResponse]:
-        """
-        Advanced search with comprehensive filtering and options.
-
-        This endpoint supports:
-        - Metadata filtering using Qdrant's native filter syntax
-        - Pagination with offset and limit
-        - Score threshold filtering
-        - Query expansion strategies (default: AUTO, generates up to 4 variations)
-        - Automatic filter extraction from natural language (default: ON)
-        - LLM-based result reranking (default: ON)
-
-        Default behavior:
-        - Query expansion: ON (AUTO strategy)
-        - Query interpretation: ON (extracts filters from natural language)
-        - Reranking: ON (improves relevance using LLM)
-        - Score threshold: None (no filtering)
-
-        To disable features, explicitly set:
-        - enable_reranking: false
-        - enable_query_interpretation: false
-        - expansion_strategy: "no_expansion"
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to search
-
-        query : str
-            The search query text
-
-        filter : typing.Optional[Filter]
-            Qdrant native filter for metadata-based filtering
-
-        offset : typing.Optional[int]
-            Number of results to skip (DEFAULT: 0)
-
-        limit : typing.Optional[int]
-            Maximum number of results to return (DEFAULT: 100)
-
-        score_threshold : typing.Optional[float]
-            Minimum similarity score threshold (DEFAULT: None - no filtering)
-
-        response_type : typing.Optional[ResponseType]
-            Type of response - 'raw' or 'completion' (DEFAULT: 'raw')
-
-        search_method : typing.Optional[SearchRequestSearchMethod]
-            Search method to use (DEFAULT: 'hybrid' - combines neural + BM25)
-
-        recency_bias : typing.Optional[float]
-            How much document age penalizes the similarity score (0..1). 0 = no age penalty (pure similarity); 0.5 = old docs lose up to 50% of their score; 1 = old docs get zero score (pure recency). Applied as: score × (1 - bias + bias × age_factor). Works within top ~10,000 semantic matches. DEFAULT: 0.3
-
-        expansion_strategy : typing.Optional[QueryExpansionStrategy]
-            Query expansion strategy (DEFAULT: 'auto' - generates up to 4 query variations). Options: 'auto', 'llm', 'no_expansion'
-
-        enable_reranking : typing.Optional[bool]
-            Enable LLM-based reranking to improve result relevance (DEFAULT: True - enabled, set to False to disable)
-
-        enable_query_interpretation : typing.Optional[bool]
-            Enable automatic filter extraction from natural language query (DEFAULT: True - enabled, set to False to disable)
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[SearchResponse]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"collections/{jsonable_encoder(readable_id)}/search",
-            method="POST",
-            json={
-                "query": query,
-                "filter": convert_and_respect_annotation_metadata(object_=filter, annotation=Filter, direction="write"),
-                "offset": offset,
-                "limit": limit,
-                "score_threshold": score_threshold,
-                "response_type": response_type,
-                "search_method": search_method,
-                "recency_bias": recency_bias,
-                "expansion_strategy": expansion_strategy,
-                "enable_reranking": enable_reranking,
-                "enable_query_interpretation": enable_query_interpretation,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    SearchResponse,
-                    parse_obj_as(
-                        type_=SearchResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        HttpValidationError,
-                        parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     async def refresh_all_source_connections(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[typing.List[SourceConnectionJob]]:
@@ -1021,6 +737,155 @@ class AsyncRawCollectionsClient:
                     typing.List[SourceConnectionJob],
                     parse_obj_as(
                         type_=typing.List[SourceConnectionJob],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search_get_legacy(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        response_type: typing.Optional[ResponseType] = None,
+        limit: typing.Optional[int] = None,
+        offset: typing.Optional[int] = None,
+        recency_bias: typing.Optional[float] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[LegacySearchResponse]:
+        """
+        Legacy GET search endpoint for backwards compatibility.
+
+        DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
+        SearchRequest format for access to all features.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to search
+
+        query : str
+            The search query text to find relevant documents and data
+
+        response_type : typing.Optional[ResponseType]
+            Format of the response: 'raw' returns search results, 'completion' returns AI-generated answers
+
+        limit : typing.Optional[int]
+            Maximum number of results to return
+
+        offset : typing.Optional[int]
+            Number of results to skip for pagination
+
+        recency_bias : typing.Optional[float]
+            How much to weigh recency vs similarity (0..1)
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[LegacySearchResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="GET",
+            params={
+                "query": query,
+                "response_type": response_type,
+                "limit": limit,
+                "offset": offset,
+                "recency_bias": recency_bias,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LegacySearchResponse,
+                    parse_obj_as(
+                        type_=LegacySearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        HttpValidationError,
+                        parse_obj_as(
+                            type_=HttpValidationError,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search(
+        self,
+        readable_id: str,
+        *,
+        request: SearchCollectionsReadableIdSearchPostRequest,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[SearchCollectionsReadableIdSearchPostResponse]:
+        """
+        Search your collection.
+
+        Accepts both new SearchRequest and legacy LegacySearchRequest formats
+        for backwards compatibility.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection
+
+        request : SearchCollectionsReadableIdSearchPostRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[SearchCollectionsReadableIdSearchPostResponse]
+            Successful Response
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}/search",
+            method="POST",
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=SearchCollectionsReadableIdSearchPostRequest, direction="write"
+            ),
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchCollectionsReadableIdSearchPostResponse,
+                    parse_obj_as(
+                        type_=SearchCollectionsReadableIdSearchPostResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

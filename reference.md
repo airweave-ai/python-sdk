@@ -439,7 +439,7 @@ client.collections.delete(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">refresh_all_source_connections</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -451,10 +451,12 @@ client.collections.delete(
 <dl>
 <dd>
 
-Search across all data sources within the specified collection.
+Trigger data synchronization for all source connections in the collection.
 
-This GET endpoint provides basic search functionality. For advanced filtering
-and options, use the POST /search endpoint.
+The sync jobs run asynchronously in the background, so this endpoint
+returns immediately with job details that you can use to track progress. You can
+monitor the status of individual data synchronization using the source connection
+endpoints.
 </dd>
 </dl>
 </dd>
@@ -474,9 +476,82 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.search(
+client.collections.refresh_all_source_connections(
     readable_id="readable_id",
-    query="customer payment issues",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` — The unique readable identifier of the collection to refresh
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search_get_legacy</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Legacy GET search endpoint for backwards compatibility.
+
+DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
+SearchRequest format for access to all features.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.collections.search_get_legacy(
+    readable_id="readable_id",
+    query="query",
     response_type="raw",
     limit=1,
     offset=1,
@@ -537,7 +612,7 @@ client.collections.search(
 <dl>
 <dd>
 
-**recency_bias:** `typing.Optional[float]` — How much to weigh recency vs similarity (0..1). 0 = no recency effect; 1 = rank by recency only.
+**recency_bias:** `typing.Optional[float]` — How much to weigh recency vs similarity (0..1)
     
 </dd>
 </dl>
@@ -557,7 +632,7 @@ client.collections.search(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search_advanced</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">search</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -569,26 +644,10 @@ client.collections.search(
 <dl>
 <dd>
 
-Advanced search with comprehensive filtering and options.
+Search your collection.
 
-This endpoint supports:
-- Metadata filtering using Qdrant's native filter syntax
-- Pagination with offset and limit
-- Score threshold filtering
-- Query expansion strategies (default: AUTO, generates up to 4 variations)
-- Automatic filter extraction from natural language (default: ON)
-- LLM-based result reranking (default: ON)
-
-Default behavior:
-- Query expansion: ON (AUTO strategy)
-- Query interpretation: ON (extracts filters from natural language)
-- Reranking: ON (improves relevance using LLM)
-- Score threshold: None (no filtering)
-
-To disable features, explicitly set:
-- enable_reranking: false
-- enable_query_interpretation: false
-- expansion_strategy: "no_expansion"
+Accepts both new SearchRequest and legacy LegacySearchRequest formats
+for backwards compatibility.
 </dd>
 </dl>
 </dd>
@@ -603,22 +662,16 @@ To disable features, explicitly set:
 <dd>
 
 ```python
-from airweave import AirweaveSDK, FieldCondition, Filter
+from airweave import AirweaveSDK, SearchRequest
 
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.collections.search_advanced(
+client.collections.search(
     readable_id="readable_id",
-    query="customer payment issues",
-    filter=Filter(
-        must=FieldCondition(
-            key="key",
-        ),
+    request=SearchRequest(
+        query="query",
     ),
-    limit=10,
-    score_threshold=0.7,
-    response_type="completion",
 )
 
 ```
@@ -635,7 +688,7 @@ client.collections.search_advanced(
 <dl>
 <dd>
 
-**readable_id:** `str` — The unique readable identifier of the collection to search
+**readable_id:** `str` — The unique readable identifier of the collection
     
 </dd>
 </dl>
@@ -643,162 +696,7 @@ client.collections.search_advanced(
 <dl>
 <dd>
 
-**query:** `str` — The search query text
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**filter:** `typing.Optional[Filter]` — Qdrant native filter for metadata-based filtering
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**offset:** `typing.Optional[int]` — Number of results to skip (DEFAULT: 0)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `typing.Optional[int]` — Maximum number of results to return (DEFAULT: 100)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**score_threshold:** `typing.Optional[float]` — Minimum similarity score threshold (DEFAULT: None - no filtering)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**response_type:** `typing.Optional[ResponseType]` — Type of response - 'raw' or 'completion' (DEFAULT: 'raw')
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**search_method:** `typing.Optional[SearchRequestSearchMethod]` — Search method to use (DEFAULT: 'hybrid' - combines neural + BM25)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**recency_bias:** `typing.Optional[float]` — How much document age penalizes the similarity score (0..1). 0 = no age penalty (pure similarity); 0.5 = old docs lose up to 50% of their score; 1 = old docs get zero score (pure recency). Applied as: score × (1 - bias + bias × age_factor). Works within top ~10,000 semantic matches. DEFAULT: 0.3
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**expansion_strategy:** `typing.Optional[QueryExpansionStrategy]` — Query expansion strategy (DEFAULT: 'auto' - generates up to 4 query variations). Options: 'auto', 'llm', 'no_expansion'
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**enable_reranking:** `typing.Optional[bool]` — Enable LLM-based reranking to improve result relevance (DEFAULT: True - enabled, set to False to disable)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**enable_query_interpretation:** `typing.Optional[bool]` — Enable automatic filter extraction from natural language query (DEFAULT: True - enabled, set to False to disable)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">refresh_all_source_connections</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Trigger data synchronization for all source connections in the collection.
-
-The sync jobs run asynchronously in the background, so this endpoint
-returns immediately with job details that you can use to track progress. You can
-monitor the status of individual data synchronization using the source connection
-endpoints.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.collections.refresh_all_source_connections(
-    readable_id="readable_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**readable_id:** `str` — The unique readable identifier of the collection to refresh
+**request:** `SearchCollectionsReadableIdSearchPostRequest` 
     
 </dd>
 </dl>

@@ -78,6 +78,9 @@ if typing.TYPE_CHECKING:
     from .invitation_response import InvitationResponse
     from .is_empty_condition import IsEmptyCondition
     from .is_null_condition import IsNullCondition
+    from .legacy_search_request import LegacySearchRequest
+    from .legacy_search_request_search_method import LegacySearchRequestSearchMethod
+    from .legacy_search_response import LegacySearchResponse
     from .lt import Lt
     from .lte import Lte
     from .match import Match
@@ -106,9 +109,11 @@ if typing.TYPE_CHECKING:
     from .query_expansion_strategy import QueryExpansionStrategy
     from .range import Range
     from .response_type import ResponseType
+    from .retrieval_strategy import RetrievalStrategy
     from .schedule_config import ScheduleConfig
     from .schedule_details import ScheduleDetails
     from .schedule_response import ScheduleResponse
+    from .search_request import SearchRequest
     from .search_response import SearchResponse
     from .search_status import SearchStatus
     from .should import Should
@@ -217,6 +222,9 @@ _dynamic_imports: typing.Dict[str, str] = {
     "InvitationResponse": ".invitation_response",
     "IsEmptyCondition": ".is_empty_condition",
     "IsNullCondition": ".is_null_condition",
+    "LegacySearchRequest": ".legacy_search_request",
+    "LegacySearchRequestSearchMethod": ".legacy_search_request_search_method",
+    "LegacySearchResponse": ".legacy_search_response",
     "Lt": ".lt",
     "Lte": ".lte",
     "Match": ".match",
@@ -245,9 +253,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "QueryExpansionStrategy": ".query_expansion_strategy",
     "Range": ".range",
     "ResponseType": ".response_type",
+    "RetrievalStrategy": ".retrieval_strategy",
     "ScheduleConfig": ".schedule_config",
     "ScheduleDetails": ".schedule_details",
     "ScheduleResponse": ".schedule_response",
+    "SearchRequest": ".search_request",
     "SearchResponse": ".search_response",
     "SearchStatus": ".search_status",
     "Should": ".should",
@@ -380,6 +390,9 @@ __all__ = [
     "InvitationResponse",
     "IsEmptyCondition",
     "IsNullCondition",
+    "LegacySearchRequest",
+    "LegacySearchRequestSearchMethod",
+    "LegacySearchResponse",
     "Lt",
     "Lte",
     "Match",
@@ -408,9 +421,11 @@ __all__ = [
     "QueryExpansionStrategy",
     "Range",
     "ResponseType",
+    "RetrievalStrategy",
     "ScheduleConfig",
     "ScheduleDetails",
     "ScheduleResponse",
+    "SearchRequest",
     "SearchResponse",
     "SearchStatus",
     "Should",

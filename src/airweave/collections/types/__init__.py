@@ -6,8 +6,12 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
-    from .search_request_search_method import SearchRequestSearchMethod
-_dynamic_imports: typing.Dict[str, str] = {"SearchRequestSearchMethod": ".search_request_search_method"}
+    from .search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
+    from .search_collections_readable_id_search_post_response import SearchCollectionsReadableIdSearchPostResponse
+_dynamic_imports: typing.Dict[str, str] = {
+    "SearchCollectionsReadableIdSearchPostRequest": ".search_collections_readable_id_search_post_request",
+    "SearchCollectionsReadableIdSearchPostResponse": ".search_collections_readable_id_search_post_response",
+}
 
 
 def __getattr__(attr_name: str) -> typing.Any:
@@ -31,4 +35,4 @@ def __dir__():
     return sorted(lazy_attrs)
 
 
-__all__ = ["SearchRequestSearchMethod"]
+__all__ = ["SearchCollectionsReadableIdSearchPostRequest", "SearchCollectionsReadableIdSearchPostResponse"]
