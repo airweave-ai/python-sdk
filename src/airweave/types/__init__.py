@@ -53,6 +53,7 @@ if typing.TYPE_CHECKING:
     from .entity_type import EntityType
     from .entity_type_stats import EntityTypeStats
     from .except_ import Except
+    from .feature_flag import FeatureFlag
     from .field_condition import FieldCondition
     from .fields import Fields
     from .filter import Filter
@@ -197,6 +198,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntityType": ".entity_type",
     "EntityTypeStats": ".entity_type_stats",
     "Except": ".except_",
+    "FeatureFlag": ".feature_flag",
     "FieldCondition": ".field_condition",
     "Fields": ".fields",
     "Filter": ".filter",
@@ -365,6 +367,7 @@ __all__ = [
     "EntityType",
     "EntityTypeStats",
     "Except",
+    "FeatureFlag",
     "FieldCondition",
     "Fields",
     "Filter",

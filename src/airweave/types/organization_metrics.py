@@ -7,6 +7,7 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .feature_flag import FeatureFlag
 
 
 class OrganizationMetrics(UniversalBaseModel):
@@ -96,6 +97,11 @@ class OrganizationMetrics(UniversalBaseModel):
     member_role: typing.Optional[str] = pydantic.Field(default=None)
     """
     Admin's role in this organization (if member)
+    """
+
+    enabled_features: typing.Optional[typing.List[FeatureFlag]] = pydantic.Field(default=None)
+    """
+    List of enabled feature flags for this organization
     """
 
     if IS_PYDANTIC_V2:

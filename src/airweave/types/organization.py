@@ -7,6 +7,7 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .feature_flag import FeatureFlag
 
 
 class Organization(UniversalBaseModel):
@@ -21,6 +22,10 @@ class Organization(UniversalBaseModel):
     created_at: dt.datetime
     modified_at: dt.datetime
     org_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    enabled_features: typing.Optional[typing.List[FeatureFlag]] = pydantic.Field(default=None)
+    """
+    List of enabled feature flags for this organization
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
