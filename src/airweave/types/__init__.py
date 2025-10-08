@@ -111,6 +111,8 @@ if typing.TYPE_CHECKING:
     from .range import Range
     from .response_type import ResponseType
     from .retrieval_strategy import RetrievalStrategy
+    from .s_3_config_request import S3ConfigRequest
+    from .s_3_config_response import S3ConfigResponse
     from .schedule_config import ScheduleConfig
     from .schedule_details import ScheduleDetails
     from .schedule_response import ScheduleResponse
@@ -256,6 +258,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "Range": ".range",
     "ResponseType": ".response_type",
     "RetrievalStrategy": ".retrieval_strategy",
+    "S3ConfigRequest": ".s_3_config_request",
+    "S3ConfigResponse": ".s_3_config_response",
     "ScheduleConfig": ".schedule_config",
     "ScheduleDetails": ".schedule_details",
     "ScheduleResponse": ".schedule_response",
@@ -425,6 +429,8 @@ __all__ = [
     "Range",
     "ResponseType",
     "RetrievalStrategy",
+    "S3ConfigRequest",
+    "S3ConfigResponse",
     "ScheduleConfig",
     "ScheduleDetails",
     "ScheduleResponse",
