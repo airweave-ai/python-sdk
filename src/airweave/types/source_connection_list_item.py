@@ -22,6 +22,11 @@ class SourceConnectionListItem(UniversalBaseModel):
     modified_at: dt.datetime
     is_authenticated: bool
     entity_count: typing.Optional[int] = None
+    federated_search: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this source uses federated search
+    """
+
     auth_method: AuthenticationMethod = pydantic.Field()
     """
     Get authentication method from database value.

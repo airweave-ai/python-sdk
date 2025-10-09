@@ -29,7 +29,16 @@ class SourceConnection(UniversalBaseModel):
     config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     schedule: typing.Optional[ScheduleDetails] = None
     sync: typing.Optional[SyncDetails] = None
+    sync_id: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    ID of the associated sync
+    """
+
     entities: typing.Optional[EntitySummary] = None
+    federated_search: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this source uses federated search
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
