@@ -1224,6 +1224,15 @@ client.source_connections.update(
 Trigger a sync run for a source connection.
 
 Runs are always executed through Temporal workflow engine.
+
+Args:
+    db: Database session
+    source_connection_id: ID of the source connection to run
+    ctx: API context with organization and user information
+    guard_rail: Guard rail service for usage limits
+    force_full_sync: If True, forces a full sync with orphaned entity cleanup
+                    for continuous syncs. Raises 400 error if used on
+                    non-continuous syncs (which are always full syncs).
 </dd>
 </dl>
 </dd>
@@ -1245,6 +1254,7 @@ client = AirweaveSDK(
 )
 client.source_connections.run(
     source_connection_id="source_connection_id",
+    force_full_sync=True,
 )
 
 ```
@@ -1262,6 +1272,14 @@ client.source_connections.run(
 <dd>
 
 **source_connection_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**force_full_sync:** `typing.Optional[bool]` — Force a full sync ignoring cursor data instead of waiting for the daily cleanup schedule. Only allowed for continuous syncs.
     
 </dd>
 </dl>

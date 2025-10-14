@@ -395,16 +395,32 @@ class RawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def run(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        source_connection_id: str,
+        *,
+        force_full_sync: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnectionJob]:
         """
         Trigger a sync run for a source connection.
 
         Runs are always executed through Temporal workflow engine.
 
+        Args:
+            db: Database session
+            source_connection_id: ID of the source connection to run
+            ctx: API context with organization and user information
+            guard_rail: Guard rail service for usage limits
+            force_full_sync: If True, forces a full sync with orphaned entity cleanup
+                            for continuous syncs. Raises 400 error if used on
+                            non-continuous syncs (which are always full syncs).
+
         Parameters
         ----------
         source_connection_id : str
+
+        force_full_sync : typing.Optional[bool]
+            Force a full sync ignoring cursor data instead of waiting for the daily cleanup schedule. Only allowed for continuous syncs.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -417,6 +433,9 @@ class RawSourceConnectionsClient:
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/run",
             method="POST",
+            params={
+                "force_full_sync": force_full_sync,
+            },
             request_options=request_options,
         )
         try:
@@ -932,16 +951,32 @@ class AsyncRawSourceConnectionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def run(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        source_connection_id: str,
+        *,
+        force_full_sync: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnectionJob]:
         """
         Trigger a sync run for a source connection.
 
         Runs are always executed through Temporal workflow engine.
 
+        Args:
+            db: Database session
+            source_connection_id: ID of the source connection to run
+            ctx: API context with organization and user information
+            guard_rail: Guard rail service for usage limits
+            force_full_sync: If True, forces a full sync with orphaned entity cleanup
+                            for continuous syncs. Raises 400 error if used on
+                            non-continuous syncs (which are always full syncs).
+
         Parameters
         ----------
         source_connection_id : str
+
+        force_full_sync : typing.Optional[bool]
+            Force a full sync ignoring cursor data instead of waiting for the daily cleanup schedule. Only allowed for continuous syncs.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -954,6 +989,9 @@ class AsyncRawSourceConnectionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/run",
             method="POST",
+            params={
+                "force_full_sync": force_full_sync,
+            },
             request_options=request_options,
         )
         try:
