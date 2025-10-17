@@ -62,6 +62,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.list(
@@ -106,6 +108,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.create(
@@ -138,6 +142,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.get(
@@ -173,6 +179,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.delete(
@@ -211,6 +219,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.refresh_all_source_connections(
@@ -270,6 +280,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.search_get_legacy(
@@ -325,6 +337,8 @@ class CollectionsClient:
         from airweave import AirweaveSDK, SearchRequest
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.search(
@@ -386,6 +400,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -438,6 +454,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -478,6 +496,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -521,6 +541,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -567,6 +589,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -634,6 +658,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -697,6 +723,8 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK, SearchRequest
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 

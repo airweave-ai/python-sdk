@@ -45,6 +45,8 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.sources.list()
@@ -74,6 +76,8 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.sources.get(
@@ -123,6 +127,8 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -160,6 +166,8 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 

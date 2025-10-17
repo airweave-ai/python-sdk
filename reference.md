@@ -33,6 +33,8 @@ Returns the complete catalog of source types that Airweave can connect to.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.sources.list()
@@ -93,6 +95,8 @@ Get detailed information about a specific data source connector.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.sources.get(
@@ -164,6 +168,8 @@ List all collections that belong to your organization.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.list(
@@ -246,6 +252,8 @@ until you explicitly add source connections to it.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.create(
@@ -325,6 +333,8 @@ Retrieve a specific collection by its readable ID.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.get(
@@ -399,6 +409,8 @@ will also be deleted as part of the cleanup process. This action cannot be undon
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.delete(
@@ -474,6 +486,8 @@ endpoints.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.refresh_all_source_connections(
@@ -547,6 +561,8 @@ SearchRequest format for access to all features.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.search_get_legacy(
@@ -665,6 +681,8 @@ for backwards compatibility.
 from airweave import AirweaveSDK, SearchRequest
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.search(
@@ -747,6 +765,8 @@ List source connections with minimal fields for performance.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.list(
@@ -848,6 +868,8 @@ sync_immediately defaults:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.create(
@@ -983,6 +1005,8 @@ Get a source connection with optional depth expansion.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.get(
@@ -1053,6 +1077,8 @@ Delete a source connection and all related data.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.delete(
@@ -1129,6 +1155,8 @@ Updateable fields:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.update(
@@ -1250,6 +1278,8 @@ Args:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.run(
@@ -1329,6 +1359,8 @@ Get sync jobs for a source connection.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.get_source_connection_jobs(
@@ -1412,6 +1444,8 @@ the cancellation request.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.cancel_job(

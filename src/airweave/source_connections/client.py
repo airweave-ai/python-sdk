@@ -63,6 +63,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.list(
@@ -147,6 +149,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.create(
@@ -191,6 +195,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.get(
@@ -223,6 +229,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.delete(
@@ -281,6 +289,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.update(
@@ -339,6 +349,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.run(
@@ -380,6 +392,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.get_source_connection_jobs(
@@ -421,6 +435,8 @@ class SourceConnectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.source_connections.cancel_job(
@@ -482,6 +498,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -574,6 +592,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -626,6 +646,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -666,6 +688,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -732,6 +756,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -798,6 +824,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -847,6 +875,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -896,6 +926,8 @@ class AsyncSourceConnectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
+            framework_name="YOUR_FRAMEWORK_NAME",
+            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 

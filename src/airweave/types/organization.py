@@ -8,11 +8,21 @@ import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
 from .feature_flag import FeatureFlag
+from .organization_billing import OrganizationBilling
 
 
 class Organization(UniversalBaseModel):
     """
-    Organization schema.
+    Organization schema with billing and feature information.
+
+    This is the primary organization schema used in API contexts, enriched with
+    billing (including current period) and feature flags for efficient access
+    without additional database queries.
+
+    Access billing info compositionally:
+    - organization.billing.plan
+    - organization.billing.status
+    - organization.billing.current_period
     """
 
     name: str
@@ -25,6 +35,11 @@ class Organization(UniversalBaseModel):
     enabled_features: typing.Optional[typing.List[FeatureFlag]] = pydantic.Field(default=None)
     """
     List of enabled feature flags for this organization
+    """
+
+    billing: typing.Optional[OrganizationBilling] = pydantic.Field(default=None)
+    """
+    Complete billing information including current period
     """
 
     if IS_PYDANTIC_V2:

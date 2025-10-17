@@ -8,6 +8,7 @@ import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
 from .feature_flag import FeatureFlag
+from .organization_billing import OrganizationBilling
 
 
 class OrganizationWithRole(UniversalBaseModel):
@@ -27,6 +28,11 @@ class OrganizationWithRole(UniversalBaseModel):
     enabled_features: typing.Optional[typing.List[FeatureFlag]] = pydantic.Field(default=None)
     """
     List of enabled feature flags for this organization
+    """
+
+    billing: typing.Optional[OrganizationBilling] = pydantic.Field(default=None)
+    """
+    Complete billing information including current period
     """
 
     if IS_PYDANTIC_V2:
