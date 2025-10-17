@@ -31,6 +31,22 @@ client.collections.create(
 )
 ```
 
+## Framework Tracking
+
+If you're using Airweave with an agent framework like CrewAI, LangChain, or LlamaIndex, you can track which framework is making requests. This helps Airweave provide better analytics and support for your specific framework.
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+    framework_name="crewai",
+    framework_version="0.1.0",
+)
+```
+
+The framework information is automatically sent with every request as headers (`X-Framework-Name` and `X-Framework-Version`), enabling better insights and troubleshooting.
+
 ## Async Client
 
 The SDK also exports an `async` client so that you can make non-blocking calls to our API.
