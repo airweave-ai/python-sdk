@@ -89,6 +89,11 @@ class OrganizationMetrics(UniversalBaseModel):
     Total number of queries (from Usage.queries)
     """
 
+    last_active_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    Last active timestamp of any user in this organization
+    """
+
     is_member: typing.Optional[bool] = pydantic.Field(default=None)
     """
     Whether the current admin user is already a member
