@@ -78,6 +78,11 @@ class Source(UniversalBaseModel):
     Whether this source uses federated search instead of traditional syncing. Federated search sources query data in real-time during searches rather than syncing and indexing all data beforehand.
     """
 
+    supports_temporal_relevance: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this source's entities have timestamps that enable recency-based ranking. Sources without file-level timestamps (e.g., code repositories) cannot use temporal relevance for search result weighting.
+    """
+
     id: str = pydantic.Field()
     """
     Unique system identifier for this source type. Generated automatically when the source is registered.

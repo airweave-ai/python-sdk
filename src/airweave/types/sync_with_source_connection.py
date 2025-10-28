@@ -16,7 +16,6 @@ class SyncWithSourceConnection(UniversalBaseModel):
 
     name: str
     source_connection_id: str
-    embedding_model_connection_id: typing.Optional[str] = None
     destination_connection_ids: typing.List[str]
     description: typing.Optional[str] = None
     cron_schedule: typing.Optional[str] = None

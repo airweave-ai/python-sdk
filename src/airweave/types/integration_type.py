@@ -2,4 +2,4 @@
 
 import typing
 
-IntegrationType = typing.Union[typing.Literal["source", "destination", "embedding_model", "auth_provider"], typing.Any]
+IntegrationType = typing.Union[typing.Literal["source", "destination", "auth_provider"], typing.Any]

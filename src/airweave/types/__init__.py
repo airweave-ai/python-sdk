@@ -38,10 +38,6 @@ if typing.TYPE_CHECKING:
     from .connection_status import ConnectionStatus
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
-    from .dag_edge import DagEdge
-    from .dag_edge_create import DagEdgeCreate
-    from .dag_node import DagNode
-    from .dag_node_create import DagNodeCreate
     from .datetime_range import DatetimeRange
     from .destination import Destination
     from .destination_with_authentication_fields import DestinationWithAuthenticationFields
@@ -103,7 +99,6 @@ if typing.TYPE_CHECKING:
     from .must import Must
     from .nested import Nested
     from .nested_condition import NestedCondition
-    from .node_type import NodeType
     from .o_auth_browser_authentication import OAuthBrowserAuthentication
     from .o_auth_token_authentication import OAuthTokenAuthentication
     from .o_auth_type import OAuthType
@@ -136,9 +131,6 @@ if typing.TYPE_CHECKING:
     from .subscription_info import SubscriptionInfo
     from .sync import Sync
     from .sync_create import SyncCreate
-    from .sync_dag import SyncDag
-    from .sync_dag_create import SyncDagCreate
-    from .sync_dag_update import SyncDagUpdate
     from .sync_details import SyncDetails
     from .sync_job import SyncJob
     from .sync_job_details import SyncJobDetails
@@ -191,10 +183,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConnectionStatus": ".connection_status",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
-    "DagEdge": ".dag_edge",
-    "DagEdgeCreate": ".dag_edge_create",
-    "DagNode": ".dag_node",
-    "DagNodeCreate": ".dag_node_create",
     "DatetimeRange": ".datetime_range",
     "Destination": ".destination",
     "DestinationWithAuthenticationFields": ".destination_with_authentication_fields",
@@ -256,7 +244,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "Must": ".must",
     "Nested": ".nested",
     "NestedCondition": ".nested_condition",
-    "NodeType": ".node_type",
     "OAuthBrowserAuthentication": ".o_auth_browser_authentication",
     "OAuthTokenAuthentication": ".o_auth_token_authentication",
     "OAuthType": ".o_auth_type",
@@ -289,9 +276,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SubscriptionInfo": ".subscription_info",
     "Sync": ".sync",
     "SyncCreate": ".sync_create",
-    "SyncDag": ".sync_dag",
-    "SyncDagCreate": ".sync_dag_create",
-    "SyncDagUpdate": ".sync_dag_update",
     "SyncDetails": ".sync_details",
     "SyncJob": ".sync_job",
     "SyncJobDetails": ".sync_job_details",
@@ -368,10 +352,6 @@ __all__ = [
     "ConnectionStatus",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
-    "DagEdge",
-    "DagEdgeCreate",
-    "DagNode",
-    "DagNodeCreate",
     "DatetimeRange",
     "Destination",
     "DestinationWithAuthenticationFields",
@@ -433,7 +413,6 @@ __all__ = [
     "Must",
     "Nested",
     "NestedCondition",
-    "NodeType",
     "OAuthBrowserAuthentication",
     "OAuthTokenAuthentication",
     "OAuthType",
@@ -466,9 +445,6 @@ __all__ = [
     "SubscriptionInfo",
     "Sync",
     "SyncCreate",
-    "SyncDag",
-    "SyncDagCreate",
-    "SyncDagUpdate",
     "SyncDetails",
     "SyncJob",
     "SyncJobDetails",
