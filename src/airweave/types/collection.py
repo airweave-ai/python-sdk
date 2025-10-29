@@ -31,6 +31,16 @@ class Collection(UniversalBaseModel):
     Unique system identifier for the collection. This UUID is generated automatically and used for internal references.
     """
 
+    vector_size: int = pydantic.Field()
+    """
+    Vector dimensions used by this collection. Determines which embedding model is used: 3072 (text-embedding-3-large), 1536 (text-embedding-3-small), or 384 (MiniLM-L6-v2).
+    """
+
+    embedding_model_name: str = pydantic.Field()
+    """
+    Name of the embedding model used for this collection (e.g., 'text-embedding-3-large', 'text-embedding-3-small'). This ensures queries use the same model as the indexed data.
+    """
+
     created_at: dt.datetime = pydantic.Field()
     """
     Timestamp when the collection was created (ISO 8601 format).
