@@ -207,7 +207,7 @@ class SourceConnectionsClient:
         return _response.data
 
     def delete(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, source_connection_id: str, *, delete_data: typing.Optional[bool] = False, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
         Delete a source connection and all related data.
@@ -215,6 +215,9 @@ class SourceConnectionsClient:
         Parameters
         ----------
         source_connection_id : str
+
+        delete_data : typing.Optional[bool]
+            Whether to delete the source connection data
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -235,9 +238,10 @@ class SourceConnectionsClient:
         )
         client.source_connections.delete(
             source_connection_id="source_connection_id",
+            delete_data=True,
         )
         """
-        _response = self._raw_client.delete(source_connection_id, request_options=request_options)
+        _response = self._raw_client.delete(source_connection_id, delete_data=delete_data, request_options=request_options)
         return _response.data
 
     def update(
@@ -664,7 +668,7 @@ class AsyncSourceConnectionsClient:
         return _response.data
 
     async def delete(
-        self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, source_connection_id: str, *, delete_data: typing.Optional[bool] = False, request_options: typing.Optional[RequestOptions] = None
     ) -> SourceConnection:
         """
         Delete a source connection and all related data.
@@ -672,6 +676,9 @@ class AsyncSourceConnectionsClient:
         Parameters
         ----------
         source_connection_id : str
+
+        delete_data : typing.Optional[bool]
+            Whether to delete the source connection data
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -697,12 +704,13 @@ class AsyncSourceConnectionsClient:
         async def main() -> None:
             await client.source_connections.delete(
                 source_connection_id="source_connection_id",
+                delete_data=True,
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.delete(source_connection_id, request_options=request_options)
+        _response = await self._raw_client.delete(source_connection_id, delete_data=delete_data, request_options=request_options)
         return _response.data
 
     async def update(
