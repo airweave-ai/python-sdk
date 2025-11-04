@@ -18,7 +18,7 @@ class LegacySearchRequest(UniversalBaseModel):
 
     query: str = pydantic.Field()
     """
-    The search query text
+    The search query text (max 2048 tokens)
     """
 
     filter: typing.Optional["Filter"] = pydantic.Field(default=None)
