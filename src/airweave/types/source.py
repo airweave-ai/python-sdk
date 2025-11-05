@@ -83,6 +83,11 @@ class Source(UniversalBaseModel):
     Whether this source's entities have timestamps that enable recency-based ranking. Sources without file-level timestamps (e.g., code repositories) cannot use temporal relevance for search result weighting.
     """
 
+    rate_limit_level: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Rate limiting level for this source: 'org' (organization-wide), 'connection' (per-connection/per-user), or None (no rate limiting).
+    """
+
     id: str = pydantic.Field()
     """
     Unique system identifier for this source type. Generated automatically when the source is registered.

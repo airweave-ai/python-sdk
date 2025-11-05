@@ -128,6 +128,9 @@ if typing.TYPE_CHECKING:
     from .source_connection_job import SourceConnectionJob
     from .source_connection_list_item import SourceConnectionListItem
     from .source_connection_status import SourceConnectionStatus
+    from .source_rate_limit import SourceRateLimit
+    from .source_rate_limit_response import SourceRateLimitResponse
+    from .source_rate_limit_update_request import SourceRateLimitUpdateRequest
     from .subscription_info import SubscriptionInfo
     from .sync import Sync
     from .sync_create import SyncCreate
@@ -273,6 +276,9 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SourceConnectionJob": ".source_connection_job",
     "SourceConnectionListItem": ".source_connection_list_item",
     "SourceConnectionStatus": ".source_connection_status",
+    "SourceRateLimit": ".source_rate_limit",
+    "SourceRateLimitResponse": ".source_rate_limit_response",
+    "SourceRateLimitUpdateRequest": ".source_rate_limit_update_request",
     "SubscriptionInfo": ".subscription_info",
     "Sync": ".sync",
     "SyncCreate": ".sync_create",
@@ -442,6 +448,9 @@ __all__ = [
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
+    "SourceRateLimit",
+    "SourceRateLimitResponse",
+    "SourceRateLimitUpdateRequest",
     "SubscriptionInfo",
     "Sync",
     "SyncCreate",
