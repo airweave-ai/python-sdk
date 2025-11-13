@@ -76,7 +76,7 @@ class OrganizationMetrics(UniversalBaseModel):
 
     source_connection_count: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Number of source connections (from Usage.source_connections)
+    Number of source connections (computed from source_connection table)
     """
 
     entity_count: typing.Optional[int] = pydantic.Field(default=None)
