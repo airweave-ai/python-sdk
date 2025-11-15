@@ -150,7 +150,9 @@ client.sources.get(
 <dl>
 <dd>
 
-List all collections that belong to your organization.
+List all collections that belong to your organization with optional search filtering.
+
+Collections are always sorted by creation date (newest first).
 </dd>
 </dl>
 </dd>
@@ -175,6 +177,7 @@ client = AirweaveSDK(
 client.collections.list(
     skip=1,
     limit=1,
+    search="search",
 )
 
 ```
@@ -200,6 +203,14 @@ client.collections.list(
 <dd>
 
 **limit:** `typing.Optional[int]` — Maximum number of collections to return (1-1000)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search:** `typing.Optional[str]` — Search term to filter by name or readable_id
     
 </dd>
 </dl>

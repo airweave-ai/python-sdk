@@ -36,10 +36,13 @@ class CollectionsClient:
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
+        search: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[Collection]:
         """
-        List all collections that belong to your organization.
+        List all collections that belong to your organization with optional search filtering.
+
+        Collections are always sorted by creation date (newest first).
 
         Parameters
         ----------
@@ -48,6 +51,9 @@ class CollectionsClient:
 
         limit : typing.Optional[int]
             Maximum number of collections to return (1-1000)
+
+        search : typing.Optional[str]
+            Search term to filter by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -69,9 +75,10 @@ class CollectionsClient:
         client.collections.list(
             skip=1,
             limit=1,
+            search="search",
         )
         """
-        _response = self._raw_client.list(skip=skip, limit=limit, request_options=request_options)
+        _response = self._raw_client.list(skip=skip, limit=limit, search=search, request_options=request_options)
         return _response.data
 
     def create(
@@ -372,10 +379,13 @@ class AsyncCollectionsClient:
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
+        search: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[Collection]:
         """
-        List all collections that belong to your organization.
+        List all collections that belong to your organization with optional search filtering.
+
+        Collections are always sorted by creation date (newest first).
 
         Parameters
         ----------
@@ -384,6 +394,9 @@ class AsyncCollectionsClient:
 
         limit : typing.Optional[int]
             Maximum number of collections to return (1-1000)
+
+        search : typing.Optional[str]
+            Search term to filter by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -410,12 +423,13 @@ class AsyncCollectionsClient:
             await client.collections.list(
                 skip=1,
                 limit=1,
+                search="search",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list(skip=skip, limit=limit, request_options=request_options)
+        _response = await self._raw_client.list(skip=skip, limit=limit, search=search, request_options=request_options)
         return _response.data
 
     async def create(

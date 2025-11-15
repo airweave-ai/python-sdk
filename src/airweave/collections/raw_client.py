@@ -32,10 +32,13 @@ class RawCollectionsClient:
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
+        search: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[Collection]]:
         """
-        List all collections that belong to your organization.
+        List all collections that belong to your organization with optional search filtering.
+
+        Collections are always sorted by creation date (newest first).
 
         Parameters
         ----------
@@ -44,6 +47,9 @@ class RawCollectionsClient:
 
         limit : typing.Optional[int]
             Maximum number of collections to return (1-1000)
+
+        search : typing.Optional[str]
+            Search term to filter by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -59,6 +65,7 @@ class RawCollectionsClient:
             params={
                 "skip": skip,
                 "limit": limit,
+                "search": search,
             },
             request_options=request_options,
         )
@@ -474,10 +481,13 @@ class AsyncRawCollectionsClient:
         *,
         skip: typing.Optional[int] = None,
         limit: typing.Optional[int] = None,
+        search: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[Collection]]:
         """
-        List all collections that belong to your organization.
+        List all collections that belong to your organization with optional search filtering.
+
+        Collections are always sorted by creation date (newest first).
 
         Parameters
         ----------
@@ -486,6 +496,9 @@ class AsyncRawCollectionsClient:
 
         limit : typing.Optional[int]
             Maximum number of collections to return (1-1000)
+
+        search : typing.Optional[str]
+            Search term to filter by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -501,6 +514,7 @@ class AsyncRawCollectionsClient:
             params={
                 "skip": skip,
                 "limit": limit,
+                "search": search,
             },
             request_options=request_options,
         )
