@@ -7,6 +7,22 @@ The Airweave Python library provides convenient access to the Airweave APIs from
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
+- [Installation](#installation)
+- [Reference](#reference)
+- [Usage](#usage)
+- [Framework Tracking](#framework-tracking)
+- [Async Client](#async-client)
+- [Exception Handling](#exception-handling)
+- [Advanced](#advanced)
+  - [Access Raw Response Data](#access-raw-response-data)
+  - [Retries](#retries)
+  - [Timeouts](#timeouts)
+  - [Custom Client](#custom-client)
+- [Contributing](#contributing)
+
+## Table of Contents
+
 - [Installation](#installation)
 - [Reference](#reference)
 - [Usage](#usage)
