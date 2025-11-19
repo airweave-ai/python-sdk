@@ -26,10 +26,10 @@ class BaseClientWrapper:
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "airweave-sdk/v0.7.4",
+            "User-Agent": "airweave-sdk/v0.7.5",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "airweave-sdk",
-            "X-Fern-SDK-Version": "v0.7.4",
+            "X-Fern-SDK-Version": "v0.7.5",
             **(self.get_custom_headers() or {}),
         }
         if self._framework_name is not None:
