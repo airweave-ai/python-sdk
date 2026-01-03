@@ -27,6 +27,7 @@ class SyncJob(UniversalBaseModel):
     failed_at: typing.Optional[dt.datetime] = None
     error: typing.Optional[str] = None
     access_token: typing.Optional[str] = None
+    execution_config_json: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     id: str
     organization_id: str
     created_by_email: typing.Optional[str] = None

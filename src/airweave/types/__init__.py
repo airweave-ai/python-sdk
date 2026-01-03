@@ -135,6 +135,7 @@ if typing.TYPE_CHECKING:
     from .sync import Sync
     from .sync_create import SyncCreate
     from .sync_details import SyncDetails
+    from .sync_execution_config import SyncExecutionConfig
     from .sync_job import SyncJob
     from .sync_job_details import SyncJobDetails
     from .sync_job_status import SyncJobStatus
@@ -283,6 +284,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "Sync": ".sync",
     "SyncCreate": ".sync_create",
     "SyncDetails": ".sync_details",
+    "SyncExecutionConfig": ".sync_execution_config",
     "SyncJob": ".sync_job",
     "SyncJobDetails": ".sync_job_details",
     "SyncJobStatus": ".sync_job_status",
@@ -455,6 +457,7 @@ __all__ = [
     "Sync",
     "SyncCreate",
     "SyncDetails",
+    "SyncExecutionConfig",
     "SyncJob",
     "SyncJobDetails",
     "SyncJobStatus",
