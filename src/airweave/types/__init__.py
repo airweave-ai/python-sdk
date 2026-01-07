@@ -8,6 +8,8 @@ from importlib import import_module
 if typing.TYPE_CHECKING:
     from .action_check_request import ActionCheckRequest
     from .action_check_response import ActionCheckResponse
+    from .admin_search_destination import AdminSearchDestination
+    from .admin_sync_info import AdminSyncInfo
     from .any import Any
     from .api_key import ApiKey
     from .api_key_create import ApiKeyCreate
@@ -159,6 +161,8 @@ if typing.TYPE_CHECKING:
 _dynamic_imports: typing.Dict[str, str] = {
     "ActionCheckRequest": ".action_check_request",
     "ActionCheckResponse": ".action_check_response",
+    "AdminSearchDestination": ".admin_search_destination",
+    "AdminSyncInfo": ".admin_sync_info",
     "Any": ".any",
     "ApiKey": ".api_key",
     "ApiKeyCreate": ".api_key_create",
@@ -332,6 +336,8 @@ def __dir__():
 __all__ = [
     "ActionCheckRequest",
     "ActionCheckResponse",
+    "AdminSearchDestination",
+    "AdminSyncInfo",
     "Any",
     "ApiKey",
     "ApiKeyCreate",

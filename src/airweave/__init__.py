@@ -9,6 +9,8 @@ if typing.TYPE_CHECKING:
     from .types import (
         ActionCheckRequest,
         ActionCheckResponse,
+        AdminSearchDestination,
+        AdminSyncInfo,
         Any,
         ApiKey,
         ApiKeyCreate,
@@ -166,6 +168,8 @@ if typing.TYPE_CHECKING:
 _dynamic_imports: typing.Dict[str, str] = {
     "ActionCheckRequest": ".types",
     "ActionCheckResponse": ".types",
+    "AdminSearchDestination": ".types",
+    "AdminSyncInfo": ".types",
     "AirweaveSDK": ".client",
     "AirweaveSDKEnvironment": ".environment",
     "Any": ".types",
@@ -350,6 +354,8 @@ def __dir__():
 __all__ = [
     "ActionCheckRequest",
     "ActionCheckResponse",
+    "AdminSearchDestination",
+    "AdminSyncInfo",
     "AirweaveSDK",
     "AirweaveSDKEnvironment",
     "Any",
