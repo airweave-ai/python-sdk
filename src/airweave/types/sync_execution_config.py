@@ -54,6 +54,11 @@ class SyncExecutionConfig(UniversalBaseModel):
     Don't save cursor progress (for ARF-only syncs)
     """
 
+    replay_from_arf: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Replay entities from ARF storage instead of calling the source. Uses the sync's existing ARF data.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
