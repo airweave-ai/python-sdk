@@ -24,6 +24,16 @@ class SyncExecutionConfig(UniversalBaseModel):
     Skip these destinations
     """
 
+    skip_qdrant: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Skip writing to native Qdrant destination
+    """
+
+    skip_vespa: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Skip writing to native Vespa destination
+    """
+
     enable_vector_handlers: typing.Optional[bool] = pydantic.Field(default=None)
     """
     Enable VectorDBHandler
@@ -36,7 +46,7 @@ class SyncExecutionConfig(UniversalBaseModel):
 
     enable_postgres_handler: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Enable PostgresMetadataHandler
+    Enable EntityPostgresHandler
     """
 
     skip_hash_comparison: typing.Optional[bool] = pydantic.Field(default=None)
