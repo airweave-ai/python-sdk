@@ -30,9 +30,13 @@ class AdminSyncInfo(UniversalBaseModel):
     created_by_email: typing.Optional[str] = None
     modified_by_email: typing.Optional[str] = None
     total_entity_count: typing.Optional[int] = None
+    total_arf_entity_count: typing.Optional[int] = None
+    total_qdrant_entity_count: typing.Optional[int] = None
+    total_vespa_entity_count: typing.Optional[int] = None
     last_job_status: typing.Optional[str] = None
     last_job_at: typing.Optional[dt.datetime] = None
     source_short_name: typing.Optional[str] = None
+    source_is_authenticated: typing.Optional[bool] = None
     readable_collection_id: typing.Optional[str] = None
     last_vespa_job_id: typing.Optional[str] = None
     last_vespa_job_status: typing.Optional[str] = None
