@@ -143,7 +143,6 @@ if typing.TYPE_CHECKING:
     from .sync_job_status import SyncJobStatus
     from .sync_status import SyncStatus
     from .sync_update import SyncUpdate
-    from .sync_with_source_connection import SyncWithSourceConnection
     from .transformer import Transformer
     from .transformer_create import TransformerCreate
     from .transformer_update import TransformerUpdate
@@ -294,7 +293,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SyncJobStatus": ".sync_job_status",
     "SyncStatus": ".sync_status",
     "SyncUpdate": ".sync_update",
-    "SyncWithSourceConnection": ".sync_with_source_connection",
     "Transformer": ".transformer",
     "TransformerCreate": ".transformer_create",
     "TransformerUpdate": ".transformer_update",
@@ -469,7 +467,6 @@ __all__ = [
     "SyncJobStatus",
     "SyncStatus",
     "SyncUpdate",
-    "SyncWithSourceConnection",
     "Transformer",
     "TransformerCreate",
     "TransformerUpdate",
