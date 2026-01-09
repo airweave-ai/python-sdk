@@ -35,6 +35,7 @@ class AdminSyncInfo(UniversalBaseModel):
     total_vespa_entity_count: typing.Optional[int] = None
     last_job_status: typing.Optional[str] = None
     last_job_at: typing.Optional[dt.datetime] = None
+    last_job_error: typing.Optional[str] = None
     source_short_name: typing.Optional[str] = None
     source_is_authenticated: typing.Optional[bool] = None
     readable_collection_id: typing.Optional[str] = None
