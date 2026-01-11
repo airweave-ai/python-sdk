@@ -302,6 +302,14 @@ client.collections.create(
 <dl>
 <dd>
 
+**sync_config:** `typing.Optional[SyncConfig]` — Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>

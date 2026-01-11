@@ -6,6 +6,7 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .collection_status import CollectionStatus
+from .sync_config import SyncConfig
 
 
 class Collection(UniversalBaseModel):
@@ -39,6 +40,11 @@ class Collection(UniversalBaseModel):
     embedding_model_name: str = pydantic.Field()
     """
     Name of the embedding model used for this collection (e.g., 'text-embedding-3-large', 'text-embedding-3-small'). This ensures queries use the same model as the indexed data.
+    """
+
+    sync_config: typing.Optional[SyncConfig] = pydantic.Field(default=None)
+    """
+    Default sync configuration for all syncs in this collection. Overridable at sync and job level.
     """
 
     created_at: dt.datetime = pydantic.Field()

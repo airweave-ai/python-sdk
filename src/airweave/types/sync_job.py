@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .sync_config import SyncConfig
 from .sync_job_status import SyncJobStatus
 
 
@@ -27,7 +28,7 @@ class SyncJob(UniversalBaseModel):
     failed_at: typing.Optional[dt.datetime] = None
     error: typing.Optional[str] = None
     access_token: typing.Optional[str] = None
-    execution_config_json: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    sync_config: typing.Optional[SyncConfig] = None
     id: str
     organization_id: str
     created_by_email: typing.Optional[str] = None

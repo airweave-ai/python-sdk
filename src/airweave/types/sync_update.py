@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .sync_config import SyncConfig
 from .sync_status import SyncStatus
 
 
@@ -17,6 +18,7 @@ class SyncUpdate(UniversalBaseModel):
     cron_schedule: typing.Optional[str] = None
     next_scheduled_run: typing.Optional[dt.datetime] = None
     sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    sync_config: typing.Optional[SyncConfig] = None
     status: typing.Optional[SyncStatus] = None
     temporal_schedule_id: typing.Optional[str] = None
     sync_type: typing.Optional[str] = None

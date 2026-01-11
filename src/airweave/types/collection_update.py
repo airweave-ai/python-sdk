@@ -4,19 +4,25 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .sync_config import SyncConfig
 
 
 class CollectionUpdate(UniversalBaseModel):
     """
     Schema for updating an existing collection.
 
-    Only the collection's display name can be updated. The readable_id is immutable
-    to maintain stable API endpoints and references.
+    Allows updating the collection's display name and default sync configuration.
+    The readable_id is immutable to maintain stable API endpoints and references.
     """
 
     name: typing.Optional[str] = pydantic.Field(default=None)
     """
     Updated display name for the collection. Must be between 4 and 64 characters.
+    """
+
+    sync_config: typing.Optional[SyncConfig] = pydantic.Field(default=None)
+    """
+    Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
     """
 
     if IS_PYDANTIC_V2:

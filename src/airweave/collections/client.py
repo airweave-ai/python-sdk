@@ -8,6 +8,7 @@ from ..types.collection import Collection
 from ..types.legacy_search_response import LegacySearchResponse
 from ..types.response_type import ResponseType
 from ..types.source_connection_job import SourceConnectionJob
+from ..types.sync_config import SyncConfig
 from .raw_client import AsyncRawCollectionsClient, RawCollectionsClient
 from .types.search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
 from .types.search_collections_readable_id_search_post_response import SearchCollectionsReadableIdSearchPostResponse
@@ -86,6 +87,7 @@ class CollectionsClient:
         *,
         name: str,
         readable_id: typing.Optional[str] = OMIT,
+        sync_config: typing.Optional[SyncConfig] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Collection:
         """
@@ -101,6 +103,9 @@ class CollectionsClient:
 
         readable_id : typing.Optional[str]
             URL-safe unique identifier used in API endpoints. Must contain only lowercase letters, numbers, and hyphens. If not provided, it will be automatically generated from the collection name with a random suffix for uniqueness (e.g., 'finance-data-ab123').
+
+        sync_config : typing.Optional[SyncConfig]
+            Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -124,7 +129,9 @@ class CollectionsClient:
             readable_id="finance-data-reports",
         )
         """
-        _response = self._raw_client.create(name=name, readable_id=readable_id, request_options=request_options)
+        _response = self._raw_client.create(
+            name=name, readable_id=readable_id, sync_config=sync_config, request_options=request_options
+        )
         return _response.data
 
     def get(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
@@ -437,6 +444,7 @@ class AsyncCollectionsClient:
         *,
         name: str,
         readable_id: typing.Optional[str] = OMIT,
+        sync_config: typing.Optional[SyncConfig] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Collection:
         """
@@ -452,6 +460,9 @@ class AsyncCollectionsClient:
 
         readable_id : typing.Optional[str]
             URL-safe unique identifier used in API endpoints. Must contain only lowercase letters, numbers, and hyphens. If not provided, it will be automatically generated from the collection name with a random suffix for uniqueness (e.g., 'finance-data-ab123').
+
+        sync_config : typing.Optional[SyncConfig]
+            Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -483,7 +494,9 @@ class AsyncCollectionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.create(name=name, readable_id=readable_id, request_options=request_options)
+        _response = await self._raw_client.create(
+            name=name, readable_id=readable_id, sync_config=sync_config, request_options=request_options
+        )
         return _response.data
 
     async def get(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:

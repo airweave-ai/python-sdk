@@ -20,6 +20,7 @@ if typing.TYPE_CHECKING:
     from .auth_provider_connection_update import AuthProviderConnectionUpdate
     from .authentication_details import AuthenticationDetails
     from .authentication_method import AuthenticationMethod
+    from .behavior_config import BehaviorConfig
     from .billing_period import BillingPeriod
     from .billing_period_status import BillingPeriodStatus
     from .billing_period_usage import BillingPeriodUsage
@@ -38,10 +39,12 @@ if typing.TYPE_CHECKING:
     from .config_values import ConfigValues
     from .connection import Connection
     from .connection_status import ConnectionStatus
+    from .cursor_config import CursorConfig
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
     from .datetime_range import DatetimeRange
     from .destination import Destination
+    from .destination_config import DestinationConfig
     from .destination_with_authentication_fields import DestinationWithAuthenticationFields
     from .direct_authentication import DirectAuthentication
     from .embedding_model import EmbeddingModel
@@ -71,6 +74,7 @@ if typing.TYPE_CHECKING:
     from .geo_radius import GeoRadius
     from .gt import Gt
     from .gte import Gte
+    from .handler_config import HandlerConfig
     from .has_id_condition import HasIdCondition
     from .has_id_condition_has_id_item import HasIdConditionHasIdItem
     from .has_vector_condition import HasVectorCondition
@@ -135,9 +139,9 @@ if typing.TYPE_CHECKING:
     from .source_rate_limit_update_request import SourceRateLimitUpdateRequest
     from .subscription_info import SubscriptionInfo
     from .sync import Sync
+    from .sync_config import SyncConfig
     from .sync_create import SyncCreate
     from .sync_details import SyncDetails
-    from .sync_execution_config import SyncExecutionConfig
     from .sync_job import SyncJob
     from .sync_job_details import SyncJobDetails
     from .sync_job_status import SyncJobStatus
@@ -172,6 +176,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AuthProviderConnectionUpdate": ".auth_provider_connection_update",
     "AuthenticationDetails": ".authentication_details",
     "AuthenticationMethod": ".authentication_method",
+    "BehaviorConfig": ".behavior_config",
     "BillingPeriod": ".billing_period",
     "BillingPeriodStatus": ".billing_period_status",
     "BillingPeriodUsage": ".billing_period_usage",
@@ -188,10 +193,12 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConfigValues": ".config_values",
     "Connection": ".connection",
     "ConnectionStatus": ".connection_status",
+    "CursorConfig": ".cursor_config",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
     "DatetimeRange": ".datetime_range",
     "Destination": ".destination",
+    "DestinationConfig": ".destination_config",
     "DestinationWithAuthenticationFields": ".destination_with_authentication_fields",
     "DirectAuthentication": ".direct_authentication",
     "EmbeddingModel": ".embedding_model",
@@ -221,6 +228,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "GeoRadius": ".geo_radius",
     "Gt": ".gt",
     "Gte": ".gte",
+    "HandlerConfig": ".handler_config",
     "HasIdCondition": ".has_id_condition",
     "HasIdConditionHasIdItem": ".has_id_condition_has_id_item",
     "HasVectorCondition": ".has_vector_condition",
@@ -285,9 +293,9 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SourceRateLimitUpdateRequest": ".source_rate_limit_update_request",
     "SubscriptionInfo": ".subscription_info",
     "Sync": ".sync",
+    "SyncConfig": ".sync_config",
     "SyncCreate": ".sync_create",
     "SyncDetails": ".sync_details",
-    "SyncExecutionConfig": ".sync_execution_config",
     "SyncJob": ".sync_job",
     "SyncJobDetails": ".sync_job_details",
     "SyncJobStatus": ".sync_job_status",
@@ -346,6 +354,7 @@ __all__ = [
     "AuthProviderConnectionUpdate",
     "AuthenticationDetails",
     "AuthenticationMethod",
+    "BehaviorConfig",
     "BillingPeriod",
     "BillingPeriodStatus",
     "BillingPeriodUsage",
@@ -362,10 +371,12 @@ __all__ = [
     "ConfigValues",
     "Connection",
     "ConnectionStatus",
+    "CursorConfig",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
     "DatetimeRange",
     "Destination",
+    "DestinationConfig",
     "DestinationWithAuthenticationFields",
     "DirectAuthentication",
     "EmbeddingModel",
@@ -395,6 +406,7 @@ __all__ = [
     "GeoRadius",
     "Gt",
     "Gte",
+    "HandlerConfig",
     "HasIdCondition",
     "HasIdConditionHasIdItem",
     "HasVectorCondition",
@@ -459,9 +471,9 @@ __all__ = [
     "SourceRateLimitUpdateRequest",
     "SubscriptionInfo",
     "Sync",
+    "SyncConfig",
     "SyncCreate",
     "SyncDetails",
-    "SyncExecutionConfig",
     "SyncJob",
     "SyncJobDetails",
     "SyncJobStatus",
