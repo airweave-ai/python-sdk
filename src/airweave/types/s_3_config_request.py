@@ -8,17 +8,17 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 class S3ConfigRequest(UniversalBaseModel):
     """
-    Request to configure S3 destination.
+    Request to configure S3 destination with IAM role.
     """
 
-    aws_access_key_id: str = pydantic.Field()
+    role_arn: str = pydantic.Field()
     """
-    AWS access key ID
+    IAM Role ARN to assume (e.g., arn:aws:iam::123456789012:role/airweave-writer)
     """
 
-    aws_secret_access_key: str = pydantic.Field()
+    external_id: str = pydantic.Field()
     """
-    AWS secret access key
+    External ID for secure cross-account trust policy
     """
 
     bucket_name: str = pydantic.Field()
@@ -34,16 +34,6 @@ class S3ConfigRequest(UniversalBaseModel):
     aws_region: typing.Optional[str] = pydantic.Field(default=None)
     """
     AWS region
-    """
-
-    endpoint_url: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Custom S3 endpoint
-    """
-
-    use_ssl: typing.Optional[bool] = pydantic.Field(default=None)
-    """
-    Use SSL/TLS
     """
 
     if IS_PYDANTIC_V2:
