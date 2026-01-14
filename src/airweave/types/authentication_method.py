@@ -3,5 +3,5 @@
 import typing
 
 AuthenticationMethod = typing.Union[
-    typing.Literal["direct", "oauth_browser", "oauth_token", "oauth_byoc", "auth_provider", "iam_role"], typing.Any
+    typing.Literal["direct", "oauth_browser", "oauth_token", "oauth_byoc", "auth_provider"], typing.Any
 ]
