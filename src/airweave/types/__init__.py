@@ -39,6 +39,7 @@ if typing.TYPE_CHECKING:
     from .config_values import ConfigValues
     from .connection import Connection
     from .connection_status import ConnectionStatus
+    from .create_subscription_request import CreateSubscriptionRequest
     from .cursor_config import CursorConfig
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
@@ -49,6 +50,8 @@ if typing.TYPE_CHECKING:
     from .direct_authentication import DirectAuthentication
     from .embedding_model import EmbeddingModel
     from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
+    from .endpoint_out import EndpointOut
+    from .endpoint_secret_out import EndpointSecretOut
     from .entity_count import EntityCount
     from .entity_count_with_definition import EntityCountWithDefinition
     from .entity_definition import EntityDefinition
@@ -58,6 +61,7 @@ if typing.TYPE_CHECKING:
     from .entity_summary import EntitySummary
     from .entity_type import EntityType
     from .entity_type_stats import EntityTypeStats
+    from .event_type import EventType
     from .except_ import Except
     from .feature_flag import FeatureFlag
     from .field_condition import FieldCondition
@@ -98,7 +102,12 @@ if typing.TYPE_CHECKING:
     from .match_text import MatchText
     from .match_value import MatchValue
     from .member_response import MemberResponse
+    from .message_attempt_out import MessageAttemptOut
+    from .message_attempt_trigger_type import MessageAttemptTriggerType
+    from .message_out import MessageOut
     from .message_response import MessageResponse
+    from .message_status import MessageStatus
+    from .message_status_text import MessageStatusText
     from .min_should import MinShould
     from .min_should_conditions_item import MinShouldConditionsItem
     from .minute_level_schedule_config import MinuteLevelScheduleConfig
@@ -113,6 +122,7 @@ if typing.TYPE_CHECKING:
     from .organization_create import OrganizationCreate
     from .organization_metrics import OrganizationMetrics
     from .organization_with_role import OrganizationWithRole
+    from .patch_subscription_request import PatchSubscriptionRequest
     from .payload_field import PayloadField
     from .query_expansion_strategy import QueryExpansionStrategy
     from .range import Range
@@ -138,6 +148,7 @@ if typing.TYPE_CHECKING:
     from .source_rate_limit_response import SourceRateLimitResponse
     from .source_rate_limit_update_request import SourceRateLimitUpdateRequest
     from .subscription_info import SubscriptionInfo
+    from .subscription_with_attempts_out import SubscriptionWithAttemptsOut
     from .sync import Sync
     from .sync_config import SyncConfig
     from .sync_create import SyncCreate
@@ -193,6 +204,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConfigValues": ".config_values",
     "Connection": ".connection",
     "ConnectionStatus": ".connection_status",
+    "CreateSubscriptionRequest": ".create_subscription_request",
     "CursorConfig": ".cursor_config",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
@@ -203,6 +215,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "DirectAuthentication": ".direct_authentication",
     "EmbeddingModel": ".embedding_model",
     "EmbeddingModelWithAuthenticationFields": ".embedding_model_with_authentication_fields",
+    "EndpointOut": ".endpoint_out",
+    "EndpointSecretOut": ".endpoint_secret_out",
     "EntityCount": ".entity_count",
     "EntityCountWithDefinition": ".entity_count_with_definition",
     "EntityDefinition": ".entity_definition",
@@ -212,6 +226,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntitySummary": ".entity_summary",
     "EntityType": ".entity_type",
     "EntityTypeStats": ".entity_type_stats",
+    "EventType": ".event_type",
     "Except": ".except_",
     "FeatureFlag": ".feature_flag",
     "FieldCondition": ".field_condition",
@@ -252,7 +267,12 @@ _dynamic_imports: typing.Dict[str, str] = {
     "MatchText": ".match_text",
     "MatchValue": ".match_value",
     "MemberResponse": ".member_response",
+    "MessageAttemptOut": ".message_attempt_out",
+    "MessageAttemptTriggerType": ".message_attempt_trigger_type",
+    "MessageOut": ".message_out",
     "MessageResponse": ".message_response",
+    "MessageStatus": ".message_status",
+    "MessageStatusText": ".message_status_text",
     "MinShould": ".min_should",
     "MinShouldConditionsItem": ".min_should_conditions_item",
     "MinuteLevelScheduleConfig": ".minute_level_schedule_config",
@@ -267,6 +287,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "OrganizationCreate": ".organization_create",
     "OrganizationMetrics": ".organization_metrics",
     "OrganizationWithRole": ".organization_with_role",
+    "PatchSubscriptionRequest": ".patch_subscription_request",
     "PayloadField": ".payload_field",
     "QueryExpansionStrategy": ".query_expansion_strategy",
     "Range": ".range",
@@ -292,6 +313,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SourceRateLimitResponse": ".source_rate_limit_response",
     "SourceRateLimitUpdateRequest": ".source_rate_limit_update_request",
     "SubscriptionInfo": ".subscription_info",
+    "SubscriptionWithAttemptsOut": ".subscription_with_attempts_out",
     "Sync": ".sync",
     "SyncConfig": ".sync_config",
     "SyncCreate": ".sync_create",
@@ -371,6 +393,7 @@ __all__ = [
     "ConfigValues",
     "Connection",
     "ConnectionStatus",
+    "CreateSubscriptionRequest",
     "CursorConfig",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
@@ -381,6 +404,8 @@ __all__ = [
     "DirectAuthentication",
     "EmbeddingModel",
     "EmbeddingModelWithAuthenticationFields",
+    "EndpointOut",
+    "EndpointSecretOut",
     "EntityCount",
     "EntityCountWithDefinition",
     "EntityDefinition",
@@ -390,6 +415,7 @@ __all__ = [
     "EntitySummary",
     "EntityType",
     "EntityTypeStats",
+    "EventType",
     "Except",
     "FeatureFlag",
     "FieldCondition",
@@ -430,7 +456,12 @@ __all__ = [
     "MatchText",
     "MatchValue",
     "MemberResponse",
+    "MessageAttemptOut",
+    "MessageAttemptTriggerType",
+    "MessageOut",
     "MessageResponse",
+    "MessageStatus",
+    "MessageStatusText",
     "MinShould",
     "MinShouldConditionsItem",
     "MinuteLevelScheduleConfig",
@@ -445,6 +476,7 @@ __all__ = [
     "OrganizationCreate",
     "OrganizationMetrics",
     "OrganizationWithRole",
+    "PatchSubscriptionRequest",
     "PayloadField",
     "QueryExpansionStrategy",
     "Range",
@@ -470,6 +502,7 @@ __all__ = [
     "SourceRateLimitResponse",
     "SourceRateLimitUpdateRequest",
     "SubscriptionInfo",
+    "SubscriptionWithAttemptsOut",
     "Sync",
     "SyncConfig",
     "SyncCreate",
