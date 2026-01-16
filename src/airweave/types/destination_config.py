@@ -18,7 +18,7 @@ class DestinationConfig(UniversalBaseModel):
 
     skip_vespa: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Skip writing to native Vespa
+    Skip writing to native Vespa (default: true for local)
     """
 
     target_destinations: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
