@@ -30,6 +30,9 @@ if typing.TYPE_CHECKING:
     from .body_connect_slack_with_token_connections_direct_token_slack_post import (
         BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
     )
+    from .body_resync_with_execution_config_admin_resync_sync_id_post import (
+        BodyResyncWithExecutionConfigAdminResyncSyncIdPost,
+    )
     from .checkout_session_request import CheckoutSessionRequest
     from .checkout_session_response import CheckoutSessionResponse
     from .collection import Collection
@@ -195,6 +198,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BillingStatus": ".billing_status",
     "BillingTransition": ".billing_transition",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost": ".body_connect_slack_with_token_connections_direct_token_slack_post",
+    "BodyResyncWithExecutionConfigAdminResyncSyncIdPost": ".body_resync_with_execution_config_admin_resync_sync_id_post",
     "CheckoutSessionRequest": ".checkout_session_request",
     "CheckoutSessionResponse": ".checkout_session_response",
     "Collection": ".collection",
@@ -384,6 +388,7 @@ __all__ = [
     "BillingStatus",
     "BillingTransition",
     "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
+    "BodyResyncWithExecutionConfigAdminResyncSyncIdPost",
     "CheckoutSessionRequest",
     "CheckoutSessionResponse",
     "Collection",

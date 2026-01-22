@@ -29,6 +29,7 @@ class SyncJob(UniversalBaseModel):
     error: typing.Optional[str] = None
     access_token: typing.Optional[str] = None
     sync_config: typing.Optional[SyncConfig] = None
+    sync_metadata: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     id: str
     organization_id: str
     created_by_email: typing.Optional[str] = None

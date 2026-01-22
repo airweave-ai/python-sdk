@@ -38,12 +38,10 @@ class AdminSyncInfo(UniversalBaseModel):
     last_job_status: typing.Optional[str] = None
     last_job_at: typing.Optional[dt.datetime] = None
     last_job_error: typing.Optional[str] = None
+    all_tags: typing.Optional[typing.List[str]] = None
     source_short_name: typing.Optional[str] = None
     source_is_authenticated: typing.Optional[bool] = None
     readable_collection_id: typing.Optional[str] = None
-    last_vespa_job_id: typing.Optional[str] = None
-    last_vespa_job_status: typing.Optional[str] = None
-    last_vespa_job_at: typing.Optional[dt.datetime] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
