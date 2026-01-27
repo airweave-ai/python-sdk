@@ -83,9 +83,19 @@ class Source(UniversalBaseModel):
     Whether this source's entities have timestamps that enable recency-based ranking. Sources without file-level timestamps (e.g., code repositories) cannot use temporal relevance for search result weighting.
     """
 
+    supports_access_control: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this source supports document-level access control. Sources with this capability extract ACL information from the source and apply it during search to filter results based on user permissions.
+    """
+
     rate_limit_level: typing.Optional[str] = pydantic.Field(default=None)
     """
     Rate limiting level for this source: 'org' (organization-wide), 'connection' (per-connection/per-user), or None (no rate limiting).
+    """
+
+    feature_flag: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Feature flag required to access this source. If set, only organizations with this feature enabled can see/use this source.
     """
 
     id: str = pydantic.Field()
