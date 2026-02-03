@@ -10,6 +10,7 @@ from .environment import AirweaveSDKEnvironment
 
 if typing.TYPE_CHECKING:
     from .collections.client import AsyncCollectionsClient, CollectionsClient
+    from .events.client import AsyncEventsClient, EventsClient
     from .source_connections.client import AsyncSourceConnectionsClient, SourceConnectionsClient
     from .sources.client import AsyncSourcesClient, SourcesClient
 
@@ -90,6 +91,7 @@ class AirweaveSDK:
         self._sources: typing.Optional[SourcesClient] = None
         self._collections: typing.Optional[CollectionsClient] = None
         self._source_connections: typing.Optional[SourceConnectionsClient] = None
+        self._events: typing.Optional[EventsClient] = None
 
     @property
     def sources(self):
@@ -114,6 +116,14 @@ class AirweaveSDK:
 
             self._source_connections = SourceConnectionsClient(client_wrapper=self._client_wrapper)
         return self._source_connections
+
+    @property
+    def events(self):
+        if self._events is None:
+            from .events.client import EventsClient  # noqa: E402
+
+            self._events = EventsClient(client_wrapper=self._client_wrapper)
+        return self._events
 
 
 class AsyncAirweaveSDK:
@@ -192,6 +202,7 @@ class AsyncAirweaveSDK:
         self._sources: typing.Optional[AsyncSourcesClient] = None
         self._collections: typing.Optional[AsyncCollectionsClient] = None
         self._source_connections: typing.Optional[AsyncSourceConnectionsClient] = None
+        self._events: typing.Optional[AsyncEventsClient] = None
 
     @property
     def sources(self):
@@ -216,6 +227,14 @@ class AsyncAirweaveSDK:
 
             self._source_connections = AsyncSourceConnectionsClient(client_wrapper=self._client_wrapper)
         return self._source_connections
+
+    @property
+    def events(self):
+        if self._events is None:
+            from .events.client import AsyncEventsClient  # noqa: E402
+
+            self._events = AsyncEventsClient(client_wrapper=self._client_wrapper)
+        return self._events
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AirweaveSDKEnvironment) -> str:

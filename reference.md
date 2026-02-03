@@ -1514,3 +1514,935 @@ client.source_connections.cancel_job(
 </dl>
 </details>
 
+## events
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_messages</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get event messages for the current organization.
+
+Args:
+    ctx: The API context containing organization info.
+    event_types: Optional list of event types to filter by.
+
+Returns:
+    List of event messages.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.get_messages()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**event_types:** `typing.Optional[typing.Union[str, typing.Sequence[str]]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_message</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a specific event message by ID.
+
+Args:
+    message_id: The ID of the message to retrieve.
+    ctx: The API context containing organization info.
+
+Returns:
+    The event message with its payload.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.get_message(
+    message_id="message_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**message_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_message_attempts</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get delivery attempts for a specific message.
+
+Args:
+    message_id: The ID of the message.
+    ctx: The API context containing organization info.
+
+Returns:
+    List of delivery attempts for this message.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.get_message_attempts(
+    message_id="message_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**message_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_subscriptions</a>()</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get all webhook subscriptions for the current organization.
+
+Args:
+    ctx: The API context containing organization info.
+
+Returns:
+    List of webhook subscriptions.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.get_subscriptions()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">create_subscription</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new webhook subscription.
+
+Args:
+    request: The subscription creation request.
+    ctx: The API context containing organization info.
+
+Returns:
+    The created subscription.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.create_subscription(
+    url="url",
+    event_types=["sync.pending"],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**url:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event_types:** `typing.Sequence[EventType]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**secret:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_subscription</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a specific webhook subscription with its delivery attempts.
+
+Args:
+    subscription_id: The ID of the subscription to retrieve.
+    ctx: The API context containing organization info.
+
+Returns:
+    The subscription details with message delivery attempts.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.get_subscription(
+    subscription_id="subscription_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**subscription_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">delete_subscription</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete a webhook subscription.
+
+Args:
+    subscription_id: The ID of the subscription to delete.
+    ctx: The API context containing organization info.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.delete_subscription(
+    subscription_id="subscription_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**subscription_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">patch_subscription</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a webhook subscription.
+
+Args:
+    subscription_id: The ID of the subscription to update.
+    request: The subscription update request.
+    ctx: The API context containing organization info.
+
+Returns:
+    The updated subscription.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.patch_subscription(
+    subscription_id="subscription_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**subscription_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event_types:** `typing.Optional[typing.Sequence[EventType]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**disabled:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">enable_subscription</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Enable a disabled webhook subscription, optionally recovering failed messages.
+
+Args:
+    subscription_id: The ID of the subscription to enable.
+    request: Optional request with recovery time range.
+    ctx: The API context containing organization info.
+
+Returns:
+    The enabled subscription.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK, EnableEndpointRequest
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.enable_subscription(
+    subscription_id="subscription_id",
+    request=EnableEndpointRequest(),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**subscription_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `typing.Optional[EnableEndpointRequest]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_subscription_secret</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get the signing secret for a webhook subscription.
+
+Args:
+    subscription_id: The ID of the subscription.
+    ctx: The API context containing organization info.
+
+Returns:
+    The subscription's signing secret.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.get_subscription_secret(
+    subscription_id="subscription_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**subscription_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/airweave/events/client.py">recover_failed_messages</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Recover (retry) failed messages for a webhook subscription.
+
+This endpoint triggers a recovery of all failed messages since the specified
+time. Useful after re-enabling a disabled endpoint to retry messages that
+failed while the endpoint was down.
+
+Args:
+    subscription_id: The ID of the subscription to recover messages for.
+    request: The recovery request with time range.
+    ctx: The API context containing organization info.
+
+Returns:
+    Information about the recovery task.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+import datetime
+
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    framework_name="YOUR_FRAMEWORK_NAME",
+    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.events.recover_failed_messages(
+    subscription_id="subscription_id",
+    since=datetime.datetime.fromisoformat(
+        "2024-01-15 09:30:00+00:00",
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**subscription_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**since:** `dt.datetime` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**until:** `typing.Optional[dt.datetime]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+

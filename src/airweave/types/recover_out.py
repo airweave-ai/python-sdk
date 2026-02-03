@@ -4,17 +4,14 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .event_type import EventType
+from .background_task_status import BackgroundTaskStatus
+from .background_task_type import BackgroundTaskType
 
 
-class CreateSubscriptionRequest(UniversalBaseModel):
-    """
-    Request model for creating a new webhook subscription.
-    """
-
-    url: str
-    event_types: typing.List[EventType]
-    secret: typing.Optional[str] = None
+class RecoverOut(UniversalBaseModel):
+    id: str
+    status: BackgroundTaskStatus
+    task: BackgroundTaskType
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

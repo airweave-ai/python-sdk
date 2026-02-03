@@ -19,6 +19,8 @@ if typing.TYPE_CHECKING:
     from .auth_provider_connection_update import AuthProviderConnectionUpdate
     from .authentication_details import AuthenticationDetails
     from .authentication_method import AuthenticationMethod
+    from .background_task_status import BackgroundTaskStatus
+    from .background_task_type import BackgroundTaskType
     from .behavior_config import BehaviorConfig
     from .billing_period import BillingPeriod
     from .billing_period_status import BillingPeriodStatus
@@ -41,7 +43,6 @@ if typing.TYPE_CHECKING:
     from .config_values import ConfigValues
     from .connection import Connection
     from .connection_status import ConnectionStatus
-    from .create_subscription_request import CreateSubscriptionRequest
     from .cursor_config import CursorConfig
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
@@ -51,6 +52,7 @@ if typing.TYPE_CHECKING:
     from .direct_authentication import DirectAuthentication
     from .embedding_model import EmbeddingModel
     from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
+    from .enable_endpoint_request import EnableEndpointRequest
     from .endpoint_out import EndpointOut
     from .endpoint_secret_out import EndpointSecretOut
     from .entity_count import EntityCount
@@ -91,8 +93,8 @@ if typing.TYPE_CHECKING:
     from .organization_create import OrganizationCreate
     from .organization_metrics import OrganizationMetrics
     from .organization_with_role import OrganizationWithRole
-    from .patch_subscription_request import PatchSubscriptionRequest
     from .query_expansion_strategy import QueryExpansionStrategy
+    from .recover_out import RecoverOut
     from .response_type import ResponseType
     from .retrieval_strategy import RetrievalStrategy
     from .s_3_config_request import S3ConfigRequest
@@ -150,6 +152,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AuthProviderConnectionUpdate": ".auth_provider_connection_update",
     "AuthenticationDetails": ".authentication_details",
     "AuthenticationMethod": ".authentication_method",
+    "BackgroundTaskStatus": ".background_task_status",
+    "BackgroundTaskType": ".background_task_type",
     "BehaviorConfig": ".behavior_config",
     "BillingPeriod": ".billing_period",
     "BillingPeriodStatus": ".billing_period_status",
@@ -168,7 +172,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConfigValues": ".config_values",
     "Connection": ".connection",
     "ConnectionStatus": ".connection_status",
-    "CreateSubscriptionRequest": ".create_subscription_request",
     "CursorConfig": ".cursor_config",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
@@ -178,6 +181,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "DirectAuthentication": ".direct_authentication",
     "EmbeddingModel": ".embedding_model",
     "EmbeddingModelWithAuthenticationFields": ".embedding_model_with_authentication_fields",
+    "EnableEndpointRequest": ".enable_endpoint_request",
     "EndpointOut": ".endpoint_out",
     "EndpointSecretOut": ".endpoint_secret_out",
     "EntityCount": ".entity_count",
@@ -218,8 +222,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "OrganizationCreate": ".organization_create",
     "OrganizationMetrics": ".organization_metrics",
     "OrganizationWithRole": ".organization_with_role",
-    "PatchSubscriptionRequest": ".patch_subscription_request",
     "QueryExpansionStrategy": ".query_expansion_strategy",
+    "RecoverOut": ".recover_out",
     "ResponseType": ".response_type",
     "RetrievalStrategy": ".retrieval_strategy",
     "S3ConfigRequest": ".s_3_config_request",
@@ -301,6 +305,8 @@ __all__ = [
     "AuthProviderConnectionUpdate",
     "AuthenticationDetails",
     "AuthenticationMethod",
+    "BackgroundTaskStatus",
+    "BackgroundTaskType",
     "BehaviorConfig",
     "BillingPeriod",
     "BillingPeriodStatus",
@@ -319,7 +325,6 @@ __all__ = [
     "ConfigValues",
     "Connection",
     "ConnectionStatus",
-    "CreateSubscriptionRequest",
     "CursorConfig",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
@@ -329,6 +334,7 @@ __all__ = [
     "DirectAuthentication",
     "EmbeddingModel",
     "EmbeddingModelWithAuthenticationFields",
+    "EnableEndpointRequest",
     "EndpointOut",
     "EndpointSecretOut",
     "EntityCount",
@@ -369,8 +375,8 @@ __all__ = [
     "OrganizationCreate",
     "OrganizationMetrics",
     "OrganizationWithRole",
-    "PatchSubscriptionRequest",
     "QueryExpansionStrategy",
+    "RecoverOut",
     "ResponseType",
     "RetrievalStrategy",
     "S3ConfigRequest",
