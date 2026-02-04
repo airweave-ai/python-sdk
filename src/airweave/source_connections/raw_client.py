@@ -10,8 +10,13 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from ..errors.conflict_error import ConflictError
+from ..errors.not_found_error import NotFoundError
+from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
-from ..types.http_validation_error import HttpValidationError
+from ..types.conflict_error_response import ConflictErrorResponse
+from ..types.not_found_error_response import NotFoundErrorResponse
+from ..types.rate_limit_error_response import RateLimitErrorResponse
 from ..types.schedule_config import ScheduleConfig
 from ..types.source_connection import SourceConnection
 from ..types.source_connection_job import SourceConnectionJob
@@ -35,7 +40,13 @@ class RawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[SourceConnectionListItem]]:
         """
-        List source connections with minimal fields for performance.
+        Retrieve all source connections for your organization.
+
+        Returns a lightweight list of source connections with essential fields for
+        display and navigation. Use the collection filter to see connections within
+        a specific collection.
+
+        For full connection details including sync history, use the GET /{id} endpoint.
 
         Parameters
         ----------
@@ -43,8 +54,10 @@ class RawSourceConnectionsClient:
             Filter by collection readable ID
 
         skip : typing.Optional[int]
+            Number of connections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of connections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -52,7 +65,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[typing.List[SourceConnectionListItem]]
-            Successful Response
+            List of source connections
         """
         _response = self._client_wrapper.httpx_client.request(
             "source-connections",
@@ -78,9 +91,20 @@ class RawSourceConnectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -105,45 +129,42 @@ class RawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnection]:
         """
-        Create a new source connection.
+        Create a new source connection to sync data from an external source.
 
-        The authentication configuration determines the flow:
-        - DirectAuthentication: Immediate creation with provided credentials
-        - OAuthBrowserAuthentication: Returns shell with authentication URL
-        - OAuthTokenAuthentication: Immediate creation with provided token
-        - AuthProviderAuthentication: Using external auth provider
+        The authentication method determines the creation flow:
 
-        BYOC (Bring Your Own Client) is detected when client_id and client_secret
-        are provided in OAuthBrowserAuthentication.
+        - **Direct**: Provide credentials (API key, token) directly. Connection is created immediately.
+        - **OAuth Browser**: Returns a connection with an `auth_url` to redirect users for authentication.
+        - **OAuth Token**: Provide an existing OAuth token. Connection is created immediately.
+        - **Auth Provider**: Use a pre-configured auth provider (e.g., Composio, Pipedream).
 
-        sync_immediately defaults:
-        - True for: direct, oauth_token, auth_provider
-        - False for: oauth_browser, oauth_byoc (these sync after authentication)
+        After successful authentication, data sync can begin automatically or on-demand.
 
         Parameters
         ----------
         short_name : str
-            Source identifier (e.g., 'slack', 'github')
+            Source type identifier (e.g., 'slack', 'github', 'notion')
 
         readable_collection_id : str
-            Collection readable ID
+            The readable ID of the collection to add this connection to
 
         name : typing.Optional[str]
-            Connection name (defaults to '{Source Name} Connection')
+            Display name for the connection. If not provided, defaults to '{Source Name} Connection'.
 
         description : typing.Optional[str]
-            Connection description
+            Optional description of what this connection is used for
 
         config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Source-specific configuration
+            Source-specific configuration (e.g., repository name, filters)
 
         schedule : typing.Optional[ScheduleConfig]
+            Optional sync schedule configuration
 
         sync_immediately : typing.Optional[bool]
             Run initial sync after creation. Defaults to True for direct/token/auth_provider, False for OAuth browser/BYOC flows (which sync after authentication)
 
         authentication : typing.Optional[Authentication]
-            Authentication config (defaults to OAuth browser flow for OAuth sources)
+            Authentication configuration. Type is auto-detected from provided fields.
 
         redirect_url : typing.Optional[str]
             URL to redirect to after OAuth flow completes (only used for OAuth flows)
@@ -154,7 +175,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[SourceConnection]
-            Successful Response
+            Created source connection
         """
         _response = self._client_wrapper.httpx_client.request(
             "source-connections",
@@ -194,9 +215,20 @@ class RawSourceConnectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -210,11 +242,18 @@ class RawSourceConnectionsClient:
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnection]:
         """
-        Get a source connection with optional depth expansion.
+        Retrieve details of a specific source connection.
+
+        Returns complete information about the connection including:
+        - Configuration settings
+        - Authentication status
+        - Sync schedule and history
+        - Entity statistics
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection (UUID)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -222,7 +261,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[SourceConnection]
-            Successful Response
+            Source connection details
         """
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
@@ -239,13 +278,35 @@ class RawSourceConnectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -259,11 +320,19 @@ class RawSourceConnectionsClient:
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnection]:
         """
-        Delete a source connection and all related data.
+        Permanently delete a source connection and all its synced data.
+
+        This operation:
+        - Removes all entities synced from this source from the vector database
+        - Cancels any scheduled or running sync jobs
+        - Deletes the connection configuration and credentials
+
+        **Warning**: This action cannot be undone. All synced data will be permanently deleted.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection to delete (UUID)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -271,7 +340,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[SourceConnection]
-            Successful Response
+            Deleted source connection
         """
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
@@ -288,13 +357,35 @@ class RawSourceConnectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -316,29 +407,35 @@ class RawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnection]:
         """
-        Update a source connection.
+        Update an existing source connection's configuration.
 
-        Updateable fields:
-        - name, description
-        - config_fields
-        - cron_schedule
-        - auth_fields (direct auth only)
+        You can modify:
+        - **Name and description**: Display information
+        - **Configuration**: Source-specific settings (e.g., repository name, filters)
+        - **Schedule**: Cron expression for automatic syncs
+        - **Authentication**: Update credentials (direct auth only)
+
+        Only include the fields you want to change; omitted fields retain their current values.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection to update (UUID)
 
         name : typing.Optional[str]
+            Updated display name for the connection
 
         description : typing.Optional[str]
+            Updated description
 
         config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Source-specific configuration
+            Updated source-specific configuration
 
         schedule : typing.Optional[ScheduleConfig]
+            Updated sync schedule configuration
 
         authentication : typing.Optional[Authentication]
-            Authentication config (defaults to OAuth browser flow for OAuth sources)
+            Updated authentication credentials (direct auth only)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -346,7 +443,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[SourceConnection]
-            Successful Response
+            Updated source connection
         """
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
@@ -378,13 +475,35 @@ class RawSourceConnectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -402,25 +521,22 @@ class RawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SourceConnectionJob]:
         """
-        Trigger a sync run for a source connection.
+        Trigger a data synchronization job for a source connection.
 
-        Runs are always executed through Temporal workflow engine.
+        Starts an asynchronous sync job that pulls the latest data from the connected
+        source. The job runs in the background and you can monitor its progress using
+        the jobs endpoint.
 
-        Args:
-            db: Database session
-            source_connection_id: ID of the source connection to run
-            ctx: API context with organization and user information
-            guard_rail: Guard rail service for usage limits
-            force_full_sync: If True, forces a full sync with orphaned entity cleanup
-                            for continuous syncs. Raises 400 error if used on
-                            non-continuous syncs (which are always full syncs).
+        For continuous sync connections, this performs an incremental sync by default.
+        Use `force_full_sync=true` to perform a complete re-sync of all data.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection to sync (UUID)
 
         force_full_sync : typing.Optional[bool]
-            Force a full sync ignoring cursor data instead of waiting for the daily cleanup schedule. Only allowed for continuous syncs.
+            Force a full sync ignoring cursor data. Only applies to continuous sync connections. Non-continuous connections always perform full syncs.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -428,7 +544,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[SourceConnectionJob]
-            Successful Response
+            Created sync job
         """
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/run",
@@ -448,13 +564,46 @@ class RawSourceConnectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ConflictErrorResponse,
+                        parse_obj_as(
+                            type_=ConflictErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -472,13 +621,26 @@ class RawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[SourceConnectionJob]]:
         """
-        Get sync jobs for a source connection.
+        Retrieve the sync job history for a source connection.
+
+        Returns a list of sync jobs ordered by creation time (newest first). Each job
+        includes status, timing information, and entity counts.
+
+        Job statuses:
+        - **PENDING**: Job is queued and waiting to start
+        - **RUNNING**: Sync is actively pulling and processing data
+        - **COMPLETED**: Sync finished successfully
+        - **FAILED**: Sync encountered an error
+        - **CANCELLED**: Sync was manually cancelled
+        - **CANCELLING**: Cancellation has been requested
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection (UUID)
 
         limit : typing.Optional[int]
+            Maximum number of jobs to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -486,7 +648,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[typing.List[SourceConnectionJob]]
-            Successful Response
+            List of sync jobs
         """
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/jobs",
@@ -506,13 +668,35 @@ class RawSourceConnectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -526,17 +710,21 @@ class RawSourceConnectionsClient:
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[SourceConnectionJob]:
         """
-        Cancel a running sync job for a source connection.
+        Request cancellation of a running sync job.
 
-        This endpoint requests cancellation and marks the job as CANCELLING.
-        The workflow updates the final status to CANCELLED when it processes
-        the cancellation request.
+        The job will be marked as CANCELLING and the sync workflow will stop at the
+        next checkpoint. Already-processed entities are retained.
+
+        **Note**: Cancellation is asynchronous. The job status will change to CANCELLED
+        once the workflow has fully stopped.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection (UUID)
 
         job_id : str
+            Unique identifier of the sync job to cancel (UUID)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -544,7 +732,7 @@ class RawSourceConnectionsClient:
         Returns
         -------
         HttpResponse[SourceConnectionJob]
-            Successful Response
+            Job with cancellation status
         """
         _response = self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/jobs/{jsonable_encoder(job_id)}/cancel",
@@ -561,13 +749,46 @@ class RawSourceConnectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ConflictErrorResponse,
+                        parse_obj_as(
+                            type_=ConflictErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -591,7 +812,13 @@ class AsyncRawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[SourceConnectionListItem]]:
         """
-        List source connections with minimal fields for performance.
+        Retrieve all source connections for your organization.
+
+        Returns a lightweight list of source connections with essential fields for
+        display and navigation. Use the collection filter to see connections within
+        a specific collection.
+
+        For full connection details including sync history, use the GET /{id} endpoint.
 
         Parameters
         ----------
@@ -599,8 +826,10 @@ class AsyncRawSourceConnectionsClient:
             Filter by collection readable ID
 
         skip : typing.Optional[int]
+            Number of connections to skip for pagination
 
         limit : typing.Optional[int]
+            Maximum number of connections to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -608,7 +837,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[typing.List[SourceConnectionListItem]]
-            Successful Response
+            List of source connections
         """
         _response = await self._client_wrapper.httpx_client.request(
             "source-connections",
@@ -634,9 +863,20 @@ class AsyncRawSourceConnectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -661,45 +901,42 @@ class AsyncRawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnection]:
         """
-        Create a new source connection.
+        Create a new source connection to sync data from an external source.
 
-        The authentication configuration determines the flow:
-        - DirectAuthentication: Immediate creation with provided credentials
-        - OAuthBrowserAuthentication: Returns shell with authentication URL
-        - OAuthTokenAuthentication: Immediate creation with provided token
-        - AuthProviderAuthentication: Using external auth provider
+        The authentication method determines the creation flow:
 
-        BYOC (Bring Your Own Client) is detected when client_id and client_secret
-        are provided in OAuthBrowserAuthentication.
+        - **Direct**: Provide credentials (API key, token) directly. Connection is created immediately.
+        - **OAuth Browser**: Returns a connection with an `auth_url` to redirect users for authentication.
+        - **OAuth Token**: Provide an existing OAuth token. Connection is created immediately.
+        - **Auth Provider**: Use a pre-configured auth provider (e.g., Composio, Pipedream).
 
-        sync_immediately defaults:
-        - True for: direct, oauth_token, auth_provider
-        - False for: oauth_browser, oauth_byoc (these sync after authentication)
+        After successful authentication, data sync can begin automatically or on-demand.
 
         Parameters
         ----------
         short_name : str
-            Source identifier (e.g., 'slack', 'github')
+            Source type identifier (e.g., 'slack', 'github', 'notion')
 
         readable_collection_id : str
-            Collection readable ID
+            The readable ID of the collection to add this connection to
 
         name : typing.Optional[str]
-            Connection name (defaults to '{Source Name} Connection')
+            Display name for the connection. If not provided, defaults to '{Source Name} Connection'.
 
         description : typing.Optional[str]
-            Connection description
+            Optional description of what this connection is used for
 
         config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Source-specific configuration
+            Source-specific configuration (e.g., repository name, filters)
 
         schedule : typing.Optional[ScheduleConfig]
+            Optional sync schedule configuration
 
         sync_immediately : typing.Optional[bool]
             Run initial sync after creation. Defaults to True for direct/token/auth_provider, False for OAuth browser/BYOC flows (which sync after authentication)
 
         authentication : typing.Optional[Authentication]
-            Authentication config (defaults to OAuth browser flow for OAuth sources)
+            Authentication configuration. Type is auto-detected from provided fields.
 
         redirect_url : typing.Optional[str]
             URL to redirect to after OAuth flow completes (only used for OAuth flows)
@@ -710,7 +947,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[SourceConnection]
-            Successful Response
+            Created source connection
         """
         _response = await self._client_wrapper.httpx_client.request(
             "source-connections",
@@ -750,9 +987,20 @@ class AsyncRawSourceConnectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -766,11 +1014,18 @@ class AsyncRawSourceConnectionsClient:
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnection]:
         """
-        Get a source connection with optional depth expansion.
+        Retrieve details of a specific source connection.
+
+        Returns complete information about the connection including:
+        - Configuration settings
+        - Authentication status
+        - Sync schedule and history
+        - Entity statistics
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection (UUID)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -778,7 +1033,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[SourceConnection]
-            Successful Response
+            Source connection details
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
@@ -795,13 +1050,35 @@ class AsyncRawSourceConnectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -815,11 +1092,19 @@ class AsyncRawSourceConnectionsClient:
         self, source_connection_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnection]:
         """
-        Delete a source connection and all related data.
+        Permanently delete a source connection and all its synced data.
+
+        This operation:
+        - Removes all entities synced from this source from the vector database
+        - Cancels any scheduled or running sync jobs
+        - Deletes the connection configuration and credentials
+
+        **Warning**: This action cannot be undone. All synced data will be permanently deleted.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection to delete (UUID)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -827,7 +1112,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[SourceConnection]
-            Successful Response
+            Deleted source connection
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
@@ -844,13 +1129,35 @@ class AsyncRawSourceConnectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -872,29 +1179,35 @@ class AsyncRawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnection]:
         """
-        Update a source connection.
+        Update an existing source connection's configuration.
 
-        Updateable fields:
-        - name, description
-        - config_fields
-        - cron_schedule
-        - auth_fields (direct auth only)
+        You can modify:
+        - **Name and description**: Display information
+        - **Configuration**: Source-specific settings (e.g., repository name, filters)
+        - **Schedule**: Cron expression for automatic syncs
+        - **Authentication**: Update credentials (direct auth only)
+
+        Only include the fields you want to change; omitted fields retain their current values.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection to update (UUID)
 
         name : typing.Optional[str]
+            Updated display name for the connection
 
         description : typing.Optional[str]
+            Updated description
 
         config : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
-            Source-specific configuration
+            Updated source-specific configuration
 
         schedule : typing.Optional[ScheduleConfig]
+            Updated sync schedule configuration
 
         authentication : typing.Optional[Authentication]
-            Authentication config (defaults to OAuth browser flow for OAuth sources)
+            Updated authentication credentials (direct auth only)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -902,7 +1215,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[SourceConnection]
-            Successful Response
+            Updated source connection
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}",
@@ -934,13 +1247,35 @@ class AsyncRawSourceConnectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -958,25 +1293,22 @@ class AsyncRawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SourceConnectionJob]:
         """
-        Trigger a sync run for a source connection.
+        Trigger a data synchronization job for a source connection.
 
-        Runs are always executed through Temporal workflow engine.
+        Starts an asynchronous sync job that pulls the latest data from the connected
+        source. The job runs in the background and you can monitor its progress using
+        the jobs endpoint.
 
-        Args:
-            db: Database session
-            source_connection_id: ID of the source connection to run
-            ctx: API context with organization and user information
-            guard_rail: Guard rail service for usage limits
-            force_full_sync: If True, forces a full sync with orphaned entity cleanup
-                            for continuous syncs. Raises 400 error if used on
-                            non-continuous syncs (which are always full syncs).
+        For continuous sync connections, this performs an incremental sync by default.
+        Use `force_full_sync=true` to perform a complete re-sync of all data.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection to sync (UUID)
 
         force_full_sync : typing.Optional[bool]
-            Force a full sync ignoring cursor data instead of waiting for the daily cleanup schedule. Only allowed for continuous syncs.
+            Force a full sync ignoring cursor data. Only applies to continuous sync connections. Non-continuous connections always perform full syncs.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -984,7 +1316,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[SourceConnectionJob]
-            Successful Response
+            Created sync job
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/run",
@@ -1004,13 +1336,46 @@ class AsyncRawSourceConnectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ConflictErrorResponse,
+                        parse_obj_as(
+                            type_=ConflictErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -1028,13 +1393,26 @@ class AsyncRawSourceConnectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[SourceConnectionJob]]:
         """
-        Get sync jobs for a source connection.
+        Retrieve the sync job history for a source connection.
+
+        Returns a list of sync jobs ordered by creation time (newest first). Each job
+        includes status, timing information, and entity counts.
+
+        Job statuses:
+        - **PENDING**: Job is queued and waiting to start
+        - **RUNNING**: Sync is actively pulling and processing data
+        - **COMPLETED**: Sync finished successfully
+        - **FAILED**: Sync encountered an error
+        - **CANCELLED**: Sync was manually cancelled
+        - **CANCELLING**: Cancellation has been requested
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection (UUID)
 
         limit : typing.Optional[int]
+            Maximum number of jobs to return (1-1000)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1042,7 +1420,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[typing.List[SourceConnectionJob]]
-            Successful Response
+            List of sync jobs
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/jobs",
@@ -1062,13 +1440,35 @@ class AsyncRawSourceConnectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -1082,17 +1482,21 @@ class AsyncRawSourceConnectionsClient:
         self, source_connection_id: str, job_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[SourceConnectionJob]:
         """
-        Cancel a running sync job for a source connection.
+        Request cancellation of a running sync job.
 
-        This endpoint requests cancellation and marks the job as CANCELLING.
-        The workflow updates the final status to CANCELLED when it processes
-        the cancellation request.
+        The job will be marked as CANCELLING and the sync workflow will stop at the
+        next checkpoint. Already-processed entities are retained.
+
+        **Note**: Cancellation is asynchronous. The job status will change to CANCELLED
+        once the workflow has fully stopped.
 
         Parameters
         ----------
         source_connection_id : str
+            Unique identifier of the source connection (UUID)
 
         job_id : str
+            Unique identifier of the sync job to cancel (UUID)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1100,7 +1504,7 @@ class AsyncRawSourceConnectionsClient:
         Returns
         -------
         AsyncHttpResponse[SourceConnectionJob]
-            Successful Response
+            Job with cancellation status
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"source-connections/{jsonable_encoder(source_connection_id)}/jobs/{jsonable_encoder(job_id)}/cancel",
@@ -1117,13 +1521,46 @@ class AsyncRawSourceConnectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ConflictErrorResponse,
+                        parse_obj_as(
+                            type_=ConflictErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),

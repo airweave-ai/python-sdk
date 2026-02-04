@@ -7,11 +7,11 @@ from ..core.request_options import RequestOptions
 from ..types.collection import Collection
 from ..types.legacy_search_response import LegacySearchResponse
 from ..types.response_type import ResponseType
+from ..types.search_response import SearchResponse
 from ..types.source_connection_job import SourceConnectionJob
 from ..types.sync_config import SyncConfig
 from .raw_client import AsyncRawCollectionsClient, RawCollectionsClient
 from .types.search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
-from .types.search_collections_readable_id_search_post_response import SearchCollectionsReadableIdSearchPostResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -41,9 +41,13 @@ class CollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[Collection]:
         """
-        List all collections that belong to your organization with optional search filtering.
+        Retrieve all collections belonging to your organization.
 
-        Collections are always sorted by creation date (newest first).
+        Collections are containers that group related data from one or more source
+        connections, enabling unified search across multiple data sources.
+
+        Results are sorted by creation date (newest first) and support pagination
+        and text search filtering.
 
         Parameters
         ----------
@@ -54,7 +58,7 @@ class CollectionsClient:
             Maximum number of collections to return (1-1000)
 
         search : typing.Optional[str]
-            Search term to filter by name or readable_id
+            Search term to filter collections by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -69,14 +73,12 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.list(
-            skip=1,
-            limit=1,
-            search="search",
+            skip=0,
+            limit=100,
+            search="customer",
         )
         """
         _response = self._raw_client.list(skip=skip, limit=limit, search=search, request_options=request_options)
@@ -91,10 +93,16 @@ class CollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Collection:
         """
-        Create a new collection.
+        Create a new collection in your organization.
 
-        The newly created collection is initially empty and does not contain any data
-        until you explicitly add source connections to it.
+        Collections are containers for organizing and searching across data from multiple
+        sources. After creation, add source connections to begin syncing data.
+
+        The collection will be assigned a unique `readable_id` based on the name you provide,
+        which is used in URLs and API calls. You can optionally configure:
+
+        - **Sync schedule**: How frequently to automatically sync data from all sources
+        - **Custom readable_id**: Provide your own identifier (must be unique and URL-safe)
 
         Parameters
         ----------
@@ -113,15 +121,13 @@ class CollectionsClient:
         Returns
         -------
         Collection
-            Successful Response
+            Created collection
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.create(
@@ -136,7 +142,11 @@ class CollectionsClient:
 
     def get(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
-        Retrieve a specific collection by its readable ID.
+        Retrieve details of a specific collection by its readable ID.
+
+        Returns the complete collection configuration including sync settings, status,
+        and metadata. Use this to check the current state of a collection or to get
+        configuration details before making updates.
 
         Parameters
         ----------
@@ -149,19 +159,17 @@ class CollectionsClient:
         Returns
         -------
         Collection
-            Successful Response
+            Collection details
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.get(
-            readable_id="readable_id",
+            readable_id="customer-support-tickets-x7k9m",
         )
         """
         _response = self._raw_client.get(readable_id, request_options=request_options)
@@ -169,11 +177,15 @@ class CollectionsClient:
 
     def delete(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
-        Delete a collection and all associated data.
+        Permanently delete a collection and all associated data.
 
-        Permanently removes a collection from your organization including all synced data
-        from the destination systems. All source connections within this collection
-        will also be deleted as part of the cleanup process. This action cannot be undone.
+        This operation:
+        - Removes all synced data from the vector database
+        - Deletes all source connections within the collection
+        - Cancels any scheduled sync jobs
+        - Cleans up all related resources
+
+        **Warning**: This action cannot be undone. All data will be permanently deleted.
 
         Parameters
         ----------
@@ -186,34 +198,87 @@ class CollectionsClient:
         Returns
         -------
         Collection
-            Successful Response
+            Deleted collection
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.delete(
-            readable_id="readable_id",
+            readable_id="customer-support-tickets-x7k9m",
         )
         """
         _response = self._raw_client.delete(readable_id, request_options=request_options)
+        return _response.data
+
+    def update(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        sync_config: typing.Optional[SyncConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Collection:
+        """
+        Update an existing collection's properties.
+
+        You can modify:
+        - **Name**: The display name shown in the UI
+        - **Sync configuration**: Schedule settings for automatic data synchronization
+
+        Note that the `readable_id` cannot be changed after creation to maintain stable
+        API endpoints and preserve existing integrations.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        sync_config : typing.Optional[SyncConfig]
+            Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Collection
+            Updated collection
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.collections.update(
+            readable_id="customer-support-tickets-x7k9m",
+            name="Updated Finance Data",
+        )
+        """
+        _response = self._raw_client.update(
+            readable_id, name=name, sync_config=sync_config, request_options=request_options
+        )
         return _response.data
 
     def refresh_all_source_connections(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionJob]:
         """
-        Trigger data synchronization for all source connections in the collection.
+        Trigger data synchronization for all source connections in a collection.
 
-        The sync jobs run asynchronously in the background, so this endpoint
-        returns immediately with job details that you can use to track progress. You can
-        monitor the status of individual data synchronization using the source connection
-        endpoints.
+        Starts sync jobs for every source connection in the collection, pulling the latest
+        data from each connected source. Jobs run asynchronously in the background.
+
+        Returns a list of sync jobs that were created. Use the source connection endpoints
+        to monitor the progress and status of individual sync jobs.
 
         Parameters
         ----------
@@ -233,12 +298,10 @@ class CollectionsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.refresh_all_source_connections(
-            readable_id="readable_id",
+            readable_id="customer-support-tickets-x7k9m",
         )
         """
         _response = self._raw_client.refresh_all_source_connections(readable_id, request_options=request_options)
@@ -256,10 +319,14 @@ class CollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> LegacySearchResponse:
         """
-        Legacy GET search endpoint for backwards compatibility.
+        **DEPRECATED**: Use POST /collections/{readable_id}/search instead.
 
-        DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
-        SearchRequest format for access to all features.
+        This legacy GET endpoint provides basic search functionality via query parameters.
+        Migrate to the POST endpoint for access to advanced features like:
+        - Structured filters
+        - Query expansion
+        - Reranking
+        - Streaming responses
 
         Parameters
         ----------
@@ -279,7 +346,7 @@ class CollectionsClient:
             Number of results to skip for pagination
 
         recency_bias : typing.Optional[float]
-            How much to weigh recency vs similarity (0..1)
+            How much to weigh recency vs similarity (0=similarity only, 1=recency only)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -287,23 +354,21 @@ class CollectionsClient:
         Returns
         -------
         LegacySearchResponse
-            Successful Response
+            Search results
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.search_get_legacy(
-            readable_id="readable_id",
-            query="query",
+            readable_id="customer-support-tickets-x7k9m",
+            query="How do I reset my password?",
             response_type="raw",
-            limit=1,
-            offset=1,
+            limit=10,
+            offset=0,
             recency_bias=1.1,
         )
         """
@@ -324,17 +389,30 @@ class CollectionsClient:
         *,
         request: SearchCollectionsReadableIdSearchPostRequest,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> SearchCollectionsReadableIdSearchPostResponse:
+    ) -> SearchResponse:
         """
-        Search your collection.
+        Search your collection using semantic and hybrid search.
 
-        Accepts both new SearchRequest and legacy LegacySearchRequest formats
+        This is the primary search endpoint providing powerful AI-powered search capabilities:
+
+        **Search Strategies:**
+        - **hybrid** (default): Combines neural (semantic) and keyword (BM25) matching
+        - **neural**: Pure semantic search using embeddings
+        - **keyword**: Traditional keyword-based BM25 search
+
+        **Features:**
+        - **Query expansion**: Generate query variations to improve recall
+        - **Filter interpretation**: Extract structured filters from natural language
+        - **Reranking**: LLM-based reranking for improved relevance
+        - **Answer generation**: AI-generated answers based on search results
+
+        **Note**: Accepts both new SearchRequest and legacy LegacySearchRequest formats
         for backwards compatibility.
 
         Parameters
         ----------
         readable_id : str
-            The unique readable identifier of the collection
+            The unique readable identifier of the collection to search
 
         request : SearchCollectionsReadableIdSearchPostRequest
 
@@ -343,22 +421,20 @@ class CollectionsClient:
 
         Returns
         -------
-        SearchCollectionsReadableIdSearchPostResponse
-            Successful Response
+        SearchResponse
+            Search results with optional AI completion
 
         Examples
         --------
         from airweave import AirweaveSDK, SearchRequest
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.collections.search(
-            readable_id="readable_id",
+            readable_id="customer-support-tickets-x7k9m",
             request=SearchRequest(
-                query="query",
+                query="How do I reset my password?",
             ),
         )
         """
@@ -390,9 +466,13 @@ class AsyncCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.List[Collection]:
         """
-        List all collections that belong to your organization with optional search filtering.
+        Retrieve all collections belonging to your organization.
 
-        Collections are always sorted by creation date (newest first).
+        Collections are containers that group related data from one or more source
+        connections, enabling unified search across multiple data sources.
+
+        Results are sorted by creation date (newest first) and support pagination
+        and text search filtering.
 
         Parameters
         ----------
@@ -403,7 +483,7 @@ class AsyncCollectionsClient:
             Maximum number of collections to return (1-1000)
 
         search : typing.Optional[str]
-            Search term to filter by name or readable_id
+            Search term to filter collections by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -420,17 +500,15 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.collections.list(
-                skip=1,
-                limit=1,
-                search="search",
+                skip=0,
+                limit=100,
+                search="customer",
             )
 
 
@@ -448,10 +526,16 @@ class AsyncCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Collection:
         """
-        Create a new collection.
+        Create a new collection in your organization.
 
-        The newly created collection is initially empty and does not contain any data
-        until you explicitly add source connections to it.
+        Collections are containers for organizing and searching across data from multiple
+        sources. After creation, add source connections to begin syncing data.
+
+        The collection will be assigned a unique `readable_id` based on the name you provide,
+        which is used in URLs and API calls. You can optionally configure:
+
+        - **Sync schedule**: How frequently to automatically sync data from all sources
+        - **Custom readable_id**: Provide your own identifier (must be unique and URL-safe)
 
         Parameters
         ----------
@@ -470,7 +554,7 @@ class AsyncCollectionsClient:
         Returns
         -------
         Collection
-            Successful Response
+            Created collection
 
         Examples
         --------
@@ -479,8 +563,6 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -501,7 +583,11 @@ class AsyncCollectionsClient:
 
     async def get(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
-        Retrieve a specific collection by its readable ID.
+        Retrieve details of a specific collection by its readable ID.
+
+        Returns the complete collection configuration including sync settings, status,
+        and metadata. Use this to check the current state of a collection or to get
+        configuration details before making updates.
 
         Parameters
         ----------
@@ -514,7 +600,7 @@ class AsyncCollectionsClient:
         Returns
         -------
         Collection
-            Successful Response
+            Collection details
 
         Examples
         --------
@@ -523,15 +609,13 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.collections.get(
-                readable_id="readable_id",
+                readable_id="customer-support-tickets-x7k9m",
             )
 
 
@@ -542,11 +626,15 @@ class AsyncCollectionsClient:
 
     async def delete(self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> Collection:
         """
-        Delete a collection and all associated data.
+        Permanently delete a collection and all associated data.
 
-        Permanently removes a collection from your organization including all synced data
-        from the destination systems. All source connections within this collection
-        will also be deleted as part of the cleanup process. This action cannot be undone.
+        This operation:
+        - Removes all synced data from the vector database
+        - Deletes all source connections within the collection
+        - Cancels any scheduled sync jobs
+        - Cleans up all related resources
+
+        **Warning**: This action cannot be undone. All data will be permanently deleted.
 
         Parameters
         ----------
@@ -559,7 +647,7 @@ class AsyncCollectionsClient:
         Returns
         -------
         Collection
-            Successful Response
+            Deleted collection
 
         Examples
         --------
@@ -568,15 +656,13 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.collections.delete(
-                readable_id="readable_id",
+                readable_id="customer-support-tickets-x7k9m",
             )
 
 
@@ -585,16 +671,79 @@ class AsyncCollectionsClient:
         _response = await self._raw_client.delete(readable_id, request_options=request_options)
         return _response.data
 
+    async def update(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        sync_config: typing.Optional[SyncConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Collection:
+        """
+        Update an existing collection's properties.
+
+        You can modify:
+        - **Name**: The display name shown in the UI
+        - **Sync configuration**: Schedule settings for automatic data synchronization
+
+        Note that the `readable_id` cannot be changed after creation to maintain stable
+        API endpoints and preserve existing integrations.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        sync_config : typing.Optional[SyncConfig]
+            Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Collection
+            Updated collection
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.collections.update(
+                readable_id="customer-support-tickets-x7k9m",
+                name="Updated Finance Data",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.update(
+            readable_id, name=name, sync_config=sync_config, request_options=request_options
+        )
+        return _response.data
+
     async def refresh_all_source_connections(
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> typing.List[SourceConnectionJob]:
         """
-        Trigger data synchronization for all source connections in the collection.
+        Trigger data synchronization for all source connections in a collection.
 
-        The sync jobs run asynchronously in the background, so this endpoint
-        returns immediately with job details that you can use to track progress. You can
-        monitor the status of individual data synchronization using the source connection
-        endpoints.
+        Starts sync jobs for every source connection in the collection, pulling the latest
+        data from each connected source. Jobs run asynchronously in the background.
+
+        Returns a list of sync jobs that were created. Use the source connection endpoints
+        to monitor the progress and status of individual sync jobs.
 
         Parameters
         ----------
@@ -616,15 +765,13 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.collections.refresh_all_source_connections(
-                readable_id="readable_id",
+                readable_id="customer-support-tickets-x7k9m",
             )
 
 
@@ -645,10 +792,14 @@ class AsyncCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> LegacySearchResponse:
         """
-        Legacy GET search endpoint for backwards compatibility.
+        **DEPRECATED**: Use POST /collections/{readable_id}/search instead.
 
-        DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
-        SearchRequest format for access to all features.
+        This legacy GET endpoint provides basic search functionality via query parameters.
+        Migrate to the POST endpoint for access to advanced features like:
+        - Structured filters
+        - Query expansion
+        - Reranking
+        - Streaming responses
 
         Parameters
         ----------
@@ -668,7 +819,7 @@ class AsyncCollectionsClient:
             Number of results to skip for pagination
 
         recency_bias : typing.Optional[float]
-            How much to weigh recency vs similarity (0..1)
+            How much to weigh recency vs similarity (0=similarity only, 1=recency only)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -676,7 +827,7 @@ class AsyncCollectionsClient:
         Returns
         -------
         LegacySearchResponse
-            Successful Response
+            Search results
 
         Examples
         --------
@@ -685,19 +836,17 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.collections.search_get_legacy(
-                readable_id="readable_id",
-                query="query",
+                readable_id="customer-support-tickets-x7k9m",
+                query="How do I reset my password?",
                 response_type="raw",
-                limit=1,
-                offset=1,
+                limit=10,
+                offset=0,
                 recency_bias=1.1,
             )
 
@@ -721,17 +870,30 @@ class AsyncCollectionsClient:
         *,
         request: SearchCollectionsReadableIdSearchPostRequest,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> SearchCollectionsReadableIdSearchPostResponse:
+    ) -> SearchResponse:
         """
-        Search your collection.
+        Search your collection using semantic and hybrid search.
 
-        Accepts both new SearchRequest and legacy LegacySearchRequest formats
+        This is the primary search endpoint providing powerful AI-powered search capabilities:
+
+        **Search Strategies:**
+        - **hybrid** (default): Combines neural (semantic) and keyword (BM25) matching
+        - **neural**: Pure semantic search using embeddings
+        - **keyword**: Traditional keyword-based BM25 search
+
+        **Features:**
+        - **Query expansion**: Generate query variations to improve recall
+        - **Filter interpretation**: Extract structured filters from natural language
+        - **Reranking**: LLM-based reranking for improved relevance
+        - **Answer generation**: AI-generated answers based on search results
+
+        **Note**: Accepts both new SearchRequest and legacy LegacySearchRequest formats
         for backwards compatibility.
 
         Parameters
         ----------
         readable_id : str
-            The unique readable identifier of the collection
+            The unique readable identifier of the collection to search
 
         request : SearchCollectionsReadableIdSearchPostRequest
 
@@ -740,8 +902,8 @@ class AsyncCollectionsClient:
 
         Returns
         -------
-        SearchCollectionsReadableIdSearchPostResponse
-            Successful Response
+        SearchResponse
+            Search results with optional AI completion
 
         Examples
         --------
@@ -750,17 +912,15 @@ class AsyncCollectionsClient:
         from airweave import AsyncAirweaveSDK, SearchRequest
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.collections.search(
-                readable_id="readable_id",
+                readable_id="customer-support-tickets-x7k9m",
                 request=SearchRequest(
-                    query="query",
+                    query="How do I reset my password?",
                 ),
             )
 

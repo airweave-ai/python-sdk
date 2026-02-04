@@ -10,15 +10,18 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from ..errors.not_found_error import NotFoundError
+from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.collection import Collection
-from ..types.http_validation_error import HttpValidationError
 from ..types.legacy_search_response import LegacySearchResponse
+from ..types.not_found_error_response import NotFoundErrorResponse
+from ..types.rate_limit_error_response import RateLimitErrorResponse
 from ..types.response_type import ResponseType
+from ..types.search_response import SearchResponse
 from ..types.source_connection_job import SourceConnectionJob
 from ..types.sync_config import SyncConfig
 from .types.search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
-from .types.search_collections_readable_id_search_post_response import SearchCollectionsReadableIdSearchPostResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -37,9 +40,13 @@ class RawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[typing.List[Collection]]:
         """
-        List all collections that belong to your organization with optional search filtering.
+        Retrieve all collections belonging to your organization.
 
-        Collections are always sorted by creation date (newest first).
+        Collections are containers that group related data from one or more source
+        connections, enabling unified search across multiple data sources.
+
+        Results are sorted by creation date (newest first) and support pagination
+        and text search filtering.
 
         Parameters
         ----------
@@ -50,7 +57,7 @@ class RawCollectionsClient:
             Maximum number of collections to return (1-1000)
 
         search : typing.Optional[str]
-            Search term to filter by name or readable_id
+            Search term to filter collections by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -84,9 +91,20 @@ class RawCollectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -105,10 +123,16 @@ class RawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[Collection]:
         """
-        Create a new collection.
+        Create a new collection in your organization.
 
-        The newly created collection is initially empty and does not contain any data
-        until you explicitly add source connections to it.
+        Collections are containers for organizing and searching across data from multiple
+        sources. After creation, add source connections to begin syncing data.
+
+        The collection will be assigned a unique `readable_id` based on the name you provide,
+        which is used in URLs and API calls. You can optionally configure:
+
+        - **Sync schedule**: How frequently to automatically sync data from all sources
+        - **Custom readable_id**: Provide your own identifier (must be unique and URL-safe)
 
         Parameters
         ----------
@@ -127,7 +151,7 @@ class RawCollectionsClient:
         Returns
         -------
         HttpResponse[Collection]
-            Successful Response
+            Created collection
         """
         _response = self._client_wrapper.httpx_client.request(
             "collections",
@@ -159,9 +183,20 @@ class RawCollectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -175,7 +210,11 @@ class RawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[Collection]:
         """
-        Retrieve a specific collection by its readable ID.
+        Retrieve details of a specific collection by its readable ID.
+
+        Returns the complete collection configuration including sync settings, status,
+        and metadata. Use this to check the current state of a collection or to get
+        configuration details before making updates.
 
         Parameters
         ----------
@@ -188,7 +227,7 @@ class RawCollectionsClient:
         Returns
         -------
         HttpResponse[Collection]
-            Successful Response
+            Collection details
         """
         _response = self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}",
@@ -205,13 +244,35 @@ class RawCollectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -225,11 +286,15 @@ class RawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[Collection]:
         """
-        Delete a collection and all associated data.
+        Permanently delete a collection and all associated data.
 
-        Permanently removes a collection from your organization including all synced data
-        from the destination systems. All source connections within this collection
-        will also be deleted as part of the cleanup process. This action cannot be undone.
+        This operation:
+        - Removes all synced data from the vector database
+        - Deletes all source connections within the collection
+        - Cancels any scheduled sync jobs
+        - Cleans up all related resources
+
+        **Warning**: This action cannot be undone. All data will be permanently deleted.
 
         Parameters
         ----------
@@ -242,7 +307,7 @@ class RawCollectionsClient:
         Returns
         -------
         HttpResponse[Collection]
-            Successful Response
+            Deleted collection
         """
         _response = self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}",
@@ -259,13 +324,135 @@ class RawCollectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def update(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        sync_config: typing.Optional[SyncConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[Collection]:
+        """
+        Update an existing collection's properties.
+
+        You can modify:
+        - **Name**: The display name shown in the UI
+        - **Sync configuration**: Schedule settings for automatic data synchronization
+
+        Note that the `readable_id` cannot be changed after creation to maintain stable
+        API endpoints and preserve existing integrations.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        sync_config : typing.Optional[SyncConfig]
+            Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[Collection]
+            Updated collection
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "sync_config": convert_and_respect_annotation_metadata(
+                    object_=sync_config, annotation=SyncConfig, direction="write"
+                ),
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Collection,
+                    parse_obj_as(
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Optional[typing.Any],
+                        parse_obj_as(
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -279,12 +466,13 @@ class RawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[typing.List[SourceConnectionJob]]:
         """
-        Trigger data synchronization for all source connections in the collection.
+        Trigger data synchronization for all source connections in a collection.
 
-        The sync jobs run asynchronously in the background, so this endpoint
-        returns immediately with job details that you can use to track progress. You can
-        monitor the status of individual data synchronization using the source connection
-        endpoints.
+        Starts sync jobs for every source connection in the collection, pulling the latest
+        data from each connected source. Jobs run asynchronously in the background.
+
+        Returns a list of sync jobs that were created. Use the source connection endpoints
+        to monitor the progress and status of individual sync jobs.
 
         Parameters
         ----------
@@ -314,13 +502,35 @@ class RawCollectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -342,10 +552,14 @@ class RawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[LegacySearchResponse]:
         """
-        Legacy GET search endpoint for backwards compatibility.
+        **DEPRECATED**: Use POST /collections/{readable_id}/search instead.
 
-        DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
-        SearchRequest format for access to all features.
+        This legacy GET endpoint provides basic search functionality via query parameters.
+        Migrate to the POST endpoint for access to advanced features like:
+        - Structured filters
+        - Query expansion
+        - Reranking
+        - Streaming responses
 
         Parameters
         ----------
@@ -365,7 +579,7 @@ class RawCollectionsClient:
             Number of results to skip for pagination
 
         recency_bias : typing.Optional[float]
-            How much to weigh recency vs similarity (0..1)
+            How much to weigh recency vs similarity (0=similarity only, 1=recency only)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -373,7 +587,7 @@ class RawCollectionsClient:
         Returns
         -------
         HttpResponse[LegacySearchResponse]
-            Successful Response
+            Search results
         """
         _response = self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}/search",
@@ -397,13 +611,35 @@ class RawCollectionsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -419,17 +655,30 @@ class RawCollectionsClient:
         *,
         request: SearchCollectionsReadableIdSearchPostRequest,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[SearchCollectionsReadableIdSearchPostResponse]:
+    ) -> HttpResponse[SearchResponse]:
         """
-        Search your collection.
+        Search your collection using semantic and hybrid search.
 
-        Accepts both new SearchRequest and legacy LegacySearchRequest formats
+        This is the primary search endpoint providing powerful AI-powered search capabilities:
+
+        **Search Strategies:**
+        - **hybrid** (default): Combines neural (semantic) and keyword (BM25) matching
+        - **neural**: Pure semantic search using embeddings
+        - **keyword**: Traditional keyword-based BM25 search
+
+        **Features:**
+        - **Query expansion**: Generate query variations to improve recall
+        - **Filter interpretation**: Extract structured filters from natural language
+        - **Reranking**: LLM-based reranking for improved relevance
+        - **Answer generation**: AI-generated answers based on search results
+
+        **Note**: Accepts both new SearchRequest and legacy LegacySearchRequest formats
         for backwards compatibility.
 
         Parameters
         ----------
         readable_id : str
-            The unique readable identifier of the collection
+            The unique readable identifier of the collection to search
 
         request : SearchCollectionsReadableIdSearchPostRequest
 
@@ -438,8 +687,8 @@ class RawCollectionsClient:
 
         Returns
         -------
-        HttpResponse[SearchCollectionsReadableIdSearchPostResponse]
-            Successful Response
+        HttpResponse[SearchResponse]
+            Search results with optional AI completion
         """
         _response = self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}/search",
@@ -456,20 +705,42 @@ class RawCollectionsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    SearchCollectionsReadableIdSearchPostResponse,
+                    SearchResponse,
                     parse_obj_as(
-                        type_=SearchCollectionsReadableIdSearchPostResponse,  # type: ignore
+                        type_=SearchResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -493,9 +764,13 @@ class AsyncRawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[typing.List[Collection]]:
         """
-        List all collections that belong to your organization with optional search filtering.
+        Retrieve all collections belonging to your organization.
 
-        Collections are always sorted by creation date (newest first).
+        Collections are containers that group related data from one or more source
+        connections, enabling unified search across multiple data sources.
+
+        Results are sorted by creation date (newest first) and support pagination
+        and text search filtering.
 
         Parameters
         ----------
@@ -506,7 +781,7 @@ class AsyncRawCollectionsClient:
             Maximum number of collections to return (1-1000)
 
         search : typing.Optional[str]
-            Search term to filter by name or readable_id
+            Search term to filter collections by name or readable_id
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -540,9 +815,20 @@ class AsyncRawCollectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -561,10 +847,16 @@ class AsyncRawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[Collection]:
         """
-        Create a new collection.
+        Create a new collection in your organization.
 
-        The newly created collection is initially empty and does not contain any data
-        until you explicitly add source connections to it.
+        Collections are containers for organizing and searching across data from multiple
+        sources. After creation, add source connections to begin syncing data.
+
+        The collection will be assigned a unique `readable_id` based on the name you provide,
+        which is used in URLs and API calls. You can optionally configure:
+
+        - **Sync schedule**: How frequently to automatically sync data from all sources
+        - **Custom readable_id**: Provide your own identifier (must be unique and URL-safe)
 
         Parameters
         ----------
@@ -583,7 +875,7 @@ class AsyncRawCollectionsClient:
         Returns
         -------
         AsyncHttpResponse[Collection]
-            Successful Response
+            Created collection
         """
         _response = await self._client_wrapper.httpx_client.request(
             "collections",
@@ -615,9 +907,20 @@ class AsyncRawCollectionsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -631,7 +934,11 @@ class AsyncRawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Collection]:
         """
-        Retrieve a specific collection by its readable ID.
+        Retrieve details of a specific collection by its readable ID.
+
+        Returns the complete collection configuration including sync settings, status,
+        and metadata. Use this to check the current state of a collection or to get
+        configuration details before making updates.
 
         Parameters
         ----------
@@ -644,7 +951,7 @@ class AsyncRawCollectionsClient:
         Returns
         -------
         AsyncHttpResponse[Collection]
-            Successful Response
+            Collection details
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}",
@@ -661,13 +968,35 @@ class AsyncRawCollectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -681,11 +1010,15 @@ class AsyncRawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Collection]:
         """
-        Delete a collection and all associated data.
+        Permanently delete a collection and all associated data.
 
-        Permanently removes a collection from your organization including all synced data
-        from the destination systems. All source connections within this collection
-        will also be deleted as part of the cleanup process. This action cannot be undone.
+        This operation:
+        - Removes all synced data from the vector database
+        - Deletes all source connections within the collection
+        - Cancels any scheduled sync jobs
+        - Cleans up all related resources
+
+        **Warning**: This action cannot be undone. All data will be permanently deleted.
 
         Parameters
         ----------
@@ -698,7 +1031,7 @@ class AsyncRawCollectionsClient:
         Returns
         -------
         AsyncHttpResponse[Collection]
-            Successful Response
+            Deleted collection
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}",
@@ -715,13 +1048,135 @@ class AsyncRawCollectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def update(
+        self,
+        readable_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        sync_config: typing.Optional[SyncConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[Collection]:
+        """
+        Update an existing collection's properties.
+
+        You can modify:
+        - **Name**: The display name shown in the UI
+        - **Sync configuration**: Schedule settings for automatic data synchronization
+
+        Note that the `readable_id` cannot be changed after creation to maintain stable
+        API endpoints and preserve existing integrations.
+
+        Parameters
+        ----------
+        readable_id : str
+            The unique readable identifier of the collection to update
+
+        name : typing.Optional[str]
+            Updated display name for the collection. Must be between 4 and 64 characters.
+
+        sync_config : typing.Optional[SyncConfig]
+            Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Collection]
+            Updated collection
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"collections/{jsonable_encoder(readable_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "sync_config": convert_and_respect_annotation_metadata(
+                    object_=sync_config, annotation=SyncConfig, direction="write"
+                ),
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Collection,
+                    parse_obj_as(
+                        type_=Collection,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        typing.Optional[typing.Any],
+                        parse_obj_as(
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -735,12 +1190,13 @@ class AsyncRawCollectionsClient:
         self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[typing.List[SourceConnectionJob]]:
         """
-        Trigger data synchronization for all source connections in the collection.
+        Trigger data synchronization for all source connections in a collection.
 
-        The sync jobs run asynchronously in the background, so this endpoint
-        returns immediately with job details that you can use to track progress. You can
-        monitor the status of individual data synchronization using the source connection
-        endpoints.
+        Starts sync jobs for every source connection in the collection, pulling the latest
+        data from each connected source. Jobs run asynchronously in the background.
+
+        Returns a list of sync jobs that were created. Use the source connection endpoints
+        to monitor the progress and status of individual sync jobs.
 
         Parameters
         ----------
@@ -770,13 +1226,35 @@ class AsyncRawCollectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -798,10 +1276,14 @@ class AsyncRawCollectionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[LegacySearchResponse]:
         """
-        Legacy GET search endpoint for backwards compatibility.
+        **DEPRECATED**: Use POST /collections/{readable_id}/search instead.
 
-        DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
-        SearchRequest format for access to all features.
+        This legacy GET endpoint provides basic search functionality via query parameters.
+        Migrate to the POST endpoint for access to advanced features like:
+        - Structured filters
+        - Query expansion
+        - Reranking
+        - Streaming responses
 
         Parameters
         ----------
@@ -821,7 +1303,7 @@ class AsyncRawCollectionsClient:
             Number of results to skip for pagination
 
         recency_bias : typing.Optional[float]
-            How much to weigh recency vs similarity (0..1)
+            How much to weigh recency vs similarity (0=similarity only, 1=recency only)
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -829,7 +1311,7 @@ class AsyncRawCollectionsClient:
         Returns
         -------
         AsyncHttpResponse[LegacySearchResponse]
-            Successful Response
+            Search results
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}/search",
@@ -853,13 +1335,35 @@ class AsyncRawCollectionsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -875,17 +1379,30 @@ class AsyncRawCollectionsClient:
         *,
         request: SearchCollectionsReadableIdSearchPostRequest,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[SearchCollectionsReadableIdSearchPostResponse]:
+    ) -> AsyncHttpResponse[SearchResponse]:
         """
-        Search your collection.
+        Search your collection using semantic and hybrid search.
 
-        Accepts both new SearchRequest and legacy LegacySearchRequest formats
+        This is the primary search endpoint providing powerful AI-powered search capabilities:
+
+        **Search Strategies:**
+        - **hybrid** (default): Combines neural (semantic) and keyword (BM25) matching
+        - **neural**: Pure semantic search using embeddings
+        - **keyword**: Traditional keyword-based BM25 search
+
+        **Features:**
+        - **Query expansion**: Generate query variations to improve recall
+        - **Filter interpretation**: Extract structured filters from natural language
+        - **Reranking**: LLM-based reranking for improved relevance
+        - **Answer generation**: AI-generated answers based on search results
+
+        **Note**: Accepts both new SearchRequest and legacy LegacySearchRequest formats
         for backwards compatibility.
 
         Parameters
         ----------
         readable_id : str
-            The unique readable identifier of the collection
+            The unique readable identifier of the collection to search
 
         request : SearchCollectionsReadableIdSearchPostRequest
 
@@ -894,8 +1411,8 @@ class AsyncRawCollectionsClient:
 
         Returns
         -------
-        AsyncHttpResponse[SearchCollectionsReadableIdSearchPostResponse]
-            Successful Response
+        AsyncHttpResponse[SearchResponse]
+            Search results with optional AI completion
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"collections/{jsonable_encoder(readable_id)}/search",
@@ -912,20 +1429,42 @@ class AsyncRawCollectionsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    SearchCollectionsReadableIdSearchPostResponse,
+                    SearchResponse,
                     parse_obj_as(
-                        type_=SearchCollectionsReadableIdSearchPostResponse,  # type: ignore
+                        type_=SearchResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),

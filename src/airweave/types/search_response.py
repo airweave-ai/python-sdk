@@ -8,17 +8,20 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 class SearchResponse(UniversalBaseModel):
     """
-    Comprehensive search response containing results and metadata.
+    Search response containing results and optional AI-generated completion.
+
+    Each result includes the matched entity's content, metadata, relevance score,
+    and source information.
     """
 
     results: typing.List[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field()
     """
-    Array of search result objects containing the found documents, records, or data entities.
+    Array of search result objects containing the found documents, records, or data entities. Each result includes entity_id, source_name, md_content, metadata, score, breadcrumbs, and url.
     """
 
     completion: typing.Optional[str] = pydantic.Field(default=None)
     """
-    This provides natural language answers to your query based on the content found across your connected data sources when generate_answer is true.
+    AI-generated natural language answer to your query based on the search results. Only included when generate_answer is true in the request.
     """
 
     if IS_PYDANTIC_V2:

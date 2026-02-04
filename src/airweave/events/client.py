@@ -5,14 +5,11 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.enable_endpoint_request import EnableEndpointRequest
-from ..types.endpoint_out import EndpointOut
-from ..types.endpoint_secret_out import EndpointSecretOut
+from ..types.event_message import EventMessage
+from ..types.event_message_with_attempts import EventMessageWithAttempts
 from ..types.event_type import EventType
-from ..types.message_attempt_out import MessageAttemptOut
-from ..types.message_out import MessageOut
-from ..types.recover_out import RecoverOut
-from ..types.subscription_with_attempts_out import SubscriptionWithAttemptsOut
+from ..types.recovery_task import RecoveryTask
+from ..types.webhook_subscription import WebhookSubscription
 from .raw_client import AsyncRawEventsClient, RawEventsClient
 
 # this is used as the default value for optional parameters
@@ -39,36 +36,35 @@ class EventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[MessageOut]:
+    ) -> typing.List[EventMessage]:
         """
-        Get event messages for the current organization.
+        Retrieve all event messages for your organization.
 
-        Args:
-            ctx: The API context containing organization info.
-            event_types: Optional list of event types to filter by.
+        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        to your subscribed endpoints. Each message contains the event type, payload data,
+        and delivery status information.
 
-        Returns:
-            List of event messages.
+        Use the `event_types` query parameter to filter messages by specific event types,
+        such as `sync.completed` or `sync.failed`.
 
         Parameters
         ----------
         event_types : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+            Filter messages by event type(s). Accepts multiple values, e.g., `?event_types=sync.completed&event_types=sync.failed`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[MessageOut]
-            Successful Response
+        typing.List[EventMessage]
+            List of event messages
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.get_messages()
@@ -76,95 +72,66 @@ class EventsClient:
         _response = self._raw_client.get_messages(event_types=event_types, request_options=request_options)
         return _response.data
 
-    def get_message(self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> MessageOut:
+    def get_message(
+        self,
+        message_id: str,
+        *,
+        include_attempts: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventMessageWithAttempts:
         """
-        Get a specific event message by ID.
+        Retrieve a specific event message by its ID.
 
-        Args:
-            message_id: The ID of the message to retrieve.
-            ctx: The API context containing organization info.
+        Returns the full message details including the event type, payload data,
+        timestamp, and delivery channel information. Use this to inspect the
+        exact payload that was sent to your webhook endpoints.
 
-        Returns:
-            The event message with its payload.
+        Use `include_attempts=true` to also retrieve delivery attempts for this message,
+        which include HTTP response codes, response bodies, and timestamps for debugging
+        delivery failures.
 
         Parameters
         ----------
         message_id : str
+            The unique identifier of the message to retrieve (UUID).
+
+        include_attempts : typing.Optional[bool]
+            Include delivery attempts for this message. Each attempt includes the HTTP response code, response body, and timestamp.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        MessageOut
-            Successful Response
+        EventMessageWithAttempts
+            Event message details
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.get_message(
-            message_id="message_id",
+            message_id="550e8400-e29b-41d4-a716-446655440000",
+            include_attempts=True,
         )
         """
-        _response = self._raw_client.get_message(message_id, request_options=request_options)
+        _response = self._raw_client.get_message(
+            message_id, include_attempts=include_attempts, request_options=request_options
+        )
         return _response.data
 
-    def get_message_attempts(
-        self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[MessageAttemptOut]:
+    def get_subscriptions(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[WebhookSubscription]:
         """
-        Get delivery attempts for a specific message.
+        List all webhook subscriptions for your organization.
 
-        Args:
-            message_id: The ID of the message.
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of delivery attempts for this message.
-
-        Parameters
-        ----------
-        message_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[MessageAttemptOut]
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
-            api_key="YOUR_API_KEY",
-        )
-        client.events.get_message_attempts(
-            message_id="message_id",
-        )
-        """
-        _response = self._raw_client.get_message_attempts(message_id, request_options=request_options)
-        return _response.data
-
-    def get_subscriptions(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[EndpointOut]:
-        """
-        Get all webhook subscriptions for the current organization.
-
-        Args:
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of webhook subscriptions.
+        Returns all configured webhook endpoints, including their URLs, subscribed
+        event types, and current status (enabled/disabled). Use this to audit
+        your webhook configuration or find a specific subscription.
 
         Parameters
         ----------
@@ -173,16 +140,14 @@ class EventsClient:
 
         Returns
         -------
-        typing.List[EndpointOut]
-            Successful Response
+        typing.List[WebhookSubscription]
+            List of webhook subscriptions
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.get_subscriptions()
@@ -197,45 +162,49 @@ class EventsClient:
         event_types: typing.Sequence[EventType],
         secret: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> EndpointOut:
+    ) -> WebhookSubscription:
         """
         Create a new webhook subscription.
 
-        Args:
-            request: The subscription creation request.
-            ctx: The API context containing organization info.
+        Webhook subscriptions allow you to receive real-time notifications when events
+        occur in Airweave. When you create a subscription, you specify:
 
-        Returns:
-            The created subscription.
+        - **URL**: The HTTPS endpoint where events will be delivered
+        - **Event Types**: Which events you want to receive (e.g., `sync.completed`, `sync.failed`)
+        - **Secret** (optional): A custom signing secret for verifying webhook signatures
+
+        After creation, Airweave will send HTTP POST requests to your URL whenever
+        matching events occur. Each request includes a signature header for verification.
 
         Parameters
         ----------
         url : str
+            The HTTPS URL where webhook events will be delivered. Must be a publicly accessible endpoint that returns a 2xx status code.
 
         event_types : typing.Sequence[EventType]
+            List of event types to subscribe to. Events not in this list will not be delivered to this subscription. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`.
 
         secret : typing.Optional[str]
+            Optional custom signing secret for webhook signature verification. If not provided, a secure secret will be auto-generated. Must be at least 24 characters if specified.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        EndpointOut
-            Successful Response
+        WebhookSubscription
+            Created subscription
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.create_subscription(
-            url="url",
-            event_types=["sync.pending"],
+            url="https://api.mycompany.com/webhooks/airweave",
+            event_types=["sync.completed", "sync.failed"],
         )
         """
         _response = self._raw_client.create_subscription(
@@ -244,79 +213,89 @@ class EventsClient:
         return _response.data
 
     def get_subscription(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SubscriptionWithAttemptsOut:
+        self,
+        subscription_id: str,
+        *,
+        include_secret: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WebhookSubscription:
         """
-        Get a specific webhook subscription with its delivery attempts.
+        Retrieve a specific webhook subscription with its recent delivery attempts.
 
-        Args:
-            subscription_id: The ID of the subscription to retrieve.
-            ctx: The API context containing organization info.
+        Returns the subscription configuration along with a history of message delivery
+        attempts. This is useful for debugging delivery issues or verifying that your
+        endpoint is correctly receiving events.
 
-        Returns:
-            The subscription details with message delivery attempts.
+        Use `include_secret=true` to also retrieve the signing secret for webhook
+        signature verification. Keep this secret secure.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to retrieve (UUID).
+
+        include_secret : typing.Optional[bool]
+            Include the signing secret for webhook signature verification. Keep this secret secure and use it to verify the 'svix-signature' header.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        SubscriptionWithAttemptsOut
-            Successful Response
+        WebhookSubscription
+            Subscription with delivery attempts
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.get_subscription(
-            subscription_id="subscription_id",
+            subscription_id="550e8400-e29b-41d4-a716-446655440000",
+            include_secret=True,
         )
         """
-        _response = self._raw_client.get_subscription(subscription_id, request_options=request_options)
+        _response = self._raw_client.get_subscription(
+            subscription_id, include_secret=include_secret, request_options=request_options
+        )
         return _response.data
 
     def delete_subscription(
         self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.Optional[typing.Any]:
+    ) -> WebhookSubscription:
         """
-        Delete a webhook subscription.
+        Permanently delete a webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to delete.
-            ctx: The API context containing organization info.
+        Once deleted, Airweave will stop sending events to this endpoint immediately.
+        This action cannot be undone. Any pending message deliveries will be cancelled.
+
+        If you want to temporarily stop receiving events, consider disabling the
+        subscription instead using the PATCH endpoint.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to delete (UUID).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.Optional[typing.Any]
-            Successful Response
+        WebhookSubscription
+            Deleted subscription
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.delete_subscription(
-            subscription_id="subscription_id",
+            subscription_id="550e8400-e29b-41d4-a716-446655440000",
         )
         """
         _response = self._raw_client.delete_subscription(subscription_id, request_options=request_options)
@@ -329,145 +308,70 @@ class EventsClient:
         url: typing.Optional[str] = OMIT,
         event_types: typing.Optional[typing.Sequence[EventType]] = OMIT,
         disabled: typing.Optional[bool] = OMIT,
+        recover_since: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> EndpointOut:
+    ) -> WebhookSubscription:
         """
-        Update a webhook subscription.
+        Update an existing webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to update.
-            request: The subscription update request.
-            ctx: The API context containing organization info.
+        Use this endpoint to modify a subscription's configuration. You can:
 
-        Returns:
-            The updated subscription.
+        - **Change the URL**: Update where events are delivered
+        - **Update event types**: Modify which events trigger notifications
+        - **Enable/disable**: Temporarily pause delivery without deleting the subscription
+        - **Recover messages**: When re-enabling, optionally recover missed messages
+
+        Only include the fields you want to change. Omitted fields will retain their
+        current values.
+
+        When re-enabling a subscription (`disabled: false`), you can optionally provide
+        `recover_since` to automatically retry all messages that were generated while
+        the subscription was disabled.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to update (UUID).
 
         url : typing.Optional[str]
+            New URL for webhook delivery. Must be a publicly accessible HTTPS endpoint.
 
         event_types : typing.Optional[typing.Sequence[EventType]]
+            New list of event types to subscribe to. This replaces the existing list entirely.
 
         disabled : typing.Optional[bool]
+            Set to `true` to pause delivery to this subscription, or `false` to resume. Disabled subscriptions will not receive events.
+
+        recover_since : typing.Optional[dt.datetime]
+            When re-enabling a subscription (`disabled: false`), optionally recover failed messages from this timestamp. Only applies when enabling.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        EndpointOut
-            Successful Response
+        WebhookSubscription
+            Updated subscription
 
         Examples
         --------
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.patch_subscription(
-            subscription_id="subscription_id",
+            subscription_id="550e8400-e29b-41d4-a716-446655440000",
         )
         """
         _response = self._raw_client.patch_subscription(
-            subscription_id, url=url, event_types=event_types, disabled=disabled, request_options=request_options
+            subscription_id,
+            url=url,
+            event_types=event_types,
+            disabled=disabled,
+            recover_since=recover_since,
+            request_options=request_options,
         )
-        return _response.data
-
-    def enable_subscription(
-        self,
-        subscription_id: str,
-        *,
-        request: typing.Optional[EnableEndpointRequest] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> EndpointOut:
-        """
-        Enable a disabled webhook subscription, optionally recovering failed messages.
-
-        Args:
-            subscription_id: The ID of the subscription to enable.
-            request: Optional request with recovery time range.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The enabled subscription.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request : typing.Optional[EnableEndpointRequest]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        EndpointOut
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK, EnableEndpointRequest
-
-        client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
-            api_key="YOUR_API_KEY",
-        )
-        client.events.enable_subscription(
-            subscription_id="subscription_id",
-            request=EnableEndpointRequest(),
-        )
-        """
-        _response = self._raw_client.enable_subscription(
-            subscription_id, request=request, request_options=request_options
-        )
-        return _response.data
-
-    def get_subscription_secret(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> EndpointSecretOut:
-        """
-        Get the signing secret for a webhook subscription.
-
-        Args:
-            subscription_id: The ID of the subscription.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The subscription's signing secret.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        EndpointSecretOut
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
-            api_key="YOUR_API_KEY",
-        )
-        client.events.get_subscription_secret(
-            subscription_id="subscription_id",
-        )
-        """
-        _response = self._raw_client.get_subscription_secret(subscription_id, request_options=request_options)
         return _response.data
 
     def recover_failed_messages(
@@ -477,37 +381,38 @@ class EventsClient:
         since: dt.datetime,
         until: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> RecoverOut:
+    ) -> RecoveryTask:
         """
-        Recover (retry) failed messages for a webhook subscription.
+        Retry failed message deliveries for a webhook subscription.
 
-        This endpoint triggers a recovery of all failed messages since the specified
-        time. Useful after re-enabling a disabled endpoint to retry messages that
-        failed while the endpoint was down.
+        Triggers a recovery process that replays all failed messages within the
+        specified time window. This is useful when:
 
-        Args:
-            subscription_id: The ID of the subscription to recover messages for.
-            request: The recovery request with time range.
-            ctx: The API context containing organization info.
+        - Your endpoint was temporarily down and you want to catch up
+        - You've fixed a bug in your webhook handler
+        - You want to reprocess events after re-enabling a disabled subscription
 
-        Returns:
-            Information about the recovery task.
+        Messages are retried in chronological order. Successfully delivered messages
+        are skipped; only failed or pending messages are retried.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to recover messages for (UUID).
 
         since : dt.datetime
+            Start of the recovery time window (inclusive). All failed messages from this time onward will be retried.
 
         until : typing.Optional[dt.datetime]
+            End of the recovery time window (exclusive). If not specified, recovers all failed messages up to now.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        RecoverOut
-            Successful Response
+        RecoveryTask
+            Recovery task information
 
         Examples
         --------
@@ -516,14 +421,12 @@ class EventsClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.events.recover_failed_messages(
-            subscription_id="subscription_id",
+            subscription_id="550e8400-e29b-41d4-a716-446655440000",
             since=datetime.datetime.fromisoformat(
-                "2024-01-15 09:30:00+00:00",
+                "2024-03-14 00:00:00+00:00",
             ),
         )
         """
@@ -553,28 +456,29 @@ class AsyncEventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[MessageOut]:
+    ) -> typing.List[EventMessage]:
         """
-        Get event messages for the current organization.
+        Retrieve all event messages for your organization.
 
-        Args:
-            ctx: The API context containing organization info.
-            event_types: Optional list of event types to filter by.
+        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        to your subscribed endpoints. Each message contains the event type, payload data,
+        and delivery status information.
 
-        Returns:
-            List of event messages.
+        Use the `event_types` query parameter to filter messages by specific event types,
+        such as `sync.completed` or `sync.failed`.
 
         Parameters
         ----------
         event_types : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+            Filter messages by event type(s). Accepts multiple values, e.g., `?event_types=sync.completed&event_types=sync.failed`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.List[MessageOut]
-            Successful Response
+        typing.List[EventMessage]
+            List of event messages
 
         Examples
         --------
@@ -583,8 +487,6 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -599,29 +501,38 @@ class AsyncEventsClient:
         return _response.data
 
     async def get_message(
-        self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> MessageOut:
+        self,
+        message_id: str,
+        *,
+        include_attempts: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventMessageWithAttempts:
         """
-        Get a specific event message by ID.
+        Retrieve a specific event message by its ID.
 
-        Args:
-            message_id: The ID of the message to retrieve.
-            ctx: The API context containing organization info.
+        Returns the full message details including the event type, payload data,
+        timestamp, and delivery channel information. Use this to inspect the
+        exact payload that was sent to your webhook endpoints.
 
-        Returns:
-            The event message with its payload.
+        Use `include_attempts=true` to also retrieve delivery attempts for this message,
+        which include HTTP response codes, response bodies, and timestamps for debugging
+        delivery failures.
 
         Parameters
         ----------
         message_id : str
+            The unique identifier of the message to retrieve (UUID).
+
+        include_attempts : typing.Optional[bool]
+            Include delivery attempts for this message. Each attempt includes the HTTP response code, response body, and timestamp.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        MessageOut
-            Successful Response
+        EventMessageWithAttempts
+            Event message details
 
         Examples
         --------
@@ -630,83 +541,33 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.events.get_message(
-                message_id="message_id",
+                message_id="550e8400-e29b-41d4-a716-446655440000",
+                include_attempts=True,
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_message(message_id, request_options=request_options)
-        return _response.data
-
-    async def get_message_attempts(
-        self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[MessageAttemptOut]:
-        """
-        Get delivery attempts for a specific message.
-
-        Args:
-            message_id: The ID of the message.
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of delivery attempts for this message.
-
-        Parameters
-        ----------
-        message_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[MessageAttemptOut]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
-            api_key="YOUR_API_KEY",
+        _response = await self._raw_client.get_message(
+            message_id, include_attempts=include_attempts, request_options=request_options
         )
-
-
-        async def main() -> None:
-            await client.events.get_message_attempts(
-                message_id="message_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.get_message_attempts(message_id, request_options=request_options)
         return _response.data
 
     async def get_subscriptions(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[EndpointOut]:
+    ) -> typing.List[WebhookSubscription]:
         """
-        Get all webhook subscriptions for the current organization.
+        List all webhook subscriptions for your organization.
 
-        Args:
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of webhook subscriptions.
+        Returns all configured webhook endpoints, including their URLs, subscribed
+        event types, and current status (enabled/disabled). Use this to audit
+        your webhook configuration or find a specific subscription.
 
         Parameters
         ----------
@@ -715,8 +576,8 @@ class AsyncEventsClient:
 
         Returns
         -------
-        typing.List[EndpointOut]
-            Successful Response
+        typing.List[WebhookSubscription]
+            List of webhook subscriptions
 
         Examples
         --------
@@ -725,8 +586,6 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -747,32 +606,38 @@ class AsyncEventsClient:
         event_types: typing.Sequence[EventType],
         secret: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> EndpointOut:
+    ) -> WebhookSubscription:
         """
         Create a new webhook subscription.
 
-        Args:
-            request: The subscription creation request.
-            ctx: The API context containing organization info.
+        Webhook subscriptions allow you to receive real-time notifications when events
+        occur in Airweave. When you create a subscription, you specify:
 
-        Returns:
-            The created subscription.
+        - **URL**: The HTTPS endpoint where events will be delivered
+        - **Event Types**: Which events you want to receive (e.g., `sync.completed`, `sync.failed`)
+        - **Secret** (optional): A custom signing secret for verifying webhook signatures
+
+        After creation, Airweave will send HTTP POST requests to your URL whenever
+        matching events occur. Each request includes a signature header for verification.
 
         Parameters
         ----------
         url : str
+            The HTTPS URL where webhook events will be delivered. Must be a publicly accessible endpoint that returns a 2xx status code.
 
         event_types : typing.Sequence[EventType]
+            List of event types to subscribe to. Events not in this list will not be delivered to this subscription. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`.
 
         secret : typing.Optional[str]
+            Optional custom signing secret for webhook signature verification. If not provided, a secure secret will be auto-generated. Must be at least 24 characters if specified.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        EndpointOut
-            Successful Response
+        WebhookSubscription
+            Created subscription
 
         Examples
         --------
@@ -781,16 +646,14 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.events.create_subscription(
-                url="url",
-                event_types=["sync.pending"],
+                url="https://api.mycompany.com/webhooks/airweave",
+                event_types=["sync.completed", "sync.failed"],
             )
 
 
@@ -802,29 +665,37 @@ class AsyncEventsClient:
         return _response.data
 
     async def get_subscription(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> SubscriptionWithAttemptsOut:
+        self,
+        subscription_id: str,
+        *,
+        include_secret: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WebhookSubscription:
         """
-        Get a specific webhook subscription with its delivery attempts.
+        Retrieve a specific webhook subscription with its recent delivery attempts.
 
-        Args:
-            subscription_id: The ID of the subscription to retrieve.
-            ctx: The API context containing organization info.
+        Returns the subscription configuration along with a history of message delivery
+        attempts. This is useful for debugging delivery issues or verifying that your
+        endpoint is correctly receiving events.
 
-        Returns:
-            The subscription details with message delivery attempts.
+        Use `include_secret=true` to also retrieve the signing secret for webhook
+        signature verification. Keep this secret secure.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to retrieve (UUID).
+
+        include_secret : typing.Optional[bool]
+            Include the signing secret for webhook signature verification. Keep this secret secure and use it to verify the 'svix-signature' header.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        SubscriptionWithAttemptsOut
-            Successful Response
+        WebhookSubscription
+            Subscription with delivery attempts
 
         Examples
         --------
@@ -833,44 +704,48 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.events.get_subscription(
-                subscription_id="subscription_id",
+                subscription_id="550e8400-e29b-41d4-a716-446655440000",
+                include_secret=True,
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_subscription(subscription_id, request_options=request_options)
+        _response = await self._raw_client.get_subscription(
+            subscription_id, include_secret=include_secret, request_options=request_options
+        )
         return _response.data
 
     async def delete_subscription(
         self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.Optional[typing.Any]:
+    ) -> WebhookSubscription:
         """
-        Delete a webhook subscription.
+        Permanently delete a webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to delete.
-            ctx: The API context containing organization info.
+        Once deleted, Airweave will stop sending events to this endpoint immediately.
+        This action cannot be undone. Any pending message deliveries will be cancelled.
+
+        If you want to temporarily stop receiving events, consider disabling the
+        subscription instead using the PATCH endpoint.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to delete (UUID).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        typing.Optional[typing.Any]
-            Successful Response
+        WebhookSubscription
+            Deleted subscription
 
         Examples
         --------
@@ -879,15 +754,13 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.events.delete_subscription(
-                subscription_id="subscription_id",
+                subscription_id="550e8400-e29b-41d4-a716-446655440000",
             )
 
 
@@ -903,36 +776,50 @@ class AsyncEventsClient:
         url: typing.Optional[str] = OMIT,
         event_types: typing.Optional[typing.Sequence[EventType]] = OMIT,
         disabled: typing.Optional[bool] = OMIT,
+        recover_since: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> EndpointOut:
+    ) -> WebhookSubscription:
         """
-        Update a webhook subscription.
+        Update an existing webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to update.
-            request: The subscription update request.
-            ctx: The API context containing organization info.
+        Use this endpoint to modify a subscription's configuration. You can:
 
-        Returns:
-            The updated subscription.
+        - **Change the URL**: Update where events are delivered
+        - **Update event types**: Modify which events trigger notifications
+        - **Enable/disable**: Temporarily pause delivery without deleting the subscription
+        - **Recover messages**: When re-enabling, optionally recover missed messages
+
+        Only include the fields you want to change. Omitted fields will retain their
+        current values.
+
+        When re-enabling a subscription (`disabled: false`), you can optionally provide
+        `recover_since` to automatically retry all messages that were generated while
+        the subscription was disabled.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to update (UUID).
 
         url : typing.Optional[str]
+            New URL for webhook delivery. Must be a publicly accessible HTTPS endpoint.
 
         event_types : typing.Optional[typing.Sequence[EventType]]
+            New list of event types to subscribe to. This replaces the existing list entirely.
 
         disabled : typing.Optional[bool]
+            Set to `true` to pause delivery to this subscription, or `false` to resume. Disabled subscriptions will not receive events.
+
+        recover_since : typing.Optional[dt.datetime]
+            When re-enabling a subscription (`disabled: false`), optionally recover failed messages from this timestamp. Only applies when enabling.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        EndpointOut
-            Successful Response
+        WebhookSubscription
+            Updated subscription
 
         Examples
         --------
@@ -941,131 +828,26 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.events.patch_subscription(
-                subscription_id="subscription_id",
+                subscription_id="550e8400-e29b-41d4-a716-446655440000",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.patch_subscription(
-            subscription_id, url=url, event_types=event_types, disabled=disabled, request_options=request_options
+            subscription_id,
+            url=url,
+            event_types=event_types,
+            disabled=disabled,
+            recover_since=recover_since,
+            request_options=request_options,
         )
-        return _response.data
-
-    async def enable_subscription(
-        self,
-        subscription_id: str,
-        *,
-        request: typing.Optional[EnableEndpointRequest] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> EndpointOut:
-        """
-        Enable a disabled webhook subscription, optionally recovering failed messages.
-
-        Args:
-            subscription_id: The ID of the subscription to enable.
-            request: Optional request with recovery time range.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The enabled subscription.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request : typing.Optional[EnableEndpointRequest]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        EndpointOut
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK, EnableEndpointRequest
-
-        client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.events.enable_subscription(
-                subscription_id="subscription_id",
-                request=EnableEndpointRequest(),
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.enable_subscription(
-            subscription_id, request=request, request_options=request_options
-        )
-        return _response.data
-
-    async def get_subscription_secret(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> EndpointSecretOut:
-        """
-        Get the signing secret for a webhook subscription.
-
-        Args:
-            subscription_id: The ID of the subscription.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The subscription's signing secret.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        EndpointSecretOut
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.events.get_subscription_secret(
-                subscription_id="subscription_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.get_subscription_secret(subscription_id, request_options=request_options)
         return _response.data
 
     async def recover_failed_messages(
@@ -1075,37 +857,38 @@ class AsyncEventsClient:
         since: dt.datetime,
         until: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> RecoverOut:
+    ) -> RecoveryTask:
         """
-        Recover (retry) failed messages for a webhook subscription.
+        Retry failed message deliveries for a webhook subscription.
 
-        This endpoint triggers a recovery of all failed messages since the specified
-        time. Useful after re-enabling a disabled endpoint to retry messages that
-        failed while the endpoint was down.
+        Triggers a recovery process that replays all failed messages within the
+        specified time window. This is useful when:
 
-        Args:
-            subscription_id: The ID of the subscription to recover messages for.
-            request: The recovery request with time range.
-            ctx: The API context containing organization info.
+        - Your endpoint was temporarily down and you want to catch up
+        - You've fixed a bug in your webhook handler
+        - You want to reprocess events after re-enabling a disabled subscription
 
-        Returns:
-            Information about the recovery task.
+        Messages are retried in chronological order. Successfully delivered messages
+        are skipped; only failed or pending messages are retried.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to recover messages for (UUID).
 
         since : dt.datetime
+            Start of the recovery time window (inclusive). All failed messages from this time onward will be retried.
 
         until : typing.Optional[dt.datetime]
+            End of the recovery time window (exclusive). If not specified, recovers all failed messages up to now.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        RecoverOut
-            Successful Response
+        RecoveryTask
+            Recovery task information
 
         Examples
         --------
@@ -1115,17 +898,15 @@ class AsyncEventsClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.events.recover_failed_messages(
-                subscription_id="subscription_id",
+                subscription_id="550e8400-e29b-41d4-a716-446655440000",
                 since=datetime.datetime.fromisoformat(
-                    "2024-01-15 09:30:00+00:00",
+                    "2024-03-14 00:00:00+00:00",
                 ),
             )
 

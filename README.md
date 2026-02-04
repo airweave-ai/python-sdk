@@ -37,8 +37,6 @@ Instantiate and use the client with the following:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.create(
@@ -57,8 +55,6 @@ import asyncio
 from airweave import AsyncAirweaveSDK
 
 client = AsyncAirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 

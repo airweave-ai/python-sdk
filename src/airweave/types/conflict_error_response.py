@@ -4,17 +4,20 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .endpoint_out import EndpointOut
-from .message_attempt_out import MessageAttemptOut
 
 
-class SubscriptionWithAttemptsOut(UniversalBaseModel):
+class ConflictErrorResponse(UniversalBaseModel):
     """
-    Response model for a subscription with its message attempts.
+    Response returned when a resource conflict occurs (HTTP 409).
+
+    This typically occurs when attempting to create a resource that already exists,
+    or when an operation cannot be completed due to the current state of a resource.
     """
 
-    endpoint: EndpointOut
-    message_attempts: typing.List[MessageAttemptOut]
+    detail: str = pydantic.Field()
+    """
+    Error message describing the conflict
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

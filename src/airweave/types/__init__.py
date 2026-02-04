@@ -19,8 +19,6 @@ if typing.TYPE_CHECKING:
     from .auth_provider_connection_update import AuthProviderConnectionUpdate
     from .authentication_details import AuthenticationDetails
     from .authentication_method import AuthenticationMethod
-    from .background_task_status import BackgroundTaskStatus
-    from .background_task_type import BackgroundTaskType
     from .behavior_config import BehaviorConfig
     from .billing_period import BillingPeriod
     from .billing_period_status import BillingPeriodStatus
@@ -38,23 +36,21 @@ if typing.TYPE_CHECKING:
     from .checkout_session_response import CheckoutSessionResponse
     from .collection import Collection
     from .collection_status import CollectionStatus
-    from .collection_update import CollectionUpdate
     from .config_field import ConfigField
     from .config_values import ConfigValues
+    from .conflict_error_response import ConflictErrorResponse
     from .connection import Connection
     from .connection_status import ConnectionStatus
     from .cursor_config import CursorConfig
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
+    from .delivery_attempt import DeliveryAttempt
     from .destination import Destination
     from .destination_config import DestinationConfig
     from .destination_with_authentication_fields import DestinationWithAuthenticationFields
     from .direct_authentication import DirectAuthentication
     from .embedding_model import EmbeddingModel
     from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
-    from .enable_endpoint_request import EnableEndpointRequest
-    from .endpoint_out import EndpointOut
-    from .endpoint_secret_out import EndpointSecretOut
     from .entity_count import EntityCount
     from .entity_count_with_definition import EntityCountWithDefinition
     from .entity_definition import EntityDefinition
@@ -64,6 +60,8 @@ if typing.TYPE_CHECKING:
     from .entity_summary import EntitySummary
     from .entity_type import EntityType
     from .entity_type_stats import EntityTypeStats
+    from .event_message import EventMessage
+    from .event_message_with_attempts import EventMessageWithAttempts
     from .event_type import EventType
     from .feature_flag import FeatureFlag
     from .fields import Fields
@@ -78,13 +76,9 @@ if typing.TYPE_CHECKING:
     from .legacy_search_request_search_method import LegacySearchRequestSearchMethod
     from .legacy_search_response import LegacySearchResponse
     from .member_response import MemberResponse
-    from .message_attempt_out import MessageAttemptOut
-    from .message_attempt_trigger_type import MessageAttemptTriggerType
-    from .message_out import MessageOut
     from .message_response import MessageResponse
-    from .message_status import MessageStatus
-    from .message_status_text import MessageStatusText
     from .minute_level_schedule_config import MinuteLevelScheduleConfig
+    from .not_found_error_response import NotFoundErrorResponse
     from .o_auth_browser_authentication import OAuthBrowserAuthentication
     from .o_auth_token_authentication import OAuthTokenAuthentication
     from .o_auth_type import OAuthType
@@ -94,7 +88,8 @@ if typing.TYPE_CHECKING:
     from .organization_metrics import OrganizationMetrics
     from .organization_with_role import OrganizationWithRole
     from .query_expansion_strategy import QueryExpansionStrategy
-    from .recover_out import RecoverOut
+    from .rate_limit_error_response import RateLimitErrorResponse
+    from .recovery_task import RecoveryTask
     from .response_type import ResponseType
     from .retrieval_strategy import RetrievalStrategy
     from .s_3_config_request import S3ConfigRequest
@@ -116,11 +111,11 @@ if typing.TYPE_CHECKING:
     from .source_rate_limit_response import SourceRateLimitResponse
     from .source_rate_limit_update_request import SourceRateLimitUpdateRequest
     from .subscription_info import SubscriptionInfo
-    from .subscription_with_attempts_out import SubscriptionWithAttemptsOut
     from .sync import Sync
     from .sync_config import SyncConfig
     from .sync_create import SyncCreate
     from .sync_details import SyncDetails
+    from .sync_event_payload import SyncEventPayload
     from .sync_job import SyncJob
     from .sync_job_details import SyncJobDetails
     from .sync_job_status import SyncJobStatus
@@ -137,7 +132,10 @@ if typing.TYPE_CHECKING:
     from .user_create import UserCreate
     from .user_organization import UserOrganization
     from .validation_error import ValidationError
+    from .validation_error_detail import ValidationErrorDetail
     from .validation_error_loc_item import ValidationErrorLocItem
+    from .validation_error_response import ValidationErrorResponse
+    from .webhook_subscription import WebhookSubscription
 _dynamic_imports: typing.Dict[str, str] = {
     "ActionCheckRequest": ".action_check_request",
     "ActionCheckResponse": ".action_check_response",
@@ -152,8 +150,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AuthProviderConnectionUpdate": ".auth_provider_connection_update",
     "AuthenticationDetails": ".authentication_details",
     "AuthenticationMethod": ".authentication_method",
-    "BackgroundTaskStatus": ".background_task_status",
-    "BackgroundTaskType": ".background_task_type",
     "BehaviorConfig": ".behavior_config",
     "BillingPeriod": ".billing_period",
     "BillingPeriodStatus": ".billing_period_status",
@@ -167,23 +163,21 @@ _dynamic_imports: typing.Dict[str, str] = {
     "CheckoutSessionResponse": ".checkout_session_response",
     "Collection": ".collection",
     "CollectionStatus": ".collection_status",
-    "CollectionUpdate": ".collection_update",
     "ConfigField": ".config_field",
     "ConfigValues": ".config_values",
+    "ConflictErrorResponse": ".conflict_error_response",
     "Connection": ".connection",
     "ConnectionStatus": ".connection_status",
     "CursorConfig": ".cursor_config",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
+    "DeliveryAttempt": ".delivery_attempt",
     "Destination": ".destination",
     "DestinationConfig": ".destination_config",
     "DestinationWithAuthenticationFields": ".destination_with_authentication_fields",
     "DirectAuthentication": ".direct_authentication",
     "EmbeddingModel": ".embedding_model",
     "EmbeddingModelWithAuthenticationFields": ".embedding_model_with_authentication_fields",
-    "EnableEndpointRequest": ".enable_endpoint_request",
-    "EndpointOut": ".endpoint_out",
-    "EndpointSecretOut": ".endpoint_secret_out",
     "EntityCount": ".entity_count",
     "EntityCountWithDefinition": ".entity_count_with_definition",
     "EntityDefinition": ".entity_definition",
@@ -193,6 +187,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntitySummary": ".entity_summary",
     "EntityType": ".entity_type",
     "EntityTypeStats": ".entity_type_stats",
+    "EventMessage": ".event_message",
+    "EventMessageWithAttempts": ".event_message_with_attempts",
     "EventType": ".event_type",
     "FeatureFlag": ".feature_flag",
     "Fields": ".fields",
@@ -207,13 +203,9 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LegacySearchRequestSearchMethod": ".legacy_search_request_search_method",
     "LegacySearchResponse": ".legacy_search_response",
     "MemberResponse": ".member_response",
-    "MessageAttemptOut": ".message_attempt_out",
-    "MessageAttemptTriggerType": ".message_attempt_trigger_type",
-    "MessageOut": ".message_out",
     "MessageResponse": ".message_response",
-    "MessageStatus": ".message_status",
-    "MessageStatusText": ".message_status_text",
     "MinuteLevelScheduleConfig": ".minute_level_schedule_config",
+    "NotFoundErrorResponse": ".not_found_error_response",
     "OAuthBrowserAuthentication": ".o_auth_browser_authentication",
     "OAuthTokenAuthentication": ".o_auth_token_authentication",
     "OAuthType": ".o_auth_type",
@@ -223,7 +215,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "OrganizationMetrics": ".organization_metrics",
     "OrganizationWithRole": ".organization_with_role",
     "QueryExpansionStrategy": ".query_expansion_strategy",
-    "RecoverOut": ".recover_out",
+    "RateLimitErrorResponse": ".rate_limit_error_response",
+    "RecoveryTask": ".recovery_task",
     "ResponseType": ".response_type",
     "RetrievalStrategy": ".retrieval_strategy",
     "S3ConfigRequest": ".s_3_config_request",
@@ -245,11 +238,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SourceRateLimitResponse": ".source_rate_limit_response",
     "SourceRateLimitUpdateRequest": ".source_rate_limit_update_request",
     "SubscriptionInfo": ".subscription_info",
-    "SubscriptionWithAttemptsOut": ".subscription_with_attempts_out",
     "Sync": ".sync",
     "SyncConfig": ".sync_config",
     "SyncCreate": ".sync_create",
     "SyncDetails": ".sync_details",
+    "SyncEventPayload": ".sync_event_payload",
     "SyncJob": ".sync_job",
     "SyncJobDetails": ".sync_job_details",
     "SyncJobStatus": ".sync_job_status",
@@ -266,7 +259,10 @@ _dynamic_imports: typing.Dict[str, str] = {
     "UserCreate": ".user_create",
     "UserOrganization": ".user_organization",
     "ValidationError": ".validation_error",
+    "ValidationErrorDetail": ".validation_error_detail",
     "ValidationErrorLocItem": ".validation_error_loc_item",
+    "ValidationErrorResponse": ".validation_error_response",
+    "WebhookSubscription": ".webhook_subscription",
 }
 
 
@@ -305,8 +301,6 @@ __all__ = [
     "AuthProviderConnectionUpdate",
     "AuthenticationDetails",
     "AuthenticationMethod",
-    "BackgroundTaskStatus",
-    "BackgroundTaskType",
     "BehaviorConfig",
     "BillingPeriod",
     "BillingPeriodStatus",
@@ -320,23 +314,21 @@ __all__ = [
     "CheckoutSessionResponse",
     "Collection",
     "CollectionStatus",
-    "CollectionUpdate",
     "ConfigField",
     "ConfigValues",
+    "ConflictErrorResponse",
     "Connection",
     "ConnectionStatus",
     "CursorConfig",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
+    "DeliveryAttempt",
     "Destination",
     "DestinationConfig",
     "DestinationWithAuthenticationFields",
     "DirectAuthentication",
     "EmbeddingModel",
     "EmbeddingModelWithAuthenticationFields",
-    "EnableEndpointRequest",
-    "EndpointOut",
-    "EndpointSecretOut",
     "EntityCount",
     "EntityCountWithDefinition",
     "EntityDefinition",
@@ -346,6 +338,8 @@ __all__ = [
     "EntitySummary",
     "EntityType",
     "EntityTypeStats",
+    "EventMessage",
+    "EventMessageWithAttempts",
     "EventType",
     "FeatureFlag",
     "Fields",
@@ -360,13 +354,9 @@ __all__ = [
     "LegacySearchRequestSearchMethod",
     "LegacySearchResponse",
     "MemberResponse",
-    "MessageAttemptOut",
-    "MessageAttemptTriggerType",
-    "MessageOut",
     "MessageResponse",
-    "MessageStatus",
-    "MessageStatusText",
     "MinuteLevelScheduleConfig",
+    "NotFoundErrorResponse",
     "OAuthBrowserAuthentication",
     "OAuthTokenAuthentication",
     "OAuthType",
@@ -376,7 +366,8 @@ __all__ = [
     "OrganizationMetrics",
     "OrganizationWithRole",
     "QueryExpansionStrategy",
-    "RecoverOut",
+    "RateLimitErrorResponse",
+    "RecoveryTask",
     "ResponseType",
     "RetrievalStrategy",
     "S3ConfigRequest",
@@ -398,11 +389,11 @@ __all__ = [
     "SourceRateLimitResponse",
     "SourceRateLimitUpdateRequest",
     "SubscriptionInfo",
-    "SubscriptionWithAttemptsOut",
     "Sync",
     "SyncConfig",
     "SyncCreate",
     "SyncDetails",
+    "SyncEventPayload",
     "SyncJob",
     "SyncJobDetails",
     "SyncJobStatus",
@@ -419,5 +410,8 @@ __all__ = [
     "UserCreate",
     "UserOrganization",
     "ValidationError",
+    "ValidationErrorDetail",
     "ValidationErrorLocItem",
+    "ValidationErrorResponse",
+    "WebhookSubscription",
 ]

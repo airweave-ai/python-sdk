@@ -10,17 +10,16 @@ from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
-from ..core.serialization import convert_and_respect_annotation_metadata
+from ..errors.not_found_error import NotFoundError
+from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
-from ..types.enable_endpoint_request import EnableEndpointRequest
-from ..types.endpoint_out import EndpointOut
-from ..types.endpoint_secret_out import EndpointSecretOut
+from ..types.event_message import EventMessage
+from ..types.event_message_with_attempts import EventMessageWithAttempts
 from ..types.event_type import EventType
-from ..types.http_validation_error import HttpValidationError
-from ..types.message_attempt_out import MessageAttemptOut
-from ..types.message_out import MessageOut
-from ..types.recover_out import RecoverOut
-from ..types.subscription_with_attempts_out import SubscriptionWithAttemptsOut
+from ..types.not_found_error_response import NotFoundErrorResponse
+from ..types.rate_limit_error_response import RateLimitErrorResponse
+from ..types.recovery_task import RecoveryTask
+from ..types.webhook_subscription import WebhookSubscription
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -35,28 +34,29 @@ class RawEventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[typing.List[MessageOut]]:
+    ) -> HttpResponse[typing.List[EventMessage]]:
         """
-        Get event messages for the current organization.
+        Retrieve all event messages for your organization.
 
-        Args:
-            ctx: The API context containing organization info.
-            event_types: Optional list of event types to filter by.
+        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        to your subscribed endpoints. Each message contains the event type, payload data,
+        and delivery status information.
 
-        Returns:
-            List of event messages.
+        Use the `event_types` query parameter to filter messages by specific event types,
+        such as `sync.completed` or `sync.failed`.
 
         Parameters
         ----------
         event_types : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+            Filter messages by event type(s). Accepts multiple values, e.g., `?event_types=sync.completed&event_types=sync.failed`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[typing.List[MessageOut]]
-            Successful Response
+        HttpResponse[typing.List[EventMessage]]
+            List of event messages
         """
         _response = self._client_wrapper.httpx_client.request(
             "events/messages",
@@ -69,9 +69,9 @@ class RawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[MessageOut],
+                    typing.List[EventMessage],
                     parse_obj_as(
-                        type_=typing.List[MessageOut],  # type: ignore
+                        type_=typing.List[EventMessage],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -80,9 +80,20 @@ class RawEventsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -93,108 +104,86 @@ class RawEventsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get_message(
-        self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[MessageOut]:
+        self,
+        message_id: str,
+        *,
+        include_attempts: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[EventMessageWithAttempts]:
         """
-        Get a specific event message by ID.
+        Retrieve a specific event message by its ID.
 
-        Args:
-            message_id: The ID of the message to retrieve.
-            ctx: The API context containing organization info.
+        Returns the full message details including the event type, payload data,
+        timestamp, and delivery channel information. Use this to inspect the
+        exact payload that was sent to your webhook endpoints.
 
-        Returns:
-            The event message with its payload.
+        Use `include_attempts=true` to also retrieve delivery attempts for this message,
+        which include HTTP response codes, response bodies, and timestamps for debugging
+        delivery failures.
 
         Parameters
         ----------
         message_id : str
+            The unique identifier of the message to retrieve (UUID).
+
+        include_attempts : typing.Optional[bool]
+            Include delivery attempts for this message. Each attempt includes the HTTP response code, response body, and timestamp.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[MessageOut]
-            Successful Response
+        HttpResponse[EventMessageWithAttempts]
+            Event message details
         """
         _response = self._client_wrapper.httpx_client.request(
             f"events/messages/{jsonable_encoder(message_id)}",
             method="GET",
+            params={
+                "include_attempts": include_attempts,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    MessageOut,
+                    EventMessageWithAttempts,
                     parse_obj_as(
-                        type_=MessageOut,  # type: ignore
+                        type_=EventMessageWithAttempts,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
+            if _response.status_code == 404:
+                raise NotFoundError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        NotFoundErrorResponse,
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=NotFoundErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def get_message_attempts(
-        self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.List[MessageAttemptOut]]:
-        """
-        Get delivery attempts for a specific message.
-
-        Args:
-            message_id: The ID of the message.
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of delivery attempts for this message.
-
-        Parameters
-        ----------
-        message_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[typing.List[MessageAttemptOut]]
-            Successful Response
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"events/messages/{jsonable_encoder(message_id)}/attempts",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    typing.List[MessageAttemptOut],
-                    parse_obj_as(
-                        type_=typing.List[MessageAttemptOut],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -206,15 +195,13 @@ class RawEventsClient:
 
     def get_subscriptions(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.List[EndpointOut]]:
+    ) -> HttpResponse[typing.List[WebhookSubscription]]:
         """
-        Get all webhook subscriptions for the current organization.
+        List all webhook subscriptions for your organization.
 
-        Args:
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of webhook subscriptions.
+        Returns all configured webhook endpoints, including their URLs, subscribed
+        event types, and current status (enabled/disabled). Use this to audit
+        your webhook configuration or find a specific subscription.
 
         Parameters
         ----------
@@ -223,8 +210,8 @@ class RawEventsClient:
 
         Returns
         -------
-        HttpResponse[typing.List[EndpointOut]]
-            Successful Response
+        HttpResponse[typing.List[WebhookSubscription]]
+            List of webhook subscriptions
         """
         _response = self._client_wrapper.httpx_client.request(
             "events/subscriptions",
@@ -234,9 +221,9 @@ class RawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[EndpointOut],
+                    typing.List[WebhookSubscription],
                     parse_obj_as(
-                        type_=typing.List[EndpointOut],  # type: ignore
+                        type_=typing.List[WebhookSubscription],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -245,9 +232,20 @@ class RawEventsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -264,32 +262,38 @@ class RawEventsClient:
         event_types: typing.Sequence[EventType],
         secret: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[EndpointOut]:
+    ) -> HttpResponse[WebhookSubscription]:
         """
         Create a new webhook subscription.
 
-        Args:
-            request: The subscription creation request.
-            ctx: The API context containing organization info.
+        Webhook subscriptions allow you to receive real-time notifications when events
+        occur in Airweave. When you create a subscription, you specify:
 
-        Returns:
-            The created subscription.
+        - **URL**: The HTTPS endpoint where events will be delivered
+        - **Event Types**: Which events you want to receive (e.g., `sync.completed`, `sync.failed`)
+        - **Secret** (optional): A custom signing secret for verifying webhook signatures
+
+        After creation, Airweave will send HTTP POST requests to your URL whenever
+        matching events occur. Each request includes a signature header for verification.
 
         Parameters
         ----------
         url : str
+            The HTTPS URL where webhook events will be delivered. Must be a publicly accessible endpoint that returns a 2xx status code.
 
         event_types : typing.Sequence[EventType]
+            List of event types to subscribe to. Events not in this list will not be delivered to this subscription. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`.
 
         secret : typing.Optional[str]
+            Optional custom signing secret for webhook signature verification. If not provided, a secure secret will be auto-generated. Must be at least 24 characters if specified.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[EndpointOut]
-            Successful Response
+        HttpResponse[WebhookSubscription]
+            Created subscription
         """
         _response = self._client_wrapper.httpx_client.request(
             "events/subscriptions",
@@ -308,9 +312,9 @@ class RawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    EndpointOut,
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=EndpointOut,  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -319,9 +323,20 @@ class RawEventsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -332,52 +347,85 @@ class RawEventsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get_subscription(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[SubscriptionWithAttemptsOut]:
+        self,
+        subscription_id: str,
+        *,
+        include_secret: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[WebhookSubscription]:
         """
-        Get a specific webhook subscription with its delivery attempts.
+        Retrieve a specific webhook subscription with its recent delivery attempts.
 
-        Args:
-            subscription_id: The ID of the subscription to retrieve.
-            ctx: The API context containing organization info.
+        Returns the subscription configuration along with a history of message delivery
+        attempts. This is useful for debugging delivery issues or verifying that your
+        endpoint is correctly receiving events.
 
-        Returns:
-            The subscription details with message delivery attempts.
+        Use `include_secret=true` to also retrieve the signing secret for webhook
+        signature verification. Keep this secret secure.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to retrieve (UUID).
+
+        include_secret : typing.Optional[bool]
+            Include the signing secret for webhook signature verification. Keep this secret secure and use it to verify the 'svix-signature' header.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[SubscriptionWithAttemptsOut]
-            Successful Response
+        HttpResponse[WebhookSubscription]
+            Subscription with delivery attempts
         """
         _response = self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}",
             method="GET",
+            params={
+                "include_secret": include_secret,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    SubscriptionWithAttemptsOut,
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=SubscriptionWithAttemptsOut,  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -389,25 +437,28 @@ class RawEventsClient:
 
     def delete_subscription(
         self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.Optional[typing.Any]]:
+    ) -> HttpResponse[WebhookSubscription]:
         """
-        Delete a webhook subscription.
+        Permanently delete a webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to delete.
-            ctx: The API context containing organization info.
+        Once deleted, Airweave will stop sending events to this endpoint immediately.
+        This action cannot be undone. Any pending message deliveries will be cancelled.
+
+        If you want to temporarily stop receiving events, consider disabling the
+        subscription instead using the PATCH endpoint.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to delete (UUID).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[typing.Optional[typing.Any]]
-            Successful Response
+        HttpResponse[WebhookSubscription]
+            Deleted subscription
         """
         _response = self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}",
@@ -415,24 +466,44 @@ class RawEventsClient:
             request_options=request_options,
         )
         try:
-            if _response is None or not _response.text.strip():
-                return HttpResponse(response=_response, data=None)
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.Optional[typing.Any],
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=typing.Optional[typing.Any],  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -449,36 +520,50 @@ class RawEventsClient:
         url: typing.Optional[str] = OMIT,
         event_types: typing.Optional[typing.Sequence[EventType]] = OMIT,
         disabled: typing.Optional[bool] = OMIT,
+        recover_since: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[EndpointOut]:
+    ) -> HttpResponse[WebhookSubscription]:
         """
-        Update a webhook subscription.
+        Update an existing webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to update.
-            request: The subscription update request.
-            ctx: The API context containing organization info.
+        Use this endpoint to modify a subscription's configuration. You can:
 
-        Returns:
-            The updated subscription.
+        - **Change the URL**: Update where events are delivered
+        - **Update event types**: Modify which events trigger notifications
+        - **Enable/disable**: Temporarily pause delivery without deleting the subscription
+        - **Recover messages**: When re-enabling, optionally recover missed messages
+
+        Only include the fields you want to change. Omitted fields will retain their
+        current values.
+
+        When re-enabling a subscription (`disabled: false`), you can optionally provide
+        `recover_since` to automatically retry all messages that were generated while
+        the subscription was disabled.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to update (UUID).
 
         url : typing.Optional[str]
+            New URL for webhook delivery. Must be a publicly accessible HTTPS endpoint.
 
         event_types : typing.Optional[typing.Sequence[EventType]]
+            New list of event types to subscribe to. This replaces the existing list entirely.
 
         disabled : typing.Optional[bool]
+            Set to `true` to pause delivery to this subscription, or `false` to resume. Disabled subscriptions will not receive events.
+
+        recover_since : typing.Optional[dt.datetime]
+            When re-enabling a subscription (`disabled: false`), optionally recover failed messages from this timestamp. Only applies when enabling.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[EndpointOut]
-            Successful Response
+        HttpResponse[WebhookSubscription]
+            Updated subscription
         """
         _response = self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}",
@@ -487,6 +572,7 @@ class RawEventsClient:
                 "url": url,
                 "event_types": event_types,
                 "disabled": disabled,
+                "recover_since": recover_since,
             },
             headers={
                 "content-type": "application/json",
@@ -497,146 +583,42 @@ class RawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    EndpointOut,
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=EndpointOut,  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
+            if _response.status_code == 404:
+                raise NotFoundError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        NotFoundErrorResponse,
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=NotFoundErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def enable_subscription(
-        self,
-        subscription_id: str,
-        *,
-        request: typing.Optional[EnableEndpointRequest] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[EndpointOut]:
-        """
-        Enable a disabled webhook subscription, optionally recovering failed messages.
-
-        Args:
-            subscription_id: The ID of the subscription to enable.
-            request: Optional request with recovery time range.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The enabled subscription.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request : typing.Optional[EnableEndpointRequest]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[EndpointOut]
-            Successful Response
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}/enable",
-            method="POST",
-            json=convert_and_respect_annotation_metadata(
-                object_=request, annotation=EnableEndpointRequest, direction="write"
-            ),
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    EndpointOut,
-                    parse_obj_as(
-                        type_=EndpointOut,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def get_subscription_secret(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[EndpointSecretOut]:
-        """
-        Get the signing secret for a webhook subscription.
-
-        Args:
-            subscription_id: The ID of the subscription.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The subscription's signing secret.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[EndpointSecretOut]
-            Successful Response
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}/secret",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    EndpointSecretOut,
-                    parse_obj_as(
-                        type_=EndpointSecretOut,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        RateLimitErrorResponse,
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -653,37 +635,38 @@ class RawEventsClient:
         since: dt.datetime,
         until: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[RecoverOut]:
+    ) -> HttpResponse[RecoveryTask]:
         """
-        Recover (retry) failed messages for a webhook subscription.
+        Retry failed message deliveries for a webhook subscription.
 
-        This endpoint triggers a recovery of all failed messages since the specified
-        time. Useful after re-enabling a disabled endpoint to retry messages that
-        failed while the endpoint was down.
+        Triggers a recovery process that replays all failed messages within the
+        specified time window. This is useful when:
 
-        Args:
-            subscription_id: The ID of the subscription to recover messages for.
-            request: The recovery request with time range.
-            ctx: The API context containing organization info.
+        - Your endpoint was temporarily down and you want to catch up
+        - You've fixed a bug in your webhook handler
+        - You want to reprocess events after re-enabling a disabled subscription
 
-        Returns:
-            Information about the recovery task.
+        Messages are retried in chronological order. Successfully delivered messages
+        are skipped; only failed or pending messages are retried.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to recover messages for (UUID).
 
         since : dt.datetime
+            Start of the recovery time window (inclusive). All failed messages from this time onward will be retried.
 
         until : typing.Optional[dt.datetime]
+            End of the recovery time window (exclusive). If not specified, recovers all failed messages up to now.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[RecoverOut]
-            Successful Response
+        HttpResponse[RecoveryTask]
+            Recovery task information
         """
         _response = self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}/recover",
@@ -701,20 +684,42 @@ class RawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    RecoverOut,
+                    RecoveryTask,
                     parse_obj_as(
-                        type_=RecoverOut,  # type: ignore
+                        type_=RecoveryTask,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -734,28 +739,29 @@ class AsyncRawEventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[typing.List[MessageOut]]:
+    ) -> AsyncHttpResponse[typing.List[EventMessage]]:
         """
-        Get event messages for the current organization.
+        Retrieve all event messages for your organization.
 
-        Args:
-            ctx: The API context containing organization info.
-            event_types: Optional list of event types to filter by.
+        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        to your subscribed endpoints. Each message contains the event type, payload data,
+        and delivery status information.
 
-        Returns:
-            List of event messages.
+        Use the `event_types` query parameter to filter messages by specific event types,
+        such as `sync.completed` or `sync.failed`.
 
         Parameters
         ----------
         event_types : typing.Optional[typing.Union[str, typing.Sequence[str]]]
+            Filter messages by event type(s). Accepts multiple values, e.g., `?event_types=sync.completed&event_types=sync.failed`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[typing.List[MessageOut]]
-            Successful Response
+        AsyncHttpResponse[typing.List[EventMessage]]
+            List of event messages
         """
         _response = await self._client_wrapper.httpx_client.request(
             "events/messages",
@@ -768,9 +774,9 @@ class AsyncRawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[MessageOut],
+                    typing.List[EventMessage],
                     parse_obj_as(
-                        type_=typing.List[MessageOut],  # type: ignore
+                        type_=typing.List[EventMessage],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -779,9 +785,20 @@ class AsyncRawEventsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -792,108 +809,86 @@ class AsyncRawEventsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get_message(
-        self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[MessageOut]:
+        self,
+        message_id: str,
+        *,
+        include_attempts: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[EventMessageWithAttempts]:
         """
-        Get a specific event message by ID.
+        Retrieve a specific event message by its ID.
 
-        Args:
-            message_id: The ID of the message to retrieve.
-            ctx: The API context containing organization info.
+        Returns the full message details including the event type, payload data,
+        timestamp, and delivery channel information. Use this to inspect the
+        exact payload that was sent to your webhook endpoints.
 
-        Returns:
-            The event message with its payload.
+        Use `include_attempts=true` to also retrieve delivery attempts for this message,
+        which include HTTP response codes, response bodies, and timestamps for debugging
+        delivery failures.
 
         Parameters
         ----------
         message_id : str
+            The unique identifier of the message to retrieve (UUID).
+
+        include_attempts : typing.Optional[bool]
+            Include delivery attempts for this message. Each attempt includes the HTTP response code, response body, and timestamp.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[MessageOut]
-            Successful Response
+        AsyncHttpResponse[EventMessageWithAttempts]
+            Event message details
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"events/messages/{jsonable_encoder(message_id)}",
             method="GET",
+            params={
+                "include_attempts": include_attempts,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    MessageOut,
+                    EventMessageWithAttempts,
                     parse_obj_as(
-                        type_=MessageOut,  # type: ignore
+                        type_=EventMessageWithAttempts,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
+            if _response.status_code == 404:
+                raise NotFoundError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        NotFoundErrorResponse,
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=NotFoundErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def get_message_attempts(
-        self, message_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[typing.List[MessageAttemptOut]]:
-        """
-        Get delivery attempts for a specific message.
-
-        Args:
-            message_id: The ID of the message.
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of delivery attempts for this message.
-
-        Parameters
-        ----------
-        message_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[typing.List[MessageAttemptOut]]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"events/messages/{jsonable_encoder(message_id)}/attempts",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    typing.List[MessageAttemptOut],
-                    parse_obj_as(
-                        type_=typing.List[MessageAttemptOut],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -905,15 +900,13 @@ class AsyncRawEventsClient:
 
     async def get_subscriptions(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[typing.List[EndpointOut]]:
+    ) -> AsyncHttpResponse[typing.List[WebhookSubscription]]:
         """
-        Get all webhook subscriptions for the current organization.
+        List all webhook subscriptions for your organization.
 
-        Args:
-            ctx: The API context containing organization info.
-
-        Returns:
-            List of webhook subscriptions.
+        Returns all configured webhook endpoints, including their URLs, subscribed
+        event types, and current status (enabled/disabled). Use this to audit
+        your webhook configuration or find a specific subscription.
 
         Parameters
         ----------
@@ -922,8 +915,8 @@ class AsyncRawEventsClient:
 
         Returns
         -------
-        AsyncHttpResponse[typing.List[EndpointOut]]
-            Successful Response
+        AsyncHttpResponse[typing.List[WebhookSubscription]]
+            List of webhook subscriptions
         """
         _response = await self._client_wrapper.httpx_client.request(
             "events/subscriptions",
@@ -933,9 +926,9 @@ class AsyncRawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[EndpointOut],
+                    typing.List[WebhookSubscription],
                     parse_obj_as(
-                        type_=typing.List[EndpointOut],  # type: ignore
+                        type_=typing.List[WebhookSubscription],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -944,9 +937,20 @@ class AsyncRawEventsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -963,32 +967,38 @@ class AsyncRawEventsClient:
         event_types: typing.Sequence[EventType],
         secret: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[EndpointOut]:
+    ) -> AsyncHttpResponse[WebhookSubscription]:
         """
         Create a new webhook subscription.
 
-        Args:
-            request: The subscription creation request.
-            ctx: The API context containing organization info.
+        Webhook subscriptions allow you to receive real-time notifications when events
+        occur in Airweave. When you create a subscription, you specify:
 
-        Returns:
-            The created subscription.
+        - **URL**: The HTTPS endpoint where events will be delivered
+        - **Event Types**: Which events you want to receive (e.g., `sync.completed`, `sync.failed`)
+        - **Secret** (optional): A custom signing secret for verifying webhook signatures
+
+        After creation, Airweave will send HTTP POST requests to your URL whenever
+        matching events occur. Each request includes a signature header for verification.
 
         Parameters
         ----------
         url : str
+            The HTTPS URL where webhook events will be delivered. Must be a publicly accessible endpoint that returns a 2xx status code.
 
         event_types : typing.Sequence[EventType]
+            List of event types to subscribe to. Events not in this list will not be delivered to this subscription. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`.
 
         secret : typing.Optional[str]
+            Optional custom signing secret for webhook signature verification. If not provided, a secure secret will be auto-generated. Must be at least 24 characters if specified.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[EndpointOut]
-            Successful Response
+        AsyncHttpResponse[WebhookSubscription]
+            Created subscription
         """
         _response = await self._client_wrapper.httpx_client.request(
             "events/subscriptions",
@@ -1007,9 +1017,9 @@ class AsyncRawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    EndpointOut,
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=EndpointOut,  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1018,9 +1028,20 @@ class AsyncRawEventsClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -1031,52 +1052,85 @@ class AsyncRawEventsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get_subscription(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[SubscriptionWithAttemptsOut]:
+        self,
+        subscription_id: str,
+        *,
+        include_secret: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[WebhookSubscription]:
         """
-        Get a specific webhook subscription with its delivery attempts.
+        Retrieve a specific webhook subscription with its recent delivery attempts.
 
-        Args:
-            subscription_id: The ID of the subscription to retrieve.
-            ctx: The API context containing organization info.
+        Returns the subscription configuration along with a history of message delivery
+        attempts. This is useful for debugging delivery issues or verifying that your
+        endpoint is correctly receiving events.
 
-        Returns:
-            The subscription details with message delivery attempts.
+        Use `include_secret=true` to also retrieve the signing secret for webhook
+        signature verification. Keep this secret secure.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to retrieve (UUID).
+
+        include_secret : typing.Optional[bool]
+            Include the signing secret for webhook signature verification. Keep this secret secure and use it to verify the 'svix-signature' header.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[SubscriptionWithAttemptsOut]
-            Successful Response
+        AsyncHttpResponse[WebhookSubscription]
+            Subscription with delivery attempts
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}",
             method="GET",
+            params={
+                "include_secret": include_secret,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    SubscriptionWithAttemptsOut,
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=SubscriptionWithAttemptsOut,  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -1088,25 +1142,28 @@ class AsyncRawEventsClient:
 
     async def delete_subscription(
         self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[typing.Optional[typing.Any]]:
+    ) -> AsyncHttpResponse[WebhookSubscription]:
         """
-        Delete a webhook subscription.
+        Permanently delete a webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to delete.
-            ctx: The API context containing organization info.
+        Once deleted, Airweave will stop sending events to this endpoint immediately.
+        This action cannot be undone. Any pending message deliveries will be cancelled.
+
+        If you want to temporarily stop receiving events, consider disabling the
+        subscription instead using the PATCH endpoint.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to delete (UUID).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[typing.Optional[typing.Any]]
-            Successful Response
+        AsyncHttpResponse[WebhookSubscription]
+            Deleted subscription
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}",
@@ -1114,24 +1171,44 @@ class AsyncRawEventsClient:
             request_options=request_options,
         )
         try:
-            if _response is None or not _response.text.strip():
-                return AsyncHttpResponse(response=_response, data=None)
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.Optional[typing.Any],
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=typing.Optional[typing.Any],  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -1148,36 +1225,50 @@ class AsyncRawEventsClient:
         url: typing.Optional[str] = OMIT,
         event_types: typing.Optional[typing.Sequence[EventType]] = OMIT,
         disabled: typing.Optional[bool] = OMIT,
+        recover_since: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[EndpointOut]:
+    ) -> AsyncHttpResponse[WebhookSubscription]:
         """
-        Update a webhook subscription.
+        Update an existing webhook subscription.
 
-        Args:
-            subscription_id: The ID of the subscription to update.
-            request: The subscription update request.
-            ctx: The API context containing organization info.
+        Use this endpoint to modify a subscription's configuration. You can:
 
-        Returns:
-            The updated subscription.
+        - **Change the URL**: Update where events are delivered
+        - **Update event types**: Modify which events trigger notifications
+        - **Enable/disable**: Temporarily pause delivery without deleting the subscription
+        - **Recover messages**: When re-enabling, optionally recover missed messages
+
+        Only include the fields you want to change. Omitted fields will retain their
+        current values.
+
+        When re-enabling a subscription (`disabled: false`), you can optionally provide
+        `recover_since` to automatically retry all messages that were generated while
+        the subscription was disabled.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to update (UUID).
 
         url : typing.Optional[str]
+            New URL for webhook delivery. Must be a publicly accessible HTTPS endpoint.
 
         event_types : typing.Optional[typing.Sequence[EventType]]
+            New list of event types to subscribe to. This replaces the existing list entirely.
 
         disabled : typing.Optional[bool]
+            Set to `true` to pause delivery to this subscription, or `false` to resume. Disabled subscriptions will not receive events.
+
+        recover_since : typing.Optional[dt.datetime]
+            When re-enabling a subscription (`disabled: false`), optionally recover failed messages from this timestamp. Only applies when enabling.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[EndpointOut]
-            Successful Response
+        AsyncHttpResponse[WebhookSubscription]
+            Updated subscription
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}",
@@ -1186,6 +1277,7 @@ class AsyncRawEventsClient:
                 "url": url,
                 "event_types": event_types,
                 "disabled": disabled,
+                "recover_since": recover_since,
             },
             headers={
                 "content-type": "application/json",
@@ -1196,146 +1288,42 @@ class AsyncRawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    EndpointOut,
+                    WebhookSubscription,
                     parse_obj_as(
-                        type_=EndpointOut,  # type: ignore
+                        type_=WebhookSubscription,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
+            if _response.status_code == 404:
+                raise NotFoundError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        NotFoundErrorResponse,
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=NotFoundErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def enable_subscription(
-        self,
-        subscription_id: str,
-        *,
-        request: typing.Optional[EnableEndpointRequest] = None,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[EndpointOut]:
-        """
-        Enable a disabled webhook subscription, optionally recovering failed messages.
-
-        Args:
-            subscription_id: The ID of the subscription to enable.
-            request: Optional request with recovery time range.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The enabled subscription.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request : typing.Optional[EnableEndpointRequest]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[EndpointOut]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}/enable",
-            method="POST",
-            json=convert_and_respect_annotation_metadata(
-                object_=request, annotation=EnableEndpointRequest, direction="write"
-            ),
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    EndpointOut,
-                    parse_obj_as(
-                        type_=EndpointOut,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def get_subscription_secret(
-        self, subscription_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[EndpointSecretOut]:
-        """
-        Get the signing secret for a webhook subscription.
-
-        Args:
-            subscription_id: The ID of the subscription.
-            ctx: The API context containing organization info.
-
-        Returns:
-            The subscription's signing secret.
-
-        Parameters
-        ----------
-        subscription_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[EndpointSecretOut]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}/secret",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    EndpointSecretOut,
-                    parse_obj_as(
-                        type_=EndpointSecretOut,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        RateLimitErrorResponse,
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -1352,37 +1340,38 @@ class AsyncRawEventsClient:
         since: dt.datetime,
         until: typing.Optional[dt.datetime] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[RecoverOut]:
+    ) -> AsyncHttpResponse[RecoveryTask]:
         """
-        Recover (retry) failed messages for a webhook subscription.
+        Retry failed message deliveries for a webhook subscription.
 
-        This endpoint triggers a recovery of all failed messages since the specified
-        time. Useful after re-enabling a disabled endpoint to retry messages that
-        failed while the endpoint was down.
+        Triggers a recovery process that replays all failed messages within the
+        specified time window. This is useful when:
 
-        Args:
-            subscription_id: The ID of the subscription to recover messages for.
-            request: The recovery request with time range.
-            ctx: The API context containing organization info.
+        - Your endpoint was temporarily down and you want to catch up
+        - You've fixed a bug in your webhook handler
+        - You want to reprocess events after re-enabling a disabled subscription
 
-        Returns:
-            Information about the recovery task.
+        Messages are retried in chronological order. Successfully delivered messages
+        are skipped; only failed or pending messages are retried.
 
         Parameters
         ----------
         subscription_id : str
+            The unique identifier of the subscription to recover messages for (UUID).
 
         since : dt.datetime
+            Start of the recovery time window (inclusive). All failed messages from this time onward will be retried.
 
         until : typing.Optional[dt.datetime]
+            End of the recovery time window (exclusive). If not specified, recovers all failed messages up to now.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[RecoverOut]
-            Successful Response
+        AsyncHttpResponse[RecoveryTask]
+            Recovery task information
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"events/subscriptions/{jsonable_encoder(subscription_id)}/recover",
@@ -1400,20 +1389,42 @@ class AsyncRawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    RecoverOut,
+                    RecoveryTask,
                     parse_obj_as(
-                        type_=RecoverOut,  # type: ignore
+                        type_=RecoveryTask,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),

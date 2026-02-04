@@ -25,10 +25,17 @@ class SourcesClient:
 
     def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
-        List all available data source connectors.
+        Retrieve all available data source connectors.
 
-        <br/><br/>
-        Returns the complete catalog of source types that Airweave can connect to.
+        Returns the complete catalog of source types that Airweave can connect to,
+        including their authentication methods, configuration requirements, and
+        supported features. Use this endpoint to discover which integrations are
+        available for your organization.
+
+        Each source includes:
+        - **Authentication methods**: How to connect (OAuth, API key, etc.)
+        - **Configuration schemas**: What settings are required or optional
+        - **Supported auth providers**: Pre-configured OAuth providers available
 
         Parameters
         ----------
@@ -45,8 +52,6 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.sources.list()
@@ -56,7 +61,16 @@ class SourcesClient:
 
     def get(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
-        Get detailed information about a specific data source connector.
+        Retrieve detailed information about a specific data source connector.
+
+        Returns the complete configuration for a source type, including:
+
+        - **Authentication fields**: Schema for credentials required to connect
+        - **Configuration fields**: Schema for optional settings and customization
+        - **Supported auth providers**: Pre-configured OAuth providers available for this source
+
+        Use this endpoint before creating a source connection to understand what
+        authentication and configuration values are required.
 
         Parameters
         ----------
@@ -76,12 +90,10 @@ class SourcesClient:
         from airweave import AirweaveSDK
 
         client = AirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
         client.sources.get(
-            short_name="short_name",
+            short_name="github",
         )
         """
         _response = self._raw_client.get(short_name, request_options=request_options)
@@ -105,10 +117,17 @@ class AsyncSourcesClient:
 
     async def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> typing.List[Source]:
         """
-        List all available data source connectors.
+        Retrieve all available data source connectors.
 
-        <br/><br/>
-        Returns the complete catalog of source types that Airweave can connect to.
+        Returns the complete catalog of source types that Airweave can connect to,
+        including their authentication methods, configuration requirements, and
+        supported features. Use this endpoint to discover which integrations are
+        available for your organization.
+
+        Each source includes:
+        - **Authentication methods**: How to connect (OAuth, API key, etc.)
+        - **Configuration schemas**: What settings are required or optional
+        - **Supported auth providers**: Pre-configured OAuth providers available
 
         Parameters
         ----------
@@ -127,8 +146,6 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
@@ -144,7 +161,16 @@ class AsyncSourcesClient:
 
     async def get(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> Source:
         """
-        Get detailed information about a specific data source connector.
+        Retrieve detailed information about a specific data source connector.
+
+        Returns the complete configuration for a source type, including:
+
+        - **Authentication fields**: Schema for credentials required to connect
+        - **Configuration fields**: Schema for optional settings and customization
+        - **Supported auth providers**: Pre-configured OAuth providers available for this source
+
+        Use this endpoint before creating a source connection to understand what
+        authentication and configuration values are required.
 
         Parameters
         ----------
@@ -166,15 +192,13 @@ class AsyncSourcesClient:
         from airweave import AsyncAirweaveSDK
 
         client = AsyncAirweaveSDK(
-            framework_name="YOUR_FRAMEWORK_NAME",
-            framework_version="YOUR_FRAMEWORK_VERSION",
             api_key="YOUR_API_KEY",
         )
 
 
         async def main() -> None:
             await client.sources.get(
-                short_name="short_name",
+                short_name="github",
             )
 
 

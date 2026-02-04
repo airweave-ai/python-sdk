@@ -6,8 +6,25 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class EndpointSecretOut(UniversalBaseModel):
-    key: str
+class ValidationErrorDetail(UniversalBaseModel):
+    """
+    Details about a validation error for a specific field.
+    """
+
+    loc: typing.List[str] = pydantic.Field()
+    """
+    Location of the error (e.g., ['body', 'url'])
+    """
+
+    msg: str = pydantic.Field()
+    """
+    Human-readable error message
+    """
+
+    type: str = pydantic.Field()
+    """
+    Error type identifier
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

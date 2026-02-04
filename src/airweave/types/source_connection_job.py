@@ -10,21 +10,71 @@ from .sync_job_status import SyncJobStatus
 
 class SourceConnectionJob(UniversalBaseModel):
     """
-    Individual sync job for a source connection.
+    A sync job representing a single synchronization run.
+
+    Sync jobs track the execution of data synchronization from a source connection.
+    Each job includes timing information, entity counts, and error details if applicable.
     """
 
-    id: str
-    source_connection_id: str
-    status: SyncJobStatus
-    started_at: typing.Optional[dt.datetime] = None
-    completed_at: typing.Optional[dt.datetime] = None
-    duration_seconds: typing.Optional[float] = None
-    entities_inserted: typing.Optional[int] = None
-    entities_updated: typing.Optional[int] = None
-    entities_deleted: typing.Optional[int] = None
-    entities_failed: typing.Optional[int] = None
-    error: typing.Optional[str] = None
-    error_details: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    id: str = pydantic.Field()
+    """
+    Unique identifier of the sync job
+    """
+
+    source_connection_id: str = pydantic.Field()
+    """
+    ID of the source connection this job belongs to
+    """
+
+    status: SyncJobStatus = pydantic.Field()
+    """
+    Current status: PENDING, RUNNING, COMPLETED, FAILED, CANCELLED, or CANCELLING
+    """
+
+    started_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    When the job started execution (ISO 8601)
+    """
+
+    completed_at: typing.Optional[dt.datetime] = pydantic.Field(default=None)
+    """
+    When the job finished (ISO 8601). Null if still running.
+    """
+
+    duration_seconds: typing.Optional[float] = pydantic.Field(default=None)
+    """
+    Total execution time in seconds. Null if still running.
+    """
+
+    entities_inserted: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of new entities created during this sync
+    """
+
+    entities_updated: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of existing entities updated during this sync
+    """
+
+    entities_deleted: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of entities removed during this sync
+    """
+
+    entities_failed: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of entities that failed to process
+    """
+
+    error: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Error message if the job failed
+    """
+
+    error_details: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Additional error context for debugging
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

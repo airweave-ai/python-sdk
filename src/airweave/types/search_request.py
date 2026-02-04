@@ -9,32 +9,35 @@ from .retrieval_strategy import RetrievalStrategy
 
 class SearchRequest(UniversalBaseModel):
     """
-    Search request schema.
+    Search request for querying a collection.
+
+    Provides fine-grained control over the search pipeline including retrieval strategy,
+    filtering, and AI-powered features like query expansion and answer generation.
     """
 
     query: str = pydantic.Field()
     """
-    The search query text
+    The search query text (required, max 2048 tokens)
     """
 
     retrieval_strategy: typing.Optional[RetrievalStrategy] = pydantic.Field(default=None)
     """
-    The retrieval strategy to use
+    Search strategy: 'hybrid' (default), 'neural' (semantic only), or 'keyword' (BM25 only)
     """
 
     filter: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
     """
-    Filter for metadata-based filtering
+    Structured filter for metadata-based filtering (Qdrant filter format)
     """
 
     offset: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Number of results to skip
+    Number of results to skip for pagination (default: 0)
     """
 
     limit: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Maximum number of results to return
+    Maximum number of results to return (default: 1000)
     """
 
     temporal_relevance: typing.Optional[float] = pydantic.Field(default=None)
@@ -44,22 +47,22 @@ class SearchRequest(UniversalBaseModel):
 
     expand_query: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Generate a few query variations to improve recall
+    Generate query variations to improve recall (default: true)
     """
 
     interpret_filters: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Extract structured filters from natural-language query
+    Extract structured filters from natural language (e.g., 'from last week' becomes a date filter)
     """
 
     rerank: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Reorder the top candidate results for improved relevance. Max number of results that can be reranked is capped to around 1000.
+    LLM-based reranking for improved relevance (default: true)
     """
 
     generate_answer: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Generate a natural-language answer to the query
+    Generate an AI answer based on search results (default: true)
     """
 
     if IS_PYDANTIC_V2:

@@ -9,8 +9,11 @@ from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
+from ..errors.not_found_error import NotFoundError
+from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
-from ..types.http_validation_error import HttpValidationError
+from ..types.not_found_error_response import NotFoundErrorResponse
+from ..types.rate_limit_error_response import RateLimitErrorResponse
 from ..types.source import Source
 
 
@@ -20,10 +23,17 @@ class RawSourcesClient:
 
     def list(self, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[typing.List[Source]]:
         """
-        List all available data source connectors.
+        Retrieve all available data source connectors.
 
-        <br/><br/>
-        Returns the complete catalog of source types that Airweave can connect to.
+        Returns the complete catalog of source types that Airweave can connect to,
+        including their authentication methods, configuration requirements, and
+        supported features. Use this endpoint to discover which integrations are
+        available for your organization.
+
+        Each source includes:
+        - **Authentication methods**: How to connect (OAuth, API key, etc.)
+        - **Configuration schemas**: What settings are required or optional
+        - **Supported auth providers**: Pre-configured OAuth providers available
 
         Parameters
         ----------
@@ -54,9 +64,20 @@ class RawSourcesClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -68,7 +89,16 @@ class RawSourcesClient:
 
     def get(self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[Source]:
         """
-        Get detailed information about a specific data source connector.
+        Retrieve detailed information about a specific data source connector.
+
+        Returns the complete configuration for a source type, including:
+
+        - **Authentication fields**: Schema for credentials required to connect
+        - **Configuration fields**: Schema for optional settings and customization
+        - **Supported auth providers**: Pre-configured OAuth providers available for this source
+
+        Use this endpoint before creating a source connection to understand what
+        authentication and configuration values are required.
 
         Parameters
         ----------
@@ -98,13 +128,35 @@ class RawSourcesClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -123,10 +175,17 @@ class AsyncRawSourcesClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[typing.List[Source]]:
         """
-        List all available data source connectors.
+        Retrieve all available data source connectors.
 
-        <br/><br/>
-        Returns the complete catalog of source types that Airweave can connect to.
+        Returns the complete catalog of source types that Airweave can connect to,
+        including their authentication methods, configuration requirements, and
+        supported features. Use this endpoint to discover which integrations are
+        available for your organization.
+
+        Each source includes:
+        - **Authentication methods**: How to connect (OAuth, API key, etc.)
+        - **Configuration schemas**: What settings are required or optional
+        - **Supported auth providers**: Pre-configured OAuth providers available
 
         Parameters
         ----------
@@ -157,9 +216,20 @@ class AsyncRawSourcesClient:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -173,7 +243,16 @@ class AsyncRawSourcesClient:
         self, short_name: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[Source]:
         """
-        Get detailed information about a specific data source connector.
+        Retrieve detailed information about a specific data source connector.
+
+        Returns the complete configuration for a source type, including:
+
+        - **Authentication fields**: Schema for credentials required to connect
+        - **Configuration fields**: Schema for optional settings and customization
+        - **Supported auth providers**: Pre-configured OAuth providers available for this source
+
+        Use this endpoint before creating a source connection to understand what
+        authentication and configuration values are required.
 
         Parameters
         ----------
@@ -203,13 +282,35 @@ class AsyncRawSourcesClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        NotFoundErrorResponse,
+                        parse_obj_as(
+                            type_=NotFoundErrorResponse,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 422:
                 raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        HttpValidationError,
+                        typing.Optional[typing.Any],
                         parse_obj_as(
-                            type_=HttpValidationError,  # type: ignore
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        RateLimitErrorResponse,
+                        parse_obj_as(
+                            type_=RateLimitErrorResponse,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),

@@ -12,10 +12,17 @@
 <dl>
 <dd>
 
-List all available data source connectors.
+Retrieve all available data source connectors.
 
-<br/><br/>
-Returns the complete catalog of source types that Airweave can connect to.
+Returns the complete catalog of source types that Airweave can connect to,
+including their authentication methods, configuration requirements, and
+supported features. Use this endpoint to discover which integrations are
+available for your organization.
+
+Each source includes:
+- **Authentication methods**: How to connect (OAuth, API key, etc.)
+- **Configuration schemas**: What settings are required or optional
+- **Supported auth providers**: Pre-configured OAuth providers available
 </dd>
 </dl>
 </dd>
@@ -33,8 +40,6 @@ Returns the complete catalog of source types that Airweave can connect to.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.sources.list()
@@ -77,7 +82,16 @@ client.sources.list()
 <dl>
 <dd>
 
-Get detailed information about a specific data source connector.
+Retrieve detailed information about a specific data source connector.
+
+Returns the complete configuration for a source type, including:
+
+- **Authentication fields**: Schema for credentials required to connect
+- **Configuration fields**: Schema for optional settings and customization
+- **Supported auth providers**: Pre-configured OAuth providers available for this source
+
+Use this endpoint before creating a source connection to understand what
+authentication and configuration values are required.
 </dd>
 </dl>
 </dd>
@@ -95,12 +109,10 @@ Get detailed information about a specific data source connector.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.sources.get(
-    short_name="short_name",
+    short_name="github",
 )
 
 ```
@@ -150,9 +162,13 @@ client.sources.get(
 <dl>
 <dd>
 
-List all collections that belong to your organization with optional search filtering.
+Retrieve all collections belonging to your organization.
 
-Collections are always sorted by creation date (newest first).
+Collections are containers that group related data from one or more source
+connections, enabling unified search across multiple data sources.
+
+Results are sorted by creation date (newest first) and support pagination
+and text search filtering.
 </dd>
 </dl>
 </dd>
@@ -170,14 +186,12 @@ Collections are always sorted by creation date (newest first).
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.list(
-    skip=1,
-    limit=1,
-    search="search",
+    skip=0,
+    limit=100,
+    search="customer",
 )
 
 ```
@@ -210,7 +224,7 @@ client.collections.list(
 <dl>
 <dd>
 
-**search:** `typing.Optional[str]` — Search term to filter by name or readable_id
+**search:** `typing.Optional[str]` — Search term to filter collections by name or readable_id
     
 </dd>
 </dl>
@@ -242,10 +256,16 @@ client.collections.list(
 <dl>
 <dd>
 
-Create a new collection.
+Create a new collection in your organization.
 
-The newly created collection is initially empty and does not contain any data
-until you explicitly add source connections to it.
+Collections are containers for organizing and searching across data from multiple
+sources. After creation, add source connections to begin syncing data.
+
+The collection will be assigned a unique `readable_id` based on the name you provide,
+which is used in URLs and API calls. You can optionally configure:
+
+- **Sync schedule**: How frequently to automatically sync data from all sources
+- **Custom readable_id**: Provide your own identifier (must be unique and URL-safe)
 </dd>
 </dl>
 </dd>
@@ -263,8 +283,6 @@ until you explicitly add source connections to it.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.create(
@@ -334,7 +352,11 @@ client.collections.create(
 <dl>
 <dd>
 
-Retrieve a specific collection by its readable ID.
+Retrieve details of a specific collection by its readable ID.
+
+Returns the complete collection configuration including sync settings, status,
+and metadata. Use this to check the current state of a collection or to get
+configuration details before making updates.
 </dd>
 </dl>
 </dd>
@@ -352,12 +374,10 @@ Retrieve a specific collection by its readable ID.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.get(
-    readable_id="readable_id",
+    readable_id="customer-support-tickets-x7k9m",
 )
 
 ```
@@ -406,11 +426,15 @@ client.collections.get(
 <dl>
 <dd>
 
-Delete a collection and all associated data.
+Permanently delete a collection and all associated data.
 
-Permanently removes a collection from your organization including all synced data
-from the destination systems. All source connections within this collection
-will also be deleted as part of the cleanup process. This action cannot be undone.
+This operation:
+- Removes all synced data from the vector database
+- Deletes all source connections within the collection
+- Cancels any scheduled sync jobs
+- Cleans up all related resources
+
+**Warning**: This action cannot be undone. All data will be permanently deleted.
 </dd>
 </dl>
 </dd>
@@ -428,12 +452,10 @@ will also be deleted as part of the cleanup process. This action cannot be undon
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.delete(
-    readable_id="readable_id",
+    readable_id="customer-support-tickets-x7k9m",
 )
 
 ```
@@ -470,7 +492,7 @@ client.collections.delete(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">refresh_all_source_connections</a>(...)</code></summary>
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">update</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -482,12 +504,14 @@ client.collections.delete(
 <dl>
 <dd>
 
-Trigger data synchronization for all source connections in the collection.
+Update an existing collection's properties.
 
-The sync jobs run asynchronously in the background, so this endpoint
-returns immediately with job details that you can use to track progress. You can
-monitor the status of individual data synchronization using the source connection
-endpoints.
+You can modify:
+- **Name**: The display name shown in the UI
+- **Sync configuration**: Schedule settings for automatic data synchronization
+
+Note that the `readable_id` cannot be changed after creation to maintain stable
+API endpoints and preserve existing integrations.
 </dd>
 </dl>
 </dd>
@@ -505,12 +529,103 @@ endpoints.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
+    api_key="YOUR_API_KEY",
+)
+client.collections.update(
+    readable_id="customer-support-tickets-x7k9m",
+    name="Updated Finance Data",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` — The unique readable identifier of the collection to update
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — Updated display name for the collection. Must be between 4 and 64 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sync_config:** `typing.Optional[SyncConfig]` — Default sync configuration for all syncs in this collection. This provides collection-level defaults that can be overridden at sync or job level.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">refresh_all_source_connections</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Trigger data synchronization for all source connections in a collection.
+
+Starts sync jobs for every source connection in the collection, pulling the latest
+data from each connected source. Jobs run asynchronously in the background.
+
+Returns a list of sync jobs that were created. Use the source connection endpoints
+to monitor the progress and status of individual sync jobs.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
 client.collections.refresh_all_source_connections(
-    readable_id="readable_id",
+    readable_id="customer-support-tickets-x7k9m",
 )
 
 ```
@@ -559,10 +674,14 @@ client.collections.refresh_all_source_connections(
 <dl>
 <dd>
 
-Legacy GET search endpoint for backwards compatibility.
+**DEPRECATED**: Use POST /collections/{readable_id}/search instead.
 
-DEPRECATED: This endpoint uses the old schema. Please migrate to POST with the new
-SearchRequest format for access to all features.
+This legacy GET endpoint provides basic search functionality via query parameters.
+Migrate to the POST endpoint for access to advanced features like:
+- Structured filters
+- Query expansion
+- Reranking
+- Streaming responses
 </dd>
 </dl>
 </dd>
@@ -580,16 +699,14 @@ SearchRequest format for access to all features.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.search_get_legacy(
-    readable_id="readable_id",
-    query="query",
+    readable_id="customer-support-tickets-x7k9m",
+    query="How do I reset my password?",
     response_type="raw",
-    limit=1,
-    offset=1,
+    limit=10,
+    offset=0,
     recency_bias=1.1,
 )
 
@@ -647,7 +764,7 @@ client.collections.search_get_legacy(
 <dl>
 <dd>
 
-**recency_bias:** `typing.Optional[float]` — How much to weigh recency vs similarity (0..1)
+**recency_bias:** `typing.Optional[float]` — How much to weigh recency vs similarity (0=similarity only, 1=recency only)
     
 </dd>
 </dl>
@@ -679,9 +796,22 @@ client.collections.search_get_legacy(
 <dl>
 <dd>
 
-Search your collection.
+Search your collection using semantic and hybrid search.
 
-Accepts both new SearchRequest and legacy LegacySearchRequest formats
+This is the primary search endpoint providing powerful AI-powered search capabilities:
+
+**Search Strategies:**
+- **hybrid** (default): Combines neural (semantic) and keyword (BM25) matching
+- **neural**: Pure semantic search using embeddings
+- **keyword**: Traditional keyword-based BM25 search
+
+**Features:**
+- **Query expansion**: Generate query variations to improve recall
+- **Filter interpretation**: Extract structured filters from natural language
+- **Reranking**: LLM-based reranking for improved relevance
+- **Answer generation**: AI-generated answers based on search results
+
+**Note**: Accepts both new SearchRequest and legacy LegacySearchRequest formats
 for backwards compatibility.
 </dd>
 </dl>
@@ -700,14 +830,12 @@ for backwards compatibility.
 from airweave import AirweaveSDK, SearchRequest
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.collections.search(
-    readable_id="readable_id",
+    readable_id="customer-support-tickets-x7k9m",
     request=SearchRequest(
-        query="query",
+        query="How do I reset my password?",
     ),
 )
 
@@ -725,7 +853,7 @@ client.collections.search(
 <dl>
 <dd>
 
-**readable_id:** `str` — The unique readable identifier of the collection
+**readable_id:** `str` — The unique readable identifier of the collection to search
     
 </dd>
 </dl>
@@ -766,7 +894,13 @@ client.collections.search(
 <dl>
 <dd>
 
-List source connections with minimal fields for performance.
+Retrieve all source connections for your organization.
+
+Returns a lightweight list of source connections with essential fields for
+display and navigation. Use the collection filter to see connections within
+a specific collection.
+
+For full connection details including sync history, use the GET /{id} endpoint.
 </dd>
 </dl>
 </dd>
@@ -784,14 +918,12 @@ List source connections with minimal fields for performance.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.list(
     collection="collection",
-    skip=1,
-    limit=1,
+    skip=0,
+    limit=100,
 )
 
 ```
@@ -816,7 +948,7 @@ client.source_connections.list(
 <dl>
 <dd>
 
-**skip:** `typing.Optional[int]` 
+**skip:** `typing.Optional[int]` — Number of connections to skip for pagination
     
 </dd>
 </dl>
@@ -824,7 +956,7 @@ client.source_connections.list(
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` 
+**limit:** `typing.Optional[int]` — Maximum number of connections to return (1-1000)
     
 </dd>
 </dl>
@@ -856,20 +988,16 @@ client.source_connections.list(
 <dl>
 <dd>
 
-Create a new source connection.
+Create a new source connection to sync data from an external source.
 
-The authentication configuration determines the flow:
-- DirectAuthentication: Immediate creation with provided credentials
-- OAuthBrowserAuthentication: Returns shell with authentication URL
-- OAuthTokenAuthentication: Immediate creation with provided token
-- AuthProviderAuthentication: Using external auth provider
+The authentication method determines the creation flow:
 
-BYOC (Bring Your Own Client) is detected when client_id and client_secret
-are provided in OAuthBrowserAuthentication.
+- **Direct**: Provide credentials (API key, token) directly. Connection is created immediately.
+- **OAuth Browser**: Returns a connection with an `auth_url` to redirect users for authentication.
+- **OAuth Token**: Provide an existing OAuth token. Connection is created immediately.
+- **Auth Provider**: Use a pre-configured auth provider (e.g., Composio, Pipedream).
 
-sync_immediately defaults:
-- True for: direct, oauth_token, auth_provider
-- False for: oauth_browser, oauth_byoc (these sync after authentication)
+After successful authentication, data sync can begin automatically or on-demand.
 </dd>
 </dl>
 </dd>
@@ -887,13 +1015,11 @@ sync_immediately defaults:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.create(
-    short_name="short_name",
-    readable_collection_id="readable_collection_id",
+    short_name="github",
+    readable_collection_id="customer-support-tickets-x7k9m",
 )
 
 ```
@@ -910,7 +1036,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**short_name:** `str` — Source identifier (e.g., 'slack', 'github')
+**short_name:** `str` — Source type identifier (e.g., 'slack', 'github', 'notion')
     
 </dd>
 </dl>
@@ -918,7 +1044,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**readable_collection_id:** `str` — Collection readable ID
+**readable_collection_id:** `str` — The readable ID of the collection to add this connection to
     
 </dd>
 </dl>
@@ -926,7 +1052,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**name:** `typing.Optional[str]` — Connection name (defaults to '{Source Name} Connection')
+**name:** `typing.Optional[str]` — Display name for the connection. If not provided, defaults to '{Source Name} Connection'.
     
 </dd>
 </dl>
@@ -934,7 +1060,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**description:** `typing.Optional[str]` — Connection description
+**description:** `typing.Optional[str]` — Optional description of what this connection is used for
     
 </dd>
 </dl>
@@ -942,7 +1068,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Source-specific configuration
+**config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Source-specific configuration (e.g., repository name, filters)
     
 </dd>
 </dl>
@@ -950,7 +1076,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**schedule:** `typing.Optional[ScheduleConfig]` 
+**schedule:** `typing.Optional[ScheduleConfig]` — Optional sync schedule configuration
     
 </dd>
 </dl>
@@ -966,7 +1092,7 @@ client.source_connections.create(
 <dl>
 <dd>
 
-**authentication:** `typing.Optional[Authentication]` — Authentication config (defaults to OAuth browser flow for OAuth sources)
+**authentication:** `typing.Optional[Authentication]` — Authentication configuration. Type is auto-detected from provided fields.
     
 </dd>
 </dl>
@@ -1006,7 +1132,13 @@ client.source_connections.create(
 <dl>
 <dd>
 
-Get a source connection with optional depth expansion.
+Retrieve details of a specific source connection.
+
+Returns complete information about the connection including:
+- Configuration settings
+- Authentication status
+- Sync schedule and history
+- Entity statistics
 </dd>
 </dl>
 </dd>
@@ -1024,12 +1156,10 @@ Get a source connection with optional depth expansion.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.get(
-    source_connection_id="source_connection_id",
+    source_connection_id="550e8400-e29b-41d4-a716-446655440000",
 )
 
 ```
@@ -1046,7 +1176,7 @@ client.source_connections.get(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**source_connection_id:** `str` — Unique identifier of the source connection (UUID)
     
 </dd>
 </dl>
@@ -1078,7 +1208,14 @@ client.source_connections.get(
 <dl>
 <dd>
 
-Delete a source connection and all related data.
+Permanently delete a source connection and all its synced data.
+
+This operation:
+- Removes all entities synced from this source from the vector database
+- Cancels any scheduled or running sync jobs
+- Deletes the connection configuration and credentials
+
+**Warning**: This action cannot be undone. All synced data will be permanently deleted.
 </dd>
 </dl>
 </dd>
@@ -1096,12 +1233,10 @@ Delete a source connection and all related data.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.delete(
-    source_connection_id="source_connection_id",
+    source_connection_id="550e8400-e29b-41d4-a716-446655440000",
 )
 
 ```
@@ -1118,7 +1253,7 @@ client.source_connections.delete(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**source_connection_id:** `str` — Unique identifier of the source connection to delete (UUID)
     
 </dd>
 </dl>
@@ -1150,13 +1285,15 @@ client.source_connections.delete(
 <dl>
 <dd>
 
-Update a source connection.
+Update an existing source connection's configuration.
 
-Updateable fields:
-- name, description
-- config_fields
-- cron_schedule
-- auth_fields (direct auth only)
+You can modify:
+- **Name and description**: Display information
+- **Configuration**: Source-specific settings (e.g., repository name, filters)
+- **Schedule**: Cron expression for automatic syncs
+- **Authentication**: Update credentials (direct auth only)
+
+Only include the fields you want to change; omitted fields retain their current values.
 </dd>
 </dl>
 </dd>
@@ -1174,12 +1311,10 @@ Updateable fields:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.update(
-    source_connection_id="source_connection_id",
+    source_connection_id="550e8400-e29b-41d4-a716-446655440000",
 )
 
 ```
@@ -1196,7 +1331,7 @@ client.source_connections.update(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**source_connection_id:** `str` — Unique identifier of the source connection to update (UUID)
     
 </dd>
 </dl>
@@ -1204,7 +1339,7 @@ client.source_connections.update(
 <dl>
 <dd>
 
-**name:** `typing.Optional[str]` 
+**name:** `typing.Optional[str]` — Updated display name for the connection
     
 </dd>
 </dl>
@@ -1212,7 +1347,7 @@ client.source_connections.update(
 <dl>
 <dd>
 
-**description:** `typing.Optional[str]` 
+**description:** `typing.Optional[str]` — Updated description
     
 </dd>
 </dl>
@@ -1220,7 +1355,7 @@ client.source_connections.update(
 <dl>
 <dd>
 
-**config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Source-specific configuration
+**config:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Updated source-specific configuration
     
 </dd>
 </dl>
@@ -1228,7 +1363,7 @@ client.source_connections.update(
 <dl>
 <dd>
 
-**schedule:** `typing.Optional[ScheduleConfig]` 
+**schedule:** `typing.Optional[ScheduleConfig]` — Updated sync schedule configuration
     
 </dd>
 </dl>
@@ -1236,7 +1371,7 @@ client.source_connections.update(
 <dl>
 <dd>
 
-**authentication:** `typing.Optional[Authentication]` — Authentication config (defaults to OAuth browser flow for OAuth sources)
+**authentication:** `typing.Optional[Authentication]` — Updated authentication credentials (direct auth only)
     
 </dd>
 </dl>
@@ -1268,18 +1403,14 @@ client.source_connections.update(
 <dl>
 <dd>
 
-Trigger a sync run for a source connection.
+Trigger a data synchronization job for a source connection.
 
-Runs are always executed through Temporal workflow engine.
+Starts an asynchronous sync job that pulls the latest data from the connected
+source. The job runs in the background and you can monitor its progress using
+the jobs endpoint.
 
-Args:
-    db: Database session
-    source_connection_id: ID of the source connection to run
-    ctx: API context with organization and user information
-    guard_rail: Guard rail service for usage limits
-    force_full_sync: If True, forces a full sync with orphaned entity cleanup
-                    for continuous syncs. Raises 400 error if used on
-                    non-continuous syncs (which are always full syncs).
+For continuous sync connections, this performs an incremental sync by default.
+Use `force_full_sync=true` to perform a complete re-sync of all data.
 </dd>
 </dl>
 </dd>
@@ -1297,13 +1428,11 @@ Args:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.run(
-    source_connection_id="source_connection_id",
-    force_full_sync=True,
+    source_connection_id="550e8400-e29b-41d4-a716-446655440000",
+    force_full_sync=False,
 )
 
 ```
@@ -1320,7 +1449,7 @@ client.source_connections.run(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**source_connection_id:** `str` — Unique identifier of the source connection to sync (UUID)
     
 </dd>
 </dl>
@@ -1328,7 +1457,7 @@ client.source_connections.run(
 <dl>
 <dd>
 
-**force_full_sync:** `typing.Optional[bool]` — Force a full sync ignoring cursor data instead of waiting for the daily cleanup schedule. Only allowed for continuous syncs.
+**force_full_sync:** `typing.Optional[bool]` — Force a full sync ignoring cursor data. Only applies to continuous sync connections. Non-continuous connections always perform full syncs.
     
 </dd>
 </dl>
@@ -1360,7 +1489,18 @@ client.source_connections.run(
 <dl>
 <dd>
 
-Get sync jobs for a source connection.
+Retrieve the sync job history for a source connection.
+
+Returns a list of sync jobs ordered by creation time (newest first). Each job
+includes status, timing information, and entity counts.
+
+Job statuses:
+- **PENDING**: Job is queued and waiting to start
+- **RUNNING**: Sync is actively pulling and processing data
+- **COMPLETED**: Sync finished successfully
+- **FAILED**: Sync encountered an error
+- **CANCELLED**: Sync was manually cancelled
+- **CANCELLING**: Cancellation has been requested
 </dd>
 </dl>
 </dd>
@@ -1378,13 +1518,11 @@ Get sync jobs for a source connection.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.get_source_connection_jobs(
-    source_connection_id="source_connection_id",
-    limit=1,
+    source_connection_id="550e8400-e29b-41d4-a716-446655440000",
+    limit=100,
 )
 
 ```
@@ -1401,7 +1539,7 @@ client.source_connections.get_source_connection_jobs(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**source_connection_id:** `str` — Unique identifier of the source connection (UUID)
     
 </dd>
 </dl>
@@ -1409,7 +1547,7 @@ client.source_connections.get_source_connection_jobs(
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` 
+**limit:** `typing.Optional[int]` — Maximum number of jobs to return (1-1000)
     
 </dd>
 </dl>
@@ -1441,11 +1579,13 @@ client.source_connections.get_source_connection_jobs(
 <dl>
 <dd>
 
-Cancel a running sync job for a source connection.
+Request cancellation of a running sync job.
 
-This endpoint requests cancellation and marks the job as CANCELLING.
-The workflow updates the final status to CANCELLED when it processes
-the cancellation request.
+The job will be marked as CANCELLING and the sync workflow will stop at the
+next checkpoint. Already-processed entities are retained.
+
+**Note**: Cancellation is asynchronous. The job status will change to CANCELLED
+once the workflow has fully stopped.
 </dd>
 </dl>
 </dd>
@@ -1463,13 +1603,11 @@ the cancellation request.
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.source_connections.cancel_job(
-    source_connection_id="source_connection_id",
-    job_id="job_id",
+    source_connection_id="550e8400-e29b-41d4-a716-446655440000",
+    job_id="660e8400-e29b-41d4-a716-446655440001",
 )
 
 ```
@@ -1486,7 +1624,7 @@ client.source_connections.cancel_job(
 <dl>
 <dd>
 
-**source_connection_id:** `str` 
+**source_connection_id:** `str` — Unique identifier of the source connection (UUID)
     
 </dd>
 </dl>
@@ -1494,7 +1632,7 @@ client.source_connections.cancel_job(
 <dl>
 <dd>
 
-**job_id:** `str` 
+**job_id:** `str` — Unique identifier of the sync job to cancel (UUID)
     
 </dd>
 </dl>
@@ -1527,14 +1665,14 @@ client.source_connections.cancel_job(
 <dl>
 <dd>
 
-Get event messages for the current organization.
+Retrieve all event messages for your organization.
 
-Args:
-    ctx: The API context containing organization info.
-    event_types: Optional list of event types to filter by.
+Event messages represent webhook payloads that were sent (or attempted to be sent)
+to your subscribed endpoints. Each message contains the event type, payload data,
+and delivery status information.
 
-Returns:
-    List of event messages.
+Use the `event_types` query parameter to filter messages by specific event types,
+such as `sync.completed` or `sync.failed`.
 </dd>
 </dl>
 </dd>
@@ -1552,8 +1690,6 @@ Returns:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.get_messages()
@@ -1572,7 +1708,7 @@ client.events.get_messages()
 <dl>
 <dd>
 
-**event_types:** `typing.Optional[typing.Union[str, typing.Sequence[str]]]` 
+**event_types:** `typing.Optional[typing.Union[str, typing.Sequence[str]]]` — Filter messages by event type(s). Accepts multiple values, e.g., `?event_types=sync.completed&event_types=sync.failed`.
     
 </dd>
 </dl>
@@ -1604,14 +1740,15 @@ client.events.get_messages()
 <dl>
 <dd>
 
-Get a specific event message by ID.
+Retrieve a specific event message by its ID.
 
-Args:
-    message_id: The ID of the message to retrieve.
-    ctx: The API context containing organization info.
+Returns the full message details including the event type, payload data,
+timestamp, and delivery channel information. Use this to inspect the
+exact payload that was sent to your webhook endpoints.
 
-Returns:
-    The event message with its payload.
+Use `include_attempts=true` to also retrieve delivery attempts for this message,
+which include HTTP response codes, response bodies, and timestamps for debugging
+delivery failures.
 </dd>
 </dl>
 </dd>
@@ -1629,12 +1766,11 @@ Returns:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.get_message(
-    message_id="message_id",
+    message_id="550e8400-e29b-41d4-a716-446655440000",
+    include_attempts=True,
 )
 
 ```
@@ -1651,7 +1787,7 @@ client.events.get_message(
 <dl>
 <dd>
 
-**message_id:** `str` 
+**message_id:** `str` — The unique identifier of the message to retrieve (UUID).
     
 </dd>
 </dl>
@@ -1659,78 +1795,7 @@ client.events.get_message(
 <dl>
 <dd>
 
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_message_attempts</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get delivery attempts for a specific message.
-
-Args:
-    message_id: The ID of the message.
-    ctx: The API context containing organization info.
-
-Returns:
-    List of delivery attempts for this message.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
-    api_key="YOUR_API_KEY",
-)
-client.events.get_message_attempts(
-    message_id="message_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**message_id:** `str` 
+**include_attempts:** `typing.Optional[bool]` — Include delivery attempts for this message. Each attempt includes the HTTP response code, response body, and timestamp.
     
 </dd>
 </dl>
@@ -1762,13 +1827,11 @@ client.events.get_message_attempts(
 <dl>
 <dd>
 
-Get all webhook subscriptions for the current organization.
+List all webhook subscriptions for your organization.
 
-Args:
-    ctx: The API context containing organization info.
-
-Returns:
-    List of webhook subscriptions.
+Returns all configured webhook endpoints, including their URLs, subscribed
+event types, and current status (enabled/disabled). Use this to audit
+your webhook configuration or find a specific subscription.
 </dd>
 </dl>
 </dd>
@@ -1786,8 +1849,6 @@ Returns:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.get_subscriptions()
@@ -1832,12 +1893,15 @@ client.events.get_subscriptions()
 
 Create a new webhook subscription.
 
-Args:
-    request: The subscription creation request.
-    ctx: The API context containing organization info.
+Webhook subscriptions allow you to receive real-time notifications when events
+occur in Airweave. When you create a subscription, you specify:
 
-Returns:
-    The created subscription.
+- **URL**: The HTTPS endpoint where events will be delivered
+- **Event Types**: Which events you want to receive (e.g., `sync.completed`, `sync.failed`)
+- **Secret** (optional): A custom signing secret for verifying webhook signatures
+
+After creation, Airweave will send HTTP POST requests to your URL whenever
+matching events occur. Each request includes a signature header for verification.
 </dd>
 </dl>
 </dd>
@@ -1855,13 +1919,11 @@ Returns:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.create_subscription(
-    url="url",
-    event_types=["sync.pending"],
+    url="https://api.mycompany.com/webhooks/airweave",
+    event_types=["sync.completed", "sync.failed"],
 )
 
 ```
@@ -1878,7 +1940,7 @@ client.events.create_subscription(
 <dl>
 <dd>
 
-**url:** `str` 
+**url:** `str` — The HTTPS URL where webhook events will be delivered. Must be a publicly accessible endpoint that returns a 2xx status code.
     
 </dd>
 </dl>
@@ -1886,7 +1948,7 @@ client.events.create_subscription(
 <dl>
 <dd>
 
-**event_types:** `typing.Sequence[EventType]` 
+**event_types:** `typing.Sequence[EventType]` — List of event types to subscribe to. Events not in this list will not be delivered to this subscription. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`.
     
 </dd>
 </dl>
@@ -1894,7 +1956,7 @@ client.events.create_subscription(
 <dl>
 <dd>
 
-**secret:** `typing.Optional[str]` 
+**secret:** `typing.Optional[str]` — Optional custom signing secret for webhook signature verification. If not provided, a secure secret will be auto-generated. Must be at least 24 characters if specified.
     
 </dd>
 </dl>
@@ -1926,14 +1988,14 @@ client.events.create_subscription(
 <dl>
 <dd>
 
-Get a specific webhook subscription with its delivery attempts.
+Retrieve a specific webhook subscription with its recent delivery attempts.
 
-Args:
-    subscription_id: The ID of the subscription to retrieve.
-    ctx: The API context containing organization info.
+Returns the subscription configuration along with a history of message delivery
+attempts. This is useful for debugging delivery issues or verifying that your
+endpoint is correctly receiving events.
 
-Returns:
-    The subscription details with message delivery attempts.
+Use `include_secret=true` to also retrieve the signing secret for webhook
+signature verification. Keep this secret secure.
 </dd>
 </dl>
 </dd>
@@ -1951,12 +2013,11 @@ Returns:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.get_subscription(
-    subscription_id="subscription_id",
+    subscription_id="550e8400-e29b-41d4-a716-446655440000",
+    include_secret=True,
 )
 
 ```
@@ -1973,7 +2034,15 @@ client.events.get_subscription(
 <dl>
 <dd>
 
-**subscription_id:** `str` 
+**subscription_id:** `str` — The unique identifier of the subscription to retrieve (UUID).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include_secret:** `typing.Optional[bool]` — Include the signing secret for webhook signature verification. Keep this secret secure and use it to verify the 'svix-signature' header.
     
 </dd>
 </dl>
@@ -2005,11 +2074,13 @@ client.events.get_subscription(
 <dl>
 <dd>
 
-Delete a webhook subscription.
+Permanently delete a webhook subscription.
 
-Args:
-    subscription_id: The ID of the subscription to delete.
-    ctx: The API context containing organization info.
+Once deleted, Airweave will stop sending events to this endpoint immediately.
+This action cannot be undone. Any pending message deliveries will be cancelled.
+
+If you want to temporarily stop receiving events, consider disabling the
+subscription instead using the PATCH endpoint.
 </dd>
 </dl>
 </dd>
@@ -2027,12 +2098,10 @@ Args:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.delete_subscription(
-    subscription_id="subscription_id",
+    subscription_id="550e8400-e29b-41d4-a716-446655440000",
 )
 
 ```
@@ -2049,7 +2118,7 @@ client.events.delete_subscription(
 <dl>
 <dd>
 
-**subscription_id:** `str` 
+**subscription_id:** `str` — The unique identifier of the subscription to delete (UUID).
     
 </dd>
 </dl>
@@ -2081,15 +2150,21 @@ client.events.delete_subscription(
 <dl>
 <dd>
 
-Update a webhook subscription.
+Update an existing webhook subscription.
 
-Args:
-    subscription_id: The ID of the subscription to update.
-    request: The subscription update request.
-    ctx: The API context containing organization info.
+Use this endpoint to modify a subscription's configuration. You can:
 
-Returns:
-    The updated subscription.
+- **Change the URL**: Update where events are delivered
+- **Update event types**: Modify which events trigger notifications
+- **Enable/disable**: Temporarily pause delivery without deleting the subscription
+- **Recover messages**: When re-enabling, optionally recover missed messages
+
+Only include the fields you want to change. Omitted fields will retain their
+current values.
+
+When re-enabling a subscription (`disabled: false`), you can optionally provide
+`recover_since` to automatically retry all messages that were generated while
+the subscription was disabled.
 </dd>
 </dl>
 </dd>
@@ -2107,12 +2182,10 @@ Returns:
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.patch_subscription(
-    subscription_id="subscription_id",
+    subscription_id="550e8400-e29b-41d4-a716-446655440000",
 )
 
 ```
@@ -2129,7 +2202,7 @@ client.events.patch_subscription(
 <dl>
 <dd>
 
-**subscription_id:** `str` 
+**subscription_id:** `str` — The unique identifier of the subscription to update (UUID).
     
 </dd>
 </dl>
@@ -2137,7 +2210,7 @@ client.events.patch_subscription(
 <dl>
 <dd>
 
-**url:** `typing.Optional[str]` 
+**url:** `typing.Optional[str]` — New URL for webhook delivery. Must be a publicly accessible HTTPS endpoint.
     
 </dd>
 </dl>
@@ -2145,7 +2218,7 @@ client.events.patch_subscription(
 <dl>
 <dd>
 
-**event_types:** `typing.Optional[typing.Sequence[EventType]]` 
+**event_types:** `typing.Optional[typing.Sequence[EventType]]` — New list of event types to subscribe to. This replaces the existing list entirely.
     
 </dd>
 </dl>
@@ -2153,7 +2226,7 @@ client.events.patch_subscription(
 <dl>
 <dd>
 
-**disabled:** `typing.Optional[bool]` 
+**disabled:** `typing.Optional[bool]` — Set to `true` to pause delivery to this subscription, or `false` to resume. Disabled subscriptions will not receive events.
     
 </dd>
 </dl>
@@ -2161,167 +2234,7 @@ client.events.patch_subscription(
 <dl>
 <dd>
 
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">enable_subscription</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Enable a disabled webhook subscription, optionally recovering failed messages.
-
-Args:
-    subscription_id: The ID of the subscription to enable.
-    request: Optional request with recovery time range.
-    ctx: The API context containing organization info.
-
-Returns:
-    The enabled subscription.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK, EnableEndpointRequest
-
-client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
-    api_key="YOUR_API_KEY",
-)
-client.events.enable_subscription(
-    subscription_id="subscription_id",
-    request=EnableEndpointRequest(),
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**subscription_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request:** `typing.Optional[EnableEndpointRequest]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_subscription_secret</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get the signing secret for a webhook subscription.
-
-Args:
-    subscription_id: The ID of the subscription.
-    ctx: The API context containing organization info.
-
-Returns:
-    The subscription's signing secret.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
-    api_key="YOUR_API_KEY",
-)
-client.events.get_subscription_secret(
-    subscription_id="subscription_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**subscription_id:** `str` 
+**recover_since:** `typing.Optional[dt.datetime]` — When re-enabling a subscription (`disabled: false`), optionally recover failed messages from this timestamp. Only applies when enabling.
     
 </dd>
 </dl>
@@ -2353,19 +2266,17 @@ client.events.get_subscription_secret(
 <dl>
 <dd>
 
-Recover (retry) failed messages for a webhook subscription.
+Retry failed message deliveries for a webhook subscription.
 
-This endpoint triggers a recovery of all failed messages since the specified
-time. Useful after re-enabling a disabled endpoint to retry messages that
-failed while the endpoint was down.
+Triggers a recovery process that replays all failed messages within the
+specified time window. This is useful when:
 
-Args:
-    subscription_id: The ID of the subscription to recover messages for.
-    request: The recovery request with time range.
-    ctx: The API context containing organization info.
+- Your endpoint was temporarily down and you want to catch up
+- You've fixed a bug in your webhook handler
+- You want to reprocess events after re-enabling a disabled subscription
 
-Returns:
-    Information about the recovery task.
+Messages are retried in chronological order. Successfully delivered messages
+are skipped; only failed or pending messages are retried.
 </dd>
 </dl>
 </dd>
@@ -2385,14 +2296,12 @@ import datetime
 from airweave import AirweaveSDK
 
 client = AirweaveSDK(
-    framework_name="YOUR_FRAMEWORK_NAME",
-    framework_version="YOUR_FRAMEWORK_VERSION",
     api_key="YOUR_API_KEY",
 )
 client.events.recover_failed_messages(
-    subscription_id="subscription_id",
+    subscription_id="550e8400-e29b-41d4-a716-446655440000",
     since=datetime.datetime.fromisoformat(
-        "2024-01-15 09:30:00+00:00",
+        "2024-03-14 00:00:00+00:00",
     ),
 )
 
@@ -2410,7 +2319,7 @@ client.events.recover_failed_messages(
 <dl>
 <dd>
 
-**subscription_id:** `str` 
+**subscription_id:** `str` — The unique identifier of the subscription to recover messages for (UUID).
     
 </dd>
 </dl>
@@ -2418,7 +2327,7 @@ client.events.recover_failed_messages(
 <dl>
 <dd>
 
-**since:** `dt.datetime` 
+**since:** `dt.datetime` — Start of the recovery time window (inclusive). All failed messages from this time onward will be retried.
     
 </dd>
 </dl>
@@ -2426,7 +2335,7 @@ client.events.recover_failed_messages(
 <dl>
 <dd>
 
-**until:** `typing.Optional[dt.datetime]` 
+**until:** `typing.Optional[dt.datetime]` — End of the recovery time window (exclusive). If not specified, recovers all failed messages up to now.
     
 </dd>
 </dl>

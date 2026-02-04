@@ -11,20 +11,55 @@ from .source_connection_status import SourceConnectionStatus
 
 class SourceConnectionListItem(UniversalBaseModel):
     """
-    Clean source connection for list views.
+    Lightweight source connection representation for list views.
+
+    Contains essential fields for display and navigation. For full details
+    including sync history and configuration, use the GET /{id} endpoint.
     """
 
-    id: str
-    name: str
-    short_name: str
-    readable_collection_id: str
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    is_authenticated: bool
-    entity_count: typing.Optional[int] = None
+    id: str = pydantic.Field()
+    """
+    Unique identifier of the source connection
+    """
+
+    name: str = pydantic.Field()
+    """
+    Display name of the connection
+    """
+
+    short_name: str = pydantic.Field()
+    """
+    Source type identifier
+    """
+
+    readable_collection_id: str = pydantic.Field()
+    """
+    Collection this connection belongs to
+    """
+
+    created_at: dt.datetime = pydantic.Field()
+    """
+    When the connection was created (ISO 8601)
+    """
+
+    modified_at: dt.datetime = pydantic.Field()
+    """
+    When the connection was last modified (ISO 8601)
+    """
+
+    is_authenticated: bool = pydantic.Field()
+    """
+    Whether the connection has valid credentials
+    """
+
+    entity_count: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Total number of entities synced from this connection
+    """
+
     federated_search: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether this source uses federated search
+    Whether this source uses federated (real-time) search instead of syncing
     """
 
     auth_method: AuthenticationMethod = pydantic.Field()

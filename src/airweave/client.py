@@ -33,8 +33,6 @@ class AirweaveSDK:
 
 
 
-    framework_name : typing.Optional[str]
-    framework_version : typing.Optional[str]
     api_key : str
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
@@ -53,8 +51,6 @@ class AirweaveSDK:
     from airweave import AirweaveSDK
 
     client = AirweaveSDK(
-        framework_name="YOUR_FRAMEWORK_NAME",
-        framework_version="YOUR_FRAMEWORK_VERSION",
         api_key="YOUR_API_KEY",
     )
     """
@@ -64,8 +60,6 @@ class AirweaveSDK:
         *,
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
-        framework_name: typing.Optional[str] = None,
-        framework_version: typing.Optional[str] = None,
         api_key: str,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
@@ -77,8 +71,6 @@ class AirweaveSDK:
         )
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            framework_name=framework_name,
-            framework_version=framework_version,
             api_key=api_key,
             headers=headers,
             httpx_client=httpx_client
@@ -144,8 +136,6 @@ class AsyncAirweaveSDK:
 
 
 
-    framework_name : typing.Optional[str]
-    framework_version : typing.Optional[str]
     api_key : str
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
@@ -164,8 +154,6 @@ class AsyncAirweaveSDK:
     from airweave import AsyncAirweaveSDK
 
     client = AsyncAirweaveSDK(
-        framework_name="YOUR_FRAMEWORK_NAME",
-        framework_version="YOUR_FRAMEWORK_VERSION",
         api_key="YOUR_API_KEY",
     )
     """
@@ -175,8 +163,6 @@ class AsyncAirweaveSDK:
         *,
         base_url: typing.Optional[str] = None,
         environment: AirweaveSDKEnvironment = AirweaveSDKEnvironment.PRODUCTION,
-        framework_name: typing.Optional[str] = None,
-        framework_version: typing.Optional[str] = None,
         api_key: str,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
@@ -188,8 +174,6 @@ class AsyncAirweaveSDK:
         )
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            framework_name=framework_name,
-            framework_version=framework_version,
             api_key=api_key,
             headers=headers,
             httpx_client=httpx_client

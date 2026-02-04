@@ -14,30 +14,85 @@ from .sync_details import SyncDetails
 
 class SourceConnection(UniversalBaseModel):
     """
-    Complete source connection details.
+    Complete source connection details including auth, config, sync status, and entities.
+
+    This schema provides full information about a source connection, suitable for
+    detail views and monitoring sync progress.
     """
 
-    id: str
-    name: str
-    description: typing.Optional[str] = None
-    short_name: str
-    readable_collection_id: str
-    status: SourceConnectionStatus
-    created_at: dt.datetime
-    modified_at: dt.datetime
-    auth: AuthenticationDetails
-    config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
-    schedule: typing.Optional[ScheduleDetails] = None
-    sync: typing.Optional[SyncDetails] = None
+    id: str = pydantic.Field()
+    """
+    Unique identifier of the source connection
+    """
+
+    name: str = pydantic.Field()
+    """
+    Display name of the connection
+    """
+
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Optional description of the connection's purpose
+    """
+
+    short_name: str = pydantic.Field()
+    """
+    Source type identifier
+    """
+
+    readable_collection_id: str = pydantic.Field()
+    """
+    Collection this connection belongs to
+    """
+
+    status: SourceConnectionStatus = pydantic.Field()
+    """
+    Current operational status of the connection
+    """
+
+    created_at: dt.datetime = pydantic.Field()
+    """
+    When the connection was created (ISO 8601)
+    """
+
+    modified_at: dt.datetime = pydantic.Field()
+    """
+    When the connection was last modified (ISO 8601)
+    """
+
+    auth: AuthenticationDetails = pydantic.Field()
+    """
+    Authentication status and details
+    """
+
+    config: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Source-specific configuration values
+    """
+
+    schedule: typing.Optional[ScheduleDetails] = pydantic.Field(default=None)
+    """
+    Sync schedule configuration
+    """
+
+    sync: typing.Optional[SyncDetails] = pydantic.Field(default=None)
+    """
+    Sync execution history and statistics
+    """
+
     sync_id: typing.Optional[str] = pydantic.Field(default=None)
     """
-    ID of the associated sync
+    ID of the associated sync (internal use)
     """
 
-    entities: typing.Optional[EntitySummary] = None
+    entities: typing.Optional[EntitySummary] = pydantic.Field(default=None)
+    """
+    Summary of synced entities by type
+    """
+
     federated_search: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether this source uses federated search
+    Whether this source uses federated (real-time) search instead of syncing
     """
 
     if IS_PYDANTIC_V2:

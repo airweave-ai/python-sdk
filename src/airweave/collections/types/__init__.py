@@ -7,10 +7,8 @@ from importlib import import_module
 
 if typing.TYPE_CHECKING:
     from .search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
-    from .search_collections_readable_id_search_post_response import SearchCollectionsReadableIdSearchPostResponse
 _dynamic_imports: typing.Dict[str, str] = {
-    "SearchCollectionsReadableIdSearchPostRequest": ".search_collections_readable_id_search_post_request",
-    "SearchCollectionsReadableIdSearchPostResponse": ".search_collections_readable_id_search_post_response",
+    "SearchCollectionsReadableIdSearchPostRequest": ".search_collections_readable_id_search_post_request"
 }
 
 
@@ -35,4 +33,4 @@ def __dir__():
     return sorted(lazy_attrs)
 
 
-__all__ = ["SearchCollectionsReadableIdSearchPostRequest", "SearchCollectionsReadableIdSearchPostResponse"]
+__all__ = ["SearchCollectionsReadableIdSearchPostRequest"]

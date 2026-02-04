@@ -4,14 +4,20 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .background_task_status import BackgroundTaskStatus
-from .background_task_type import BackgroundTaskType
 
 
-class RecoverOut(UniversalBaseModel):
-    id: str
-    status: BackgroundTaskStatus
-    task: BackgroundTaskType
+class RateLimitErrorResponse(UniversalBaseModel):
+    """
+    Response returned when rate limit is exceeded (HTTP 429).
+
+    The API enforces rate limits to ensure fair usage. When exceeded,
+    wait for the duration specified in the Retry-After header before retrying.
+    """
+
+    detail: str = pydantic.Field()
+    """
+    Error message explaining the rate limit
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

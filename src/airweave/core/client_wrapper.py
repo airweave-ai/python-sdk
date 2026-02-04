@@ -10,15 +10,11 @@ class BaseClientWrapper:
     def __init__(
         self,
         *,
-        framework_name: typing.Optional[str] = None,
-        framework_version: typing.Optional[str] = None,
         api_key: str,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         base_url: str,
         timeout: typing.Optional[float] = None,
     ):
-        self._framework_name = framework_name
-        self._framework_version = framework_version
         self.api_key = api_key
         self._headers = headers
         self._base_url = base_url
@@ -26,16 +22,12 @@ class BaseClientWrapper:
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "airweave-sdk/v0.8.65",
+            "User-Agent": "airweave-sdk/v0.8.66",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "airweave-sdk",
-            "X-Fern-SDK-Version": "v0.8.65",
+            "X-Fern-SDK-Version": "v0.8.66",
             **(self.get_custom_headers() or {}),
         }
-        if self._framework_name is not None:
-            headers["X-Framework-Name"] = self._framework_name
-        if self._framework_version is not None:
-            headers["X-Framework-Version"] = self._framework_version
         headers["x-api-key"] = self.api_key
         return headers
 
@@ -53,22 +45,13 @@ class SyncClientWrapper(BaseClientWrapper):
     def __init__(
         self,
         *,
-        framework_name: typing.Optional[str] = None,
-        framework_version: typing.Optional[str] = None,
         api_key: str,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         base_url: str,
         timeout: typing.Optional[float] = None,
         httpx_client: httpx.Client,
     ):
-        super().__init__(
-            framework_name=framework_name,
-            framework_version=framework_version,
-            api_key=api_key,
-            headers=headers,
-            base_url=base_url,
-            timeout=timeout,
-        )
+        super().__init__(api_key=api_key, headers=headers, base_url=base_url, timeout=timeout)
         self.httpx_client = HttpClient(
             httpx_client=httpx_client,
             base_headers=self.get_headers,
@@ -81,22 +64,13 @@ class AsyncClientWrapper(BaseClientWrapper):
     def __init__(
         self,
         *,
-        framework_name: typing.Optional[str] = None,
-        framework_version: typing.Optional[str] = None,
         api_key: str,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         base_url: str,
         timeout: typing.Optional[float] = None,
         httpx_client: httpx.AsyncClient,
     ):
-        super().__init__(
-            framework_name=framework_name,
-            framework_version=framework_version,
-            api_key=api_key,
-            headers=headers,
-            base_url=base_url,
-            timeout=timeout,
-        )
+        super().__init__(api_key=api_key, headers=headers, base_url=base_url, timeout=timeout)
         self.httpx_client = AsyncHttpClient(
             httpx_client=httpx_client,
             base_headers=self.get_headers,
