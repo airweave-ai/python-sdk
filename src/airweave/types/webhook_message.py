@@ -8,9 +8,9 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .sync_event_payload import SyncEventPayload
 
 
-class EventMessage(UniversalBaseModel):
+class WebhookMessage(UniversalBaseModel):
     """
-    An event message that was sent (or attempted) to webhook subscribers.
+    A webhook message that was sent (or attempted) to webhook subscribers.
 
     The payload contains the actual event data matching the webhook delivery format.
     """

@@ -60,8 +60,6 @@ if typing.TYPE_CHECKING:
     from .entity_summary import EntitySummary
     from .entity_type import EntityType
     from .entity_type_stats import EntityTypeStats
-    from .event_message import EventMessage
-    from .event_message_with_attempts import EventMessageWithAttempts
     from .event_type import EventType
     from .feature_flag import FeatureFlag
     from .fields import Fields
@@ -135,6 +133,8 @@ if typing.TYPE_CHECKING:
     from .validation_error_detail import ValidationErrorDetail
     from .validation_error_loc_item import ValidationErrorLocItem
     from .validation_error_response import ValidationErrorResponse
+    from .webhook_message import WebhookMessage
+    from .webhook_message_with_attempts import WebhookMessageWithAttempts
     from .webhook_subscription import WebhookSubscription
 _dynamic_imports: typing.Dict[str, str] = {
     "ActionCheckRequest": ".action_check_request",
@@ -187,8 +187,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntitySummary": ".entity_summary",
     "EntityType": ".entity_type",
     "EntityTypeStats": ".entity_type_stats",
-    "EventMessage": ".event_message",
-    "EventMessageWithAttempts": ".event_message_with_attempts",
     "EventType": ".event_type",
     "FeatureFlag": ".feature_flag",
     "Fields": ".fields",
@@ -262,6 +260,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ValidationErrorDetail": ".validation_error_detail",
     "ValidationErrorLocItem": ".validation_error_loc_item",
     "ValidationErrorResponse": ".validation_error_response",
+    "WebhookMessage": ".webhook_message",
+    "WebhookMessageWithAttempts": ".webhook_message_with_attempts",
     "WebhookSubscription": ".webhook_subscription",
 }
 
@@ -338,8 +338,6 @@ __all__ = [
     "EntitySummary",
     "EntityType",
     "EntityTypeStats",
-    "EventMessage",
-    "EventMessageWithAttempts",
     "EventType",
     "FeatureFlag",
     "Fields",
@@ -413,5 +411,7 @@ __all__ = [
     "ValidationErrorDetail",
     "ValidationErrorLocItem",
     "ValidationErrorResponse",
+    "WebhookMessage",
+    "WebhookMessageWithAttempts",
     "WebhookSubscription",
 ]

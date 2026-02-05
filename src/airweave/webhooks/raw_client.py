@@ -13,19 +13,19 @@ from ..core.request_options import RequestOptions
 from ..errors.not_found_error import NotFoundError
 from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
-from ..types.event_message import EventMessage
-from ..types.event_message_with_attempts import EventMessageWithAttempts
 from ..types.event_type import EventType
 from ..types.not_found_error_response import NotFoundErrorResponse
 from ..types.rate_limit_error_response import RateLimitErrorResponse
 from ..types.recovery_task import RecoveryTask
+from ..types.webhook_message import WebhookMessage
+from ..types.webhook_message_with_attempts import WebhookMessageWithAttempts
 from ..types.webhook_subscription import WebhookSubscription
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class RawEventsClient:
+class RawWebhooksClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
@@ -34,11 +34,11 @@ class RawEventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[typing.List[EventMessage]]:
+    ) -> HttpResponse[typing.List[WebhookMessage]]:
         """
-        Retrieve all event messages for your organization.
+        Retrieve all webhook messages for your organization.
 
-        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        Webhook messages represent payloads that were sent (or attempted to be sent)
         to your subscribed endpoints. Each message contains the event type, payload data,
         and delivery status information.
 
@@ -55,11 +55,11 @@ class RawEventsClient:
 
         Returns
         -------
-        HttpResponse[typing.List[EventMessage]]
-            List of event messages
+        HttpResponse[typing.List[WebhookMessage]]
+            List of webhook messages
         """
         _response = self._client_wrapper.httpx_client.request(
-            "events/messages",
+            "webhooks/messages",
             method="GET",
             params={
                 "event_types": event_types,
@@ -69,9 +69,9 @@ class RawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[EventMessage],
+                    typing.List[WebhookMessage],
                     parse_obj_as(
-                        type_=typing.List[EventMessage],  # type: ignore
+                        type_=typing.List[WebhookMessage],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -109,9 +109,9 @@ class RawEventsClient:
         *,
         include_attempts: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[EventMessageWithAttempts]:
+    ) -> HttpResponse[WebhookMessageWithAttempts]:
         """
-        Retrieve a specific event message by its ID.
+        Retrieve a specific webhook message by its ID.
 
         Returns the full message details including the event type, payload data,
         timestamp, and delivery channel information. Use this to inspect the
@@ -134,11 +134,11 @@ class RawEventsClient:
 
         Returns
         -------
-        HttpResponse[EventMessageWithAttempts]
-            Event message details
+        HttpResponse[WebhookMessageWithAttempts]
+            Webhook message details
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"events/messages/{jsonable_encoder(message_id)}",
+            f"webhooks/messages/{jsonable_encoder(message_id)}",
             method="GET",
             params={
                 "include_attempts": include_attempts,
@@ -148,9 +148,9 @@ class RawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    EventMessageWithAttempts,
+                    WebhookMessageWithAttempts,
                     parse_obj_as(
-                        type_=EventMessageWithAttempts,  # type: ignore
+                        type_=WebhookMessageWithAttempts,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -214,7 +214,7 @@ class RawEventsClient:
             List of webhook subscriptions
         """
         _response = self._client_wrapper.httpx_client.request(
-            "events/subscriptions",
+            "webhooks/subscriptions",
             method="GET",
             request_options=request_options,
         )
@@ -296,7 +296,7 @@ class RawEventsClient:
             Created subscription
         """
         _response = self._client_wrapper.httpx_client.request(
-            "events/subscriptions",
+            "webhooks/subscriptions",
             method="POST",
             json={
                 "url": url,
@@ -380,7 +380,7 @@ class RawEventsClient:
             Subscription with delivery attempts
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}",
             method="GET",
             params={
                 "include_secret": include_secret,
@@ -461,7 +461,7 @@ class RawEventsClient:
             Deleted subscription
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}",
             method="DELETE",
             request_options=request_options,
         )
@@ -566,7 +566,7 @@ class RawEventsClient:
             Updated subscription
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}",
             method="PATCH",
             json={
                 "url": url,
@@ -669,7 +669,7 @@ class RawEventsClient:
             Recovery task information
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}/recover",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}/recover",
             method="POST",
             json={
                 "since": since,
@@ -730,7 +730,7 @@ class RawEventsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
 
-class AsyncRawEventsClient:
+class AsyncRawWebhooksClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
@@ -739,11 +739,11 @@ class AsyncRawEventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[typing.List[EventMessage]]:
+    ) -> AsyncHttpResponse[typing.List[WebhookMessage]]:
         """
-        Retrieve all event messages for your organization.
+        Retrieve all webhook messages for your organization.
 
-        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        Webhook messages represent payloads that were sent (or attempted to be sent)
         to your subscribed endpoints. Each message contains the event type, payload data,
         and delivery status information.
 
@@ -760,11 +760,11 @@ class AsyncRawEventsClient:
 
         Returns
         -------
-        AsyncHttpResponse[typing.List[EventMessage]]
-            List of event messages
+        AsyncHttpResponse[typing.List[WebhookMessage]]
+            List of webhook messages
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "events/messages",
+            "webhooks/messages",
             method="GET",
             params={
                 "event_types": event_types,
@@ -774,9 +774,9 @@ class AsyncRawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[EventMessage],
+                    typing.List[WebhookMessage],
                     parse_obj_as(
-                        type_=typing.List[EventMessage],  # type: ignore
+                        type_=typing.List[WebhookMessage],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -814,9 +814,9 @@ class AsyncRawEventsClient:
         *,
         include_attempts: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[EventMessageWithAttempts]:
+    ) -> AsyncHttpResponse[WebhookMessageWithAttempts]:
         """
-        Retrieve a specific event message by its ID.
+        Retrieve a specific webhook message by its ID.
 
         Returns the full message details including the event type, payload data,
         timestamp, and delivery channel information. Use this to inspect the
@@ -839,11 +839,11 @@ class AsyncRawEventsClient:
 
         Returns
         -------
-        AsyncHttpResponse[EventMessageWithAttempts]
-            Event message details
+        AsyncHttpResponse[WebhookMessageWithAttempts]
+            Webhook message details
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"events/messages/{jsonable_encoder(message_id)}",
+            f"webhooks/messages/{jsonable_encoder(message_id)}",
             method="GET",
             params={
                 "include_attempts": include_attempts,
@@ -853,9 +853,9 @@ class AsyncRawEventsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    EventMessageWithAttempts,
+                    WebhookMessageWithAttempts,
                     parse_obj_as(
-                        type_=EventMessageWithAttempts,  # type: ignore
+                        type_=WebhookMessageWithAttempts,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -919,7 +919,7 @@ class AsyncRawEventsClient:
             List of webhook subscriptions
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "events/subscriptions",
+            "webhooks/subscriptions",
             method="GET",
             request_options=request_options,
         )
@@ -1001,7 +1001,7 @@ class AsyncRawEventsClient:
             Created subscription
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "events/subscriptions",
+            "webhooks/subscriptions",
             method="POST",
             json={
                 "url": url,
@@ -1085,7 +1085,7 @@ class AsyncRawEventsClient:
             Subscription with delivery attempts
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}",
             method="GET",
             params={
                 "include_secret": include_secret,
@@ -1166,7 +1166,7 @@ class AsyncRawEventsClient:
             Deleted subscription
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}",
             method="DELETE",
             request_options=request_options,
         )
@@ -1271,7 +1271,7 @@ class AsyncRawEventsClient:
             Updated subscription
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}",
             method="PATCH",
             json={
                 "url": url,
@@ -1374,7 +1374,7 @@ class AsyncRawEventsClient:
             Recovery task information
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"events/subscriptions/{jsonable_encoder(subscription_id)}/recover",
+            f"webhooks/subscriptions/{jsonable_encoder(subscription_id)}/recover",
             method="POST",
             json={
                 "since": since,

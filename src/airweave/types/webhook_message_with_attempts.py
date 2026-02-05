@@ -9,9 +9,9 @@ from .delivery_attempt import DeliveryAttempt
 from .sync_event_payload import SyncEventPayload
 
 
-class EventMessageWithAttempts(UniversalBaseModel):
+class WebhookMessageWithAttempts(UniversalBaseModel):
     """
-    An event message with delivery attempts.
+    A webhook message with delivery attempts.
     """
 
     id: str = pydantic.Field()

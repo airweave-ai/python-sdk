@@ -1652,8 +1652,8 @@ client.source_connections.cancel_job(
 </dl>
 </details>
 
-## events
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_messages</a>(...)</code></summary>
+## webhooks
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">get_messages</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1665,9 +1665,9 @@ client.source_connections.cancel_job(
 <dl>
 <dd>
 
-Retrieve all event messages for your organization.
+Retrieve all webhook messages for your organization.
 
-Event messages represent webhook payloads that were sent (or attempted to be sent)
+Webhook messages represent payloads that were sent (or attempted to be sent)
 to your subscribed endpoints. Each message contains the event type, payload data,
 and delivery status information.
 
@@ -1692,7 +1692,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.get_messages()
+client.webhooks.get_messages()
 
 ```
 </dd>
@@ -1728,7 +1728,7 @@ client.events.get_messages()
 </dl>
 </details>
 
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_message</a>(...)</code></summary>
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">get_message</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1740,7 +1740,7 @@ client.events.get_messages()
 <dl>
 <dd>
 
-Retrieve a specific event message by its ID.
+Retrieve a specific webhook message by its ID.
 
 Returns the full message details including the event type, payload data,
 timestamp, and delivery channel information. Use this to inspect the
@@ -1768,7 +1768,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.get_message(
+client.webhooks.get_message(
     message_id="550e8400-e29b-41d4-a716-446655440000",
     include_attempts=True,
 )
@@ -1815,7 +1815,7 @@ client.events.get_message(
 </dl>
 </details>
 
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_subscriptions</a>()</code></summary>
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">get_subscriptions</a>()</code></summary>
 <dl>
 <dd>
 
@@ -1851,7 +1851,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.get_subscriptions()
+client.webhooks.get_subscriptions()
 
 ```
 </dd>
@@ -1879,7 +1879,7 @@ client.events.get_subscriptions()
 </dl>
 </details>
 
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">create_subscription</a>(...)</code></summary>
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">create_subscription</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1921,7 +1921,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.create_subscription(
+client.webhooks.create_subscription(
     url="https://api.mycompany.com/webhooks/airweave",
     event_types=["sync.completed", "sync.failed"],
 )
@@ -1976,7 +1976,7 @@ client.events.create_subscription(
 </dl>
 </details>
 
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">get_subscription</a>(...)</code></summary>
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">get_subscription</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2015,7 +2015,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.get_subscription(
+client.webhooks.get_subscription(
     subscription_id="550e8400-e29b-41d4-a716-446655440000",
     include_secret=True,
 )
@@ -2062,7 +2062,7 @@ client.events.get_subscription(
 </dl>
 </details>
 
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">delete_subscription</a>(...)</code></summary>
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">delete_subscription</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2100,7 +2100,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.delete_subscription(
+client.webhooks.delete_subscription(
     subscription_id="550e8400-e29b-41d4-a716-446655440000",
 )
 
@@ -2138,7 +2138,7 @@ client.events.delete_subscription(
 </dl>
 </details>
 
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">patch_subscription</a>(...)</code></summary>
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">patch_subscription</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2184,7 +2184,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.patch_subscription(
+client.webhooks.patch_subscription(
     subscription_id="550e8400-e29b-41d4-a716-446655440000",
 )
 
@@ -2254,7 +2254,7 @@ client.events.patch_subscription(
 </dl>
 </details>
 
-<details><summary><code>client.events.<a href="src/airweave/events/client.py">recover_failed_messages</a>(...)</code></summary>
+<details><summary><code>client.webhooks.<a href="src/airweave/webhooks/client.py">recover_failed_messages</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2298,7 +2298,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-client.events.recover_failed_messages(
+client.webhooks.recover_failed_messages(
     subscription_id="550e8400-e29b-41d4-a716-446655440000",
     since=datetime.datetime.fromisoformat(
         "2024-03-14 00:00:00+00:00",

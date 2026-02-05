@@ -5,29 +5,29 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.event_message import EventMessage
-from ..types.event_message_with_attempts import EventMessageWithAttempts
 from ..types.event_type import EventType
 from ..types.recovery_task import RecoveryTask
+from ..types.webhook_message import WebhookMessage
+from ..types.webhook_message_with_attempts import WebhookMessageWithAttempts
 from ..types.webhook_subscription import WebhookSubscription
-from .raw_client import AsyncRawEventsClient, RawEventsClient
+from .raw_client import AsyncRawWebhooksClient, RawWebhooksClient
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class EventsClient:
+class WebhooksClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
-        self._raw_client = RawEventsClient(client_wrapper=client_wrapper)
+        self._raw_client = RawWebhooksClient(client_wrapper=client_wrapper)
 
     @property
-    def with_raw_response(self) -> RawEventsClient:
+    def with_raw_response(self) -> RawWebhooksClient:
         """
         Retrieves a raw implementation of this client that returns raw responses.
 
         Returns
         -------
-        RawEventsClient
+        RawWebhooksClient
         """
         return self._raw_client
 
@@ -36,11 +36,11 @@ class EventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[EventMessage]:
+    ) -> typing.List[WebhookMessage]:
         """
-        Retrieve all event messages for your organization.
+        Retrieve all webhook messages for your organization.
 
-        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        Webhook messages represent payloads that were sent (or attempted to be sent)
         to your subscribed endpoints. Each message contains the event type, payload data,
         and delivery status information.
 
@@ -57,8 +57,8 @@ class EventsClient:
 
         Returns
         -------
-        typing.List[EventMessage]
-            List of event messages
+        typing.List[WebhookMessage]
+            List of webhook messages
 
         Examples
         --------
@@ -67,7 +67,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.get_messages()
+        client.webhooks.get_messages()
         """
         _response = self._raw_client.get_messages(event_types=event_types, request_options=request_options)
         return _response.data
@@ -78,9 +78,9 @@ class EventsClient:
         *,
         include_attempts: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> EventMessageWithAttempts:
+    ) -> WebhookMessageWithAttempts:
         """
-        Retrieve a specific event message by its ID.
+        Retrieve a specific webhook message by its ID.
 
         Returns the full message details including the event type, payload data,
         timestamp, and delivery channel information. Use this to inspect the
@@ -103,8 +103,8 @@ class EventsClient:
 
         Returns
         -------
-        EventMessageWithAttempts
-            Event message details
+        WebhookMessageWithAttempts
+            Webhook message details
 
         Examples
         --------
@@ -113,7 +113,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.get_message(
+        client.webhooks.get_message(
             message_id="550e8400-e29b-41d4-a716-446655440000",
             include_attempts=True,
         )
@@ -150,7 +150,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.get_subscriptions()
+        client.webhooks.get_subscriptions()
         """
         _response = self._raw_client.get_subscriptions(request_options=request_options)
         return _response.data
@@ -202,7 +202,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.create_subscription(
+        client.webhooks.create_subscription(
             url="https://api.mycompany.com/webhooks/airweave",
             event_types=["sync.completed", "sync.failed"],
         )
@@ -252,7 +252,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.get_subscription(
+        client.webhooks.get_subscription(
             subscription_id="550e8400-e29b-41d4-a716-446655440000",
             include_secret=True,
         )
@@ -294,7 +294,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.delete_subscription(
+        client.webhooks.delete_subscription(
             subscription_id="550e8400-e29b-41d4-a716-446655440000",
         )
         """
@@ -360,7 +360,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.patch_subscription(
+        client.webhooks.patch_subscription(
             subscription_id="550e8400-e29b-41d4-a716-446655440000",
         )
         """
@@ -423,7 +423,7 @@ class EventsClient:
         client = AirweaveSDK(
             api_key="YOUR_API_KEY",
         )
-        client.events.recover_failed_messages(
+        client.webhooks.recover_failed_messages(
             subscription_id="550e8400-e29b-41d4-a716-446655440000",
             since=datetime.datetime.fromisoformat(
                 "2024-03-14 00:00:00+00:00",
@@ -436,18 +436,18 @@ class EventsClient:
         return _response.data
 
 
-class AsyncEventsClient:
+class AsyncWebhooksClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
-        self._raw_client = AsyncRawEventsClient(client_wrapper=client_wrapper)
+        self._raw_client = AsyncRawWebhooksClient(client_wrapper=client_wrapper)
 
     @property
-    def with_raw_response(self) -> AsyncRawEventsClient:
+    def with_raw_response(self) -> AsyncRawWebhooksClient:
         """
         Retrieves a raw implementation of this client that returns raw responses.
 
         Returns
         -------
-        AsyncRawEventsClient
+        AsyncRawWebhooksClient
         """
         return self._raw_client
 
@@ -456,11 +456,11 @@ class AsyncEventsClient:
         *,
         event_types: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> typing.List[EventMessage]:
+    ) -> typing.List[WebhookMessage]:
         """
-        Retrieve all event messages for your organization.
+        Retrieve all webhook messages for your organization.
 
-        Event messages represent webhook payloads that were sent (or attempted to be sent)
+        Webhook messages represent payloads that were sent (or attempted to be sent)
         to your subscribed endpoints. Each message contains the event type, payload data,
         and delivery status information.
 
@@ -477,8 +477,8 @@ class AsyncEventsClient:
 
         Returns
         -------
-        typing.List[EventMessage]
-            List of event messages
+        typing.List[WebhookMessage]
+            List of webhook messages
 
         Examples
         --------
@@ -492,7 +492,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.get_messages()
+            await client.webhooks.get_messages()
 
 
         asyncio.run(main())
@@ -506,9 +506,9 @@ class AsyncEventsClient:
         *,
         include_attempts: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> EventMessageWithAttempts:
+    ) -> WebhookMessageWithAttempts:
         """
-        Retrieve a specific event message by its ID.
+        Retrieve a specific webhook message by its ID.
 
         Returns the full message details including the event type, payload data,
         timestamp, and delivery channel information. Use this to inspect the
@@ -531,8 +531,8 @@ class AsyncEventsClient:
 
         Returns
         -------
-        EventMessageWithAttempts
-            Event message details
+        WebhookMessageWithAttempts
+            Webhook message details
 
         Examples
         --------
@@ -546,7 +546,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.get_message(
+            await client.webhooks.get_message(
                 message_id="550e8400-e29b-41d4-a716-446655440000",
                 include_attempts=True,
             )
@@ -591,7 +591,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.get_subscriptions()
+            await client.webhooks.get_subscriptions()
 
 
         asyncio.run(main())
@@ -651,7 +651,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.create_subscription(
+            await client.webhooks.create_subscription(
                 url="https://api.mycompany.com/webhooks/airweave",
                 event_types=["sync.completed", "sync.failed"],
             )
@@ -709,7 +709,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.get_subscription(
+            await client.webhooks.get_subscription(
                 subscription_id="550e8400-e29b-41d4-a716-446655440000",
                 include_secret=True,
             )
@@ -759,7 +759,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.delete_subscription(
+            await client.webhooks.delete_subscription(
                 subscription_id="550e8400-e29b-41d4-a716-446655440000",
             )
 
@@ -833,7 +833,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.patch_subscription(
+            await client.webhooks.patch_subscription(
                 subscription_id="550e8400-e29b-41d4-a716-446655440000",
             )
 
@@ -903,7 +903,7 @@ class AsyncEventsClient:
 
 
         async def main() -> None:
-            await client.events.recover_failed_messages(
+            await client.webhooks.recover_failed_messages(
                 subscription_id="550e8400-e29b-41d4-a716-446655440000",
                 since=datetime.datetime.fromisoformat(
                     "2024-03-14 00:00:00+00:00",

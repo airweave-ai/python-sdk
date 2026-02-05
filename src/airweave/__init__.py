@@ -57,8 +57,6 @@ if typing.TYPE_CHECKING:
         EntitySummary,
         EntityType,
         EntityTypeStats,
-        EventMessage,
-        EventMessageWithAttempts,
         EventType,
         FeatureFlag,
         Fields,
@@ -132,10 +130,12 @@ if typing.TYPE_CHECKING:
         ValidationErrorDetail,
         ValidationErrorLocItem,
         ValidationErrorResponse,
+        WebhookMessage,
+        WebhookMessageWithAttempts,
         WebhookSubscription,
     )
     from .errors import ConflictError, NotFoundError, TooManyRequestsError, UnprocessableEntityError
-    from . import collections, events, source_connections, sources
+    from . import collections, source_connections, sources, webhooks
     from .client import AirweaveSDK, AsyncAirweaveSDK
     from .collections import SearchCollectionsReadableIdSearchPostRequest
     from .environment import AirweaveSDKEnvironment
@@ -197,8 +197,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntitySummary": ".types",
     "EntityType": ".types",
     "EntityTypeStats": ".types",
-    "EventMessage": ".types",
-    "EventMessageWithAttempts": ".types",
     "EventType": ".types",
     "FeatureFlag": ".types",
     "Fields": ".types",
@@ -276,12 +274,14 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ValidationErrorDetail": ".types",
     "ValidationErrorLocItem": ".types",
     "ValidationErrorResponse": ".types",
+    "WebhookMessage": ".types",
+    "WebhookMessageWithAttempts": ".types",
     "WebhookSubscription": ".types",
     "__version__": ".version",
     "collections": ".collections",
-    "events": ".events",
     "source_connections": ".source_connections",
     "sources": ".sources",
+    "webhooks": ".webhooks",
 }
 
 
@@ -362,8 +362,6 @@ __all__ = [
     "EntitySummary",
     "EntityType",
     "EntityTypeStats",
-    "EventMessage",
-    "EventMessageWithAttempts",
     "EventType",
     "FeatureFlag",
     "Fields",
@@ -441,10 +439,12 @@ __all__ = [
     "ValidationErrorDetail",
     "ValidationErrorLocItem",
     "ValidationErrorResponse",
+    "WebhookMessage",
+    "WebhookMessageWithAttempts",
     "WebhookSubscription",
     "__version__",
     "collections",
-    "events",
     "source_connections",
     "sources",
+    "webhooks",
 ]
