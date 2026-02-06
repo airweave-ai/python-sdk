@@ -51,6 +51,11 @@ class DeliveryAttempt(UniversalBaseModel):
     When this delivery attempt occurred (ISO 8601 format, UTC)
     """
 
+    url: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The URL that was called
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
