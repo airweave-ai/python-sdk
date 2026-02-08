@@ -1948,7 +1948,7 @@ client.webhooks.create_subscription(
 <dl>
 <dd>
 
-**event_types:** `typing.Sequence[EventType]` — List of event types to subscribe to. Events not in this list will not be delivered to this subscription. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`.
+**event_types:** `typing.Sequence[EventType]` — List of event types to subscribe to. Events not in this list will not be delivered to this subscription. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`, `source_connection.created`, `source_connection.auth_completed`, `source_connection.deleted`, `collection.created`, `collection.updated`, `collection.deleted`.
     
 </dd>
 </dl>

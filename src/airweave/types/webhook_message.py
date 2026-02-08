@@ -5,7 +5,6 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .sync_event_payload import SyncEventPayload
 
 
 class WebhookMessage(UniversalBaseModel):
@@ -25,9 +24,9 @@ class WebhookMessage(UniversalBaseModel):
     The type of event (e.g., 'sync.completed', 'sync.failed')
     """
 
-    payload: SyncEventPayload = pydantic.Field()
+    payload: typing.Dict[str, typing.Optional[typing.Any]] = pydantic.Field()
     """
-    The event payload data, matching what is delivered to webhooks
+    The event payload data, matching what is delivered to webhooks. Structure varies by event_type.
     """
 
     timestamp: dt.datetime = pydantic.Field()

@@ -3,5 +3,18 @@
 import typing
 
 EventType = typing.Union[
-    typing.Literal["sync.pending", "sync.running", "sync.completed", "sync.failed", "sync.cancelled"], typing.Any
+    typing.Literal[
+        "sync.pending",
+        "sync.running",
+        "sync.completed",
+        "sync.failed",
+        "sync.cancelled",
+        "source_connection.created",
+        "source_connection.auth_completed",
+        "source_connection.deleted",
+        "collection.created",
+        "collection.updated",
+        "collection.deleted",
+    ],
+    typing.Any,
 ]

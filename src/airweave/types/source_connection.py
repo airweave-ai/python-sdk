@@ -25,6 +25,11 @@ class SourceConnection(UniversalBaseModel):
     Unique identifier of the source connection
     """
 
+    organization_id: str = pydantic.Field()
+    """
+    Organization this connection belongs to
+    """
+
     name: str = pydantic.Field()
     """
     Display name of the connection

@@ -25,7 +25,7 @@ class WebhookSubscription(UniversalBaseModel):
 
     filter_types: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
-    Event types this subscription is filtered to receive. Available types: `sync.pending`, `sync.running`, `sync.completed`, `sync.failed`, `sync.cancelled`.
+    Event types this subscription is filtered to receive. See EventType enum for all available types.
     """
 
     disabled: typing.Optional[bool] = pydantic.Field(default=None)
