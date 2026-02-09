@@ -13,7 +13,7 @@ class DestinationConfig(UniversalBaseModel):
 
     skip_qdrant: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Skip writing to native Qdrant
+    Skip writing to native Qdrant (deprecated)
     """
 
     skip_vespa: typing.Optional[bool] = pydantic.Field(default=None)
