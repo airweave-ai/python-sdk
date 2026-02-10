@@ -15,7 +15,6 @@ class SyncConfig(UniversalBaseModel):
     Sync configuration with automatic env var loading.
 
     Env vars use double underscore as delimiter:
-        SYNC_CONFIG__DESTINATIONS__SKIP_QDRANT=true
         SYNC_CONFIG__HANDLERS__ENABLE_VECTOR_HANDLERS=false
     """
 

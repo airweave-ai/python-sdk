@@ -42,7 +42,7 @@ class SearchRequest(UniversalBaseModel):
 
     temporal_relevance: typing.Optional[float] = pydantic.Field(default=None)
     """
-    Weight recent content higher than older content; 0 = no recency effect, 1 = only recent items matter. NOTE: This feature is currently under construction and will be ignored.
+    DEPRECATED: This field is accepted for backwards compatibility but ignored. Temporal relevance has been removed.
     """
 
     expand_query: typing.Optional[bool] = pydantic.Field(default=None)
