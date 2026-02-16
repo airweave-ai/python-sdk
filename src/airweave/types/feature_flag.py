@@ -9,6 +9,7 @@ FeatureFlag = typing.Union[
         "source_rate_limiting",
         "zephyr_scale",
         "sharepoint_2019_v2",
+        "agentic_search",
         "api_key_admin_sync",
     ],
     typing.Any,
