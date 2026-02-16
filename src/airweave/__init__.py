@@ -74,6 +74,7 @@ if typing.TYPE_CHECKING:
         FeatureFlag,
         Fields,
         HandlerConfig,
+        HealthStatus,
         HttpValidationError,
         IntegrationCredentialInDb,
         IntegrationCredentialRawCreate,
@@ -146,6 +147,7 @@ if typing.TYPE_CHECKING:
         WebhookMessage,
         WebhookMessageWithAttempts,
         WebhookSubscription,
+        WebhookSubscriptionDetail,
     )
     from .errors import ConflictError, NotFoundError, TooManyRequestsError, UnprocessableEntityError
     from . import collections, source_connections, sources, webhooks
@@ -227,6 +229,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FeatureFlag": ".types",
     "Fields": ".types",
     "HandlerConfig": ".types",
+    "HealthStatus": ".types",
     "HttpValidationError": ".types",
     "IntegrationCredentialInDb": ".types",
     "IntegrationCredentialRawCreate": ".types",
@@ -303,6 +306,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "WebhookMessage": ".types",
     "WebhookMessageWithAttempts": ".types",
     "WebhookSubscription": ".types",
+    "WebhookSubscriptionDetail": ".types",
     "__version__": ".version",
     "collections": ".collections",
     "source_connections": ".source_connections",
@@ -405,6 +409,7 @@ __all__ = [
     "FeatureFlag",
     "Fields",
     "HandlerConfig",
+    "HealthStatus",
     "HttpValidationError",
     "IntegrationCredentialInDb",
     "IntegrationCredentialRawCreate",
@@ -481,6 +486,7 @@ __all__ = [
     "WebhookMessage",
     "WebhookMessageWithAttempts",
     "WebhookSubscription",
+    "WebhookSubscriptionDetail",
     "__version__",
     "collections",
     "source_connections",

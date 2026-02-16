@@ -77,6 +77,7 @@ if typing.TYPE_CHECKING:
     from .feature_flag import FeatureFlag
     from .fields import Fields
     from .handler_config import HandlerConfig
+    from .health_status import HealthStatus
     from .http_validation_error import HttpValidationError
     from .integration_credential_in_db import IntegrationCredentialInDb
     from .integration_credential_raw_create import IntegrationCredentialRawCreate
@@ -149,6 +150,7 @@ if typing.TYPE_CHECKING:
     from .webhook_message import WebhookMessage
     from .webhook_message_with_attempts import WebhookMessageWithAttempts
     from .webhook_subscription import WebhookSubscription
+    from .webhook_subscription_detail import WebhookSubscriptionDetail
 _dynamic_imports: typing.Dict[str, str] = {
     "ActionCheckRequest": ".action_check_request",
     "ActionCheckResponse": ".action_check_response",
@@ -217,6 +219,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FeatureFlag": ".feature_flag",
     "Fields": ".fields",
     "HandlerConfig": ".handler_config",
+    "HealthStatus": ".health_status",
     "HttpValidationError": ".http_validation_error",
     "IntegrationCredentialInDb": ".integration_credential_in_db",
     "IntegrationCredentialRawCreate": ".integration_credential_raw_create",
@@ -289,6 +292,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "WebhookMessage": ".webhook_message",
     "WebhookMessageWithAttempts": ".webhook_message_with_attempts",
     "WebhookSubscription": ".webhook_subscription",
+    "WebhookSubscriptionDetail": ".webhook_subscription_detail",
 }
 
 
@@ -381,6 +385,7 @@ __all__ = [
     "FeatureFlag",
     "Fields",
     "HandlerConfig",
+    "HealthStatus",
     "HttpValidationError",
     "IntegrationCredentialInDb",
     "IntegrationCredentialRawCreate",
@@ -453,4 +458,5 @@ __all__ = [
     "WebhookMessage",
     "WebhookMessageWithAttempts",
     "WebhookSubscription",
+    "WebhookSubscriptionDetail",
 ]

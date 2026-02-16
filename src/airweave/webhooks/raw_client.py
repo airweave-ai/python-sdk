@@ -20,6 +20,7 @@ from ..types.recovery_task import RecoveryTask
 from ..types.webhook_message import WebhookMessage
 from ..types.webhook_message_with_attempts import WebhookMessageWithAttempts
 from ..types.webhook_subscription import WebhookSubscription
+from ..types.webhook_subscription_detail import WebhookSubscriptionDetail
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -352,7 +353,7 @@ class RawWebhooksClient:
         *,
         include_secret: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[WebhookSubscription]:
+    ) -> HttpResponse[WebhookSubscriptionDetail]:
         """
         Retrieve a specific webhook subscription with its recent delivery attempts.
 
@@ -376,7 +377,7 @@ class RawWebhooksClient:
 
         Returns
         -------
-        HttpResponse[WebhookSubscription]
+        HttpResponse[WebhookSubscriptionDetail]
             Subscription with delivery attempts
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -390,9 +391,9 @@ class RawWebhooksClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    WebhookSubscription,
+                    WebhookSubscriptionDetail,
                     parse_obj_as(
-                        type_=WebhookSubscription,  # type: ignore
+                        type_=WebhookSubscriptionDetail,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1057,7 +1058,7 @@ class AsyncRawWebhooksClient:
         *,
         include_secret: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[WebhookSubscription]:
+    ) -> AsyncHttpResponse[WebhookSubscriptionDetail]:
         """
         Retrieve a specific webhook subscription with its recent delivery attempts.
 
@@ -1081,7 +1082,7 @@ class AsyncRawWebhooksClient:
 
         Returns
         -------
-        AsyncHttpResponse[WebhookSubscription]
+        AsyncHttpResponse[WebhookSubscriptionDetail]
             Subscription with delivery attempts
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -1095,9 +1096,9 @@ class AsyncRawWebhooksClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    WebhookSubscription,
+                    WebhookSubscriptionDetail,
                     parse_obj_as(
-                        type_=WebhookSubscription,  # type: ignore
+                        type_=WebhookSubscriptionDetail,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -10,6 +10,7 @@ from ..types.recovery_task import RecoveryTask
 from ..types.webhook_message import WebhookMessage
 from ..types.webhook_message_with_attempts import WebhookMessageWithAttempts
 from ..types.webhook_subscription import WebhookSubscription
+from ..types.webhook_subscription_detail import WebhookSubscriptionDetail
 from .raw_client import AsyncRawWebhooksClient, RawWebhooksClient
 
 # this is used as the default value for optional parameters
@@ -218,7 +219,7 @@ class WebhooksClient:
         *,
         include_secret: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WebhookSubscription:
+    ) -> WebhookSubscriptionDetail:
         """
         Retrieve a specific webhook subscription with its recent delivery attempts.
 
@@ -242,7 +243,7 @@ class WebhooksClient:
 
         Returns
         -------
-        WebhookSubscription
+        WebhookSubscriptionDetail
             Subscription with delivery attempts
 
         Examples
@@ -670,7 +671,7 @@ class AsyncWebhooksClient:
         *,
         include_secret: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> WebhookSubscription:
+    ) -> WebhookSubscriptionDetail:
         """
         Retrieve a specific webhook subscription with its recent delivery attempts.
 
@@ -694,7 +695,7 @@ class AsyncWebhooksClient:
 
         Returns
         -------
-        WebhookSubscription
+        WebhookSubscriptionDetail
             Subscription with delivery attempts
 
         Examples
