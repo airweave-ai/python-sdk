@@ -8,7 +8,6 @@ from ..types.collection import Collection
 from ..types.legacy_search_response import LegacySearchResponse
 from ..types.response_type import ResponseType
 from ..types.search_response import SearchResponse
-from ..types.source_connection_job import SourceConnectionJob
 from ..types.sync_config import SyncConfig
 from .raw_client import AsyncRawCollectionsClient, RawCollectionsClient
 from .types.search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
@@ -266,45 +265,6 @@ class CollectionsClient:
         _response = self._raw_client.update(
             readable_id, name=name, sync_config=sync_config, request_options=request_options
         )
-        return _response.data
-
-    def refresh_all_source_connections(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[SourceConnectionJob]:
-        """
-        Trigger data synchronization for all source connections in a collection.
-
-        Starts sync jobs for every source connection in the collection, pulling the latest
-        data from each connected source. Jobs run asynchronously in the background.
-
-        Returns a list of sync jobs that were created. Use the source connection endpoints
-        to monitor the progress and status of individual sync jobs.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to refresh
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[SourceConnectionJob]
-            Successful Response
-
-        Examples
-        --------
-        from airweave import AirweaveSDK
-
-        client = AirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-        client.collections.refresh_all_source_connections(
-            readable_id="customer-support-tickets-x7k9m",
-        )
-        """
-        _response = self._raw_client.refresh_all_source_connections(readable_id, request_options=request_options)
         return _response.data
 
     def search_get_legacy(
@@ -731,53 +691,6 @@ class AsyncCollectionsClient:
         _response = await self._raw_client.update(
             readable_id, name=name, sync_config=sync_config, request_options=request_options
         )
-        return _response.data
-
-    async def refresh_all_source_connections(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[SourceConnectionJob]:
-        """
-        Trigger data synchronization for all source connections in a collection.
-
-        Starts sync jobs for every source connection in the collection, pulling the latest
-        data from each connected source. Jobs run asynchronously in the background.
-
-        Returns a list of sync jobs that were created. Use the source connection endpoints
-        to monitor the progress and status of individual sync jobs.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to refresh
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        typing.List[SourceConnectionJob]
-            Successful Response
-
-        Examples
-        --------
-        import asyncio
-
-        from airweave import AsyncAirweaveSDK
-
-        client = AsyncAirweaveSDK(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.collections.refresh_all_source_connections(
-                readable_id="customer-support-tickets-x7k9m",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.refresh_all_source_connections(readable_id, request_options=request_options)
         return _response.data
 
     async def search_get_legacy(

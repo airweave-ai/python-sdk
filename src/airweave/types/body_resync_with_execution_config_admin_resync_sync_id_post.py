@@ -10,12 +10,12 @@ from .sync_config import SyncConfig
 class BodyResyncWithExecutionConfigAdminResyncSyncIdPost(UniversalBaseModel):
     execution_config: typing.Optional[SyncConfig] = pydantic.Field(default=None)
     """
-    Optional nested SyncConfig for sync behavior (destinations, handlers, cursor, behavior)
+    Optional nested SyncConfig for sync behavior
     """
 
     tags: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
-    Optional tags for filtering and organizing sync jobs (e.g., ['vespa-backfill-01-22-2026', 'manual'])
+    Optional tags for filtering and organizing sync jobs
     """
 
     if IS_PYDANTIC_V2:

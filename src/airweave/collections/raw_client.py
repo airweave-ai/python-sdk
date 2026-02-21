@@ -19,7 +19,6 @@ from ..types.not_found_error_response import NotFoundErrorResponse
 from ..types.rate_limit_error_response import RateLimitErrorResponse
 from ..types.response_type import ResponseType
 from ..types.search_response import SearchResponse
-from ..types.source_connection_job import SourceConnectionJob
 from ..types.sync_config import SyncConfig
 from .types.search_collections_readable_id_search_post_request import SearchCollectionsReadableIdSearchPostRequest
 
@@ -420,84 +419,6 @@ class RawCollectionsClient:
                     Collection,
                     parse_obj_as(
                         type_=Collection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        NotFoundErrorResponse,
-                        parse_obj_as(
-                            type_=NotFoundErrorResponse,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        typing.Optional[typing.Any],
-                        parse_obj_as(
-                            type_=typing.Optional[typing.Any],  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        RateLimitErrorResponse,
-                        parse_obj_as(
-                            type_=RateLimitErrorResponse,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def refresh_all_source_connections(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.List[SourceConnectionJob]]:
-        """
-        Trigger data synchronization for all source connections in a collection.
-
-        Starts sync jobs for every source connection in the collection, pulling the latest
-        data from each connected source. Jobs run asynchronously in the background.
-
-        Returns a list of sync jobs that were created. Use the source connection endpoints
-        to monitor the progress and status of individual sync jobs.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to refresh
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[typing.List[SourceConnectionJob]]
-            Successful Response
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"collections/{jsonable_encoder(readable_id)}/refresh_all",
-            method="POST",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    typing.List[SourceConnectionJob],
-                    parse_obj_as(
-                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1144,84 +1065,6 @@ class AsyncRawCollectionsClient:
                     Collection,
                     parse_obj_as(
                         type_=Collection,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        NotFoundErrorResponse,
-                        parse_obj_as(
-                            type_=NotFoundErrorResponse,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        typing.Optional[typing.Any],
-                        parse_obj_as(
-                            type_=typing.Optional[typing.Any],  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        RateLimitErrorResponse,
-                        parse_obj_as(
-                            type_=RateLimitErrorResponse,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def refresh_all_source_connections(
-        self, readable_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[typing.List[SourceConnectionJob]]:
-        """
-        Trigger data synchronization for all source connections in a collection.
-
-        Starts sync jobs for every source connection in the collection, pulling the latest
-        data from each connected source. Jobs run asynchronously in the background.
-
-        Returns a list of sync jobs that were created. Use the source connection endpoints
-        to monitor the progress and status of individual sync jobs.
-
-        Parameters
-        ----------
-        readable_id : str
-            The unique readable identifier of the collection to refresh
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[typing.List[SourceConnectionJob]]
-            Successful Response
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"collections/{jsonable_encoder(readable_id)}/refresh_all",
-            method="POST",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    typing.List[SourceConnectionJob],
-                    parse_obj_as(
-                        type_=typing.List[SourceConnectionJob],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
