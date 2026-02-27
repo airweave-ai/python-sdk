@@ -39,9 +39,6 @@ if typing.TYPE_CHECKING:
     from .billing_plan import BillingPlan
     from .billing_status import BillingStatus
     from .billing_transition import BillingTransition
-    from .body_connect_slack_with_token_connections_direct_token_slack_post import (
-        BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost,
-    )
     from .body_resync_with_execution_config_admin_resync_sync_id_post import (
         BodyResyncWithExecutionConfigAdminResyncSyncIdPost,
     )
@@ -53,8 +50,6 @@ if typing.TYPE_CHECKING:
     from .config_field import ConfigField
     from .config_values import ConfigValues
     from .conflict_error_response import ConflictErrorResponse
-    from .connection import Connection
-    from .connection_status import ConnectionStatus
     from .cursor_config import CursorConfig
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
@@ -81,9 +76,6 @@ if typing.TYPE_CHECKING:
     from .handler_config import HandlerConfig
     from .health_status import HealthStatus
     from .http_validation_error import HttpValidationError
-    from .integration_credential_in_db import IntegrationCredentialInDb
-    from .integration_credential_raw_create import IntegrationCredentialRawCreate
-    from .integration_type import IntegrationType
     from .invitation_create import InvitationCreate
     from .invitation_response import InvitationResponse
     from .legacy_search_request import LegacySearchRequest
@@ -96,7 +88,6 @@ if typing.TYPE_CHECKING:
     from .not_found_error_response import NotFoundErrorResponse
     from .o_auth_browser_authentication import OAuthBrowserAuthentication
     from .o_auth_token_authentication import OAuthTokenAuthentication
-    from .o_auth_type import OAuthType
     from .organization import Organization
     from .organization_billing import OrganizationBilling
     from .organization_create import OrganizationCreate
@@ -190,7 +181,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BillingPlan": ".billing_plan",
     "BillingStatus": ".billing_status",
     "BillingTransition": ".billing_transition",
-    "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost": ".body_connect_slack_with_token_connections_direct_token_slack_post",
     "BodyResyncWithExecutionConfigAdminResyncSyncIdPost": ".body_resync_with_execution_config_admin_resync_sync_id_post",
     "CheckStatus": ".check_status",
     "CheckoutSessionRequest": ".checkout_session_request",
@@ -200,8 +190,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConfigField": ".config_field",
     "ConfigValues": ".config_values",
     "ConflictErrorResponse": ".conflict_error_response",
-    "Connection": ".connection",
-    "ConnectionStatus": ".connection_status",
     "CursorConfig": ".cursor_config",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
@@ -228,9 +216,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "HandlerConfig": ".handler_config",
     "HealthStatus": ".health_status",
     "HttpValidationError": ".http_validation_error",
-    "IntegrationCredentialInDb": ".integration_credential_in_db",
-    "IntegrationCredentialRawCreate": ".integration_credential_raw_create",
-    "IntegrationType": ".integration_type",
     "InvitationCreate": ".invitation_create",
     "InvitationResponse": ".invitation_response",
     "LegacySearchRequest": ".legacy_search_request",
@@ -243,7 +228,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "NotFoundErrorResponse": ".not_found_error_response",
     "OAuthBrowserAuthentication": ".o_auth_browser_authentication",
     "OAuthTokenAuthentication": ".o_auth_token_authentication",
-    "OAuthType": ".o_auth_type",
     "Organization": ".organization",
     "OrganizationBilling": ".organization_billing",
     "OrganizationCreate": ".organization_create",
@@ -361,7 +345,6 @@ __all__ = [
     "BillingPlan",
     "BillingStatus",
     "BillingTransition",
-    "BodyConnectSlackWithTokenConnectionsDirectTokenSlackPost",
     "BodyResyncWithExecutionConfigAdminResyncSyncIdPost",
     "CheckStatus",
     "CheckoutSessionRequest",
@@ -371,8 +354,6 @@ __all__ = [
     "ConfigField",
     "ConfigValues",
     "ConflictErrorResponse",
-    "Connection",
-    "ConnectionStatus",
     "CursorConfig",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
@@ -399,9 +380,6 @@ __all__ = [
     "HandlerConfig",
     "HealthStatus",
     "HttpValidationError",
-    "IntegrationCredentialInDb",
-    "IntegrationCredentialRawCreate",
-    "IntegrationType",
     "InvitationCreate",
     "InvitationResponse",
     "LegacySearchRequest",
@@ -414,7 +392,6 @@ __all__ = [
     "NotFoundErrorResponse",
     "OAuthBrowserAuthentication",
     "OAuthTokenAuthentication",
-    "OAuthType",
     "Organization",
     "OrganizationBilling",
     "OrganizationCreate",
