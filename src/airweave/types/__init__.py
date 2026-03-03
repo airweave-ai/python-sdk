@@ -61,11 +61,8 @@ if typing.TYPE_CHECKING:
     from .direct_authentication import DirectAuthentication
     from .embedding_model import EmbeddingModel
     from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
-    from .entity_count import EntityCount
     from .entity_count_with_definition import EntityCountWithDefinition
     from .entity_definition import EntityDefinition
-    from .entity_definition_create import EntityDefinitionCreate
-    from .entity_definition_create_entity_schema import EntityDefinitionCreateEntitySchema
     from .entity_definition_entity_schema import EntityDefinitionEntitySchema
     from .entity_summary import EntitySummary
     from .entity_type import EntityType
@@ -201,11 +198,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "DirectAuthentication": ".direct_authentication",
     "EmbeddingModel": ".embedding_model",
     "EmbeddingModelWithAuthenticationFields": ".embedding_model_with_authentication_fields",
-    "EntityCount": ".entity_count",
     "EntityCountWithDefinition": ".entity_count_with_definition",
     "EntityDefinition": ".entity_definition",
-    "EntityDefinitionCreate": ".entity_definition_create",
-    "EntityDefinitionCreateEntitySchema": ".entity_definition_create_entity_schema",
     "EntityDefinitionEntitySchema": ".entity_definition_entity_schema",
     "EntitySummary": ".entity_summary",
     "EntityType": ".entity_type",
@@ -365,11 +359,8 @@ __all__ = [
     "DirectAuthentication",
     "EmbeddingModel",
     "EmbeddingModelWithAuthenticationFields",
-    "EntityCount",
     "EntityCountWithDefinition",
     "EntityDefinition",
-    "EntityDefinitionCreate",
-    "EntityDefinitionCreateEntitySchema",
     "EntityDefinitionEntitySchema",
     "EntitySummary",
     "EntityType",
