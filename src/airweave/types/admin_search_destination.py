@@ -2,4 +2,4 @@
 
 import typing
 
-AdminSearchDestination = typing.Union[typing.Literal["qdrant", "vespa"], typing.Any]
+AdminSearchDestination = typing.Literal["vespa"]
