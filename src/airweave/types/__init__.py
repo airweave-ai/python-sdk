@@ -25,11 +25,11 @@ if typing.TYPE_CHECKING:
     from .agentic_search_system_metadata import AgenticSearchSystemMetadata
     from .api_key import ApiKey
     from .api_key_create import ApiKeyCreate
-    from .auth_provider import AuthProvider
     from .auth_provider_authentication import AuthProviderAuthentication
     from .auth_provider_connection import AuthProviderConnection
     from .auth_provider_connection_create import AuthProviderConnectionCreate
     from .auth_provider_connection_update import AuthProviderConnectionUpdate
+    from .auth_provider_metadata import AuthProviderMetadata
     from .authentication_details import AuthenticationDetails
     from .authentication_method import AuthenticationMethod
     from .behavior_config import BehaviorConfig
@@ -164,11 +164,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AgenticSearchSystemMetadata": ".agentic_search_system_metadata",
     "ApiKey": ".api_key",
     "ApiKeyCreate": ".api_key_create",
-    "AuthProvider": ".auth_provider",
     "AuthProviderAuthentication": ".auth_provider_authentication",
     "AuthProviderConnection": ".auth_provider_connection",
     "AuthProviderConnectionCreate": ".auth_provider_connection_create",
     "AuthProviderConnectionUpdate": ".auth_provider_connection_update",
+    "AuthProviderMetadata": ".auth_provider_metadata",
     "AuthenticationDetails": ".authentication_details",
     "AuthenticationMethod": ".authentication_method",
     "BehaviorConfig": ".behavior_config",
@@ -325,11 +325,11 @@ __all__ = [
     "AgenticSearchSystemMetadata",
     "ApiKey",
     "ApiKeyCreate",
-    "AuthProvider",
     "AuthProviderAuthentication",
     "AuthProviderConnection",
     "AuthProviderConnectionCreate",
     "AuthProviderConnectionUpdate",
+    "AuthProviderMetadata",
     "AuthenticationDetails",
     "AuthenticationMethod",
     "BehaviorConfig",
