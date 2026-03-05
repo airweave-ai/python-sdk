@@ -4,7 +4,6 @@ import typing
 
 FeatureFlag = typing.Union[
     typing.Literal[
-        "s3_destination",
         "priority_support",
         "source_rate_limiting",
         "zephyr_scale",

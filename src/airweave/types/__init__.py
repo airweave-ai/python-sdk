@@ -55,17 +55,11 @@ if typing.TYPE_CHECKING:
     from .customer_portal_response import CustomerPortalResponse
     from .delivery_attempt import DeliveryAttempt
     from .dependency_check import DependencyCheck
-    from .destination import Destination
     from .destination_config import DestinationConfig
-    from .destination_with_authentication_fields import DestinationWithAuthenticationFields
     from .direct_authentication import DirectAuthentication
-    from .embedding_model import EmbeddingModel
-    from .embedding_model_with_authentication_fields import EmbeddingModelWithAuthenticationFields
     from .entity_count_with_definition import EntityCountWithDefinition
-    from .entity_definition import EntityDefinition
-    from .entity_definition_entity_schema import EntityDefinitionEntitySchema
+    from .entity_definition_metadata import EntityDefinitionMetadata
     from .entity_summary import EntitySummary
-    from .entity_type import EntityType
     from .entity_type_stats import EntityTypeStats
     from .event_type import EventType
     from .feature_flag import FeatureFlag
@@ -96,8 +90,6 @@ if typing.TYPE_CHECKING:
     from .recovery_task import RecoveryTask
     from .response_type import ResponseType
     from .retrieval_strategy import RetrievalStrategy
-    from .s_3_config_request import S3ConfigRequest
-    from .s_3_config_response import S3ConfigResponse
     from .schedule_config import ScheduleConfig
     from .schedule_details import ScheduleDetails
     from .schedule_response import ScheduleResponse
@@ -125,9 +117,6 @@ if typing.TYPE_CHECKING:
     from .sync_job_status import SyncJobStatus
     from .sync_status import SyncStatus
     from .sync_update import SyncUpdate
-    from .transformer import Transformer
-    from .transformer_create import TransformerCreate
-    from .transformer_update import TransformerUpdate
     from .update_plan_request import UpdatePlanRequest
     from .usage_dashboard import UsageDashboard
     from .usage_snapshot import UsageSnapshot
@@ -192,17 +181,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "CustomerPortalResponse": ".customer_portal_response",
     "DeliveryAttempt": ".delivery_attempt",
     "DependencyCheck": ".dependency_check",
-    "Destination": ".destination",
     "DestinationConfig": ".destination_config",
-    "DestinationWithAuthenticationFields": ".destination_with_authentication_fields",
     "DirectAuthentication": ".direct_authentication",
-    "EmbeddingModel": ".embedding_model",
-    "EmbeddingModelWithAuthenticationFields": ".embedding_model_with_authentication_fields",
     "EntityCountWithDefinition": ".entity_count_with_definition",
-    "EntityDefinition": ".entity_definition",
-    "EntityDefinitionEntitySchema": ".entity_definition_entity_schema",
+    "EntityDefinitionMetadata": ".entity_definition_metadata",
     "EntitySummary": ".entity_summary",
-    "EntityType": ".entity_type",
     "EntityTypeStats": ".entity_type_stats",
     "EventType": ".event_type",
     "FeatureFlag": ".feature_flag",
@@ -233,8 +216,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "RecoveryTask": ".recovery_task",
     "ResponseType": ".response_type",
     "RetrievalStrategy": ".retrieval_strategy",
-    "S3ConfigRequest": ".s_3_config_request",
-    "S3ConfigResponse": ".s_3_config_response",
     "ScheduleConfig": ".schedule_config",
     "ScheduleDetails": ".schedule_details",
     "ScheduleResponse": ".schedule_response",
@@ -262,9 +243,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SyncJobStatus": ".sync_job_status",
     "SyncStatus": ".sync_status",
     "SyncUpdate": ".sync_update",
-    "Transformer": ".transformer",
-    "TransformerCreate": ".transformer_create",
-    "TransformerUpdate": ".transformer_update",
     "UpdatePlanRequest": ".update_plan_request",
     "UsageDashboard": ".usage_dashboard",
     "UsageSnapshot": ".usage_snapshot",
@@ -353,17 +331,11 @@ __all__ = [
     "CustomerPortalResponse",
     "DeliveryAttempt",
     "DependencyCheck",
-    "Destination",
     "DestinationConfig",
-    "DestinationWithAuthenticationFields",
     "DirectAuthentication",
-    "EmbeddingModel",
-    "EmbeddingModelWithAuthenticationFields",
     "EntityCountWithDefinition",
-    "EntityDefinition",
-    "EntityDefinitionEntitySchema",
+    "EntityDefinitionMetadata",
     "EntitySummary",
-    "EntityType",
     "EntityTypeStats",
     "EventType",
     "FeatureFlag",
@@ -394,8 +366,6 @@ __all__ = [
     "RecoveryTask",
     "ResponseType",
     "RetrievalStrategy",
-    "S3ConfigRequest",
-    "S3ConfigResponse",
     "ScheduleConfig",
     "ScheduleDetails",
     "ScheduleResponse",
@@ -423,9 +393,6 @@ __all__ = [
     "SyncJobStatus",
     "SyncStatus",
     "SyncUpdate",
-    "Transformer",
-    "TransformerCreate",
-    "TransformerUpdate",
     "UpdatePlanRequest",
     "UsageDashboard",
     "UsageSnapshot",

@@ -6,18 +6,18 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class TransformerCreate(UniversalBaseModel):
+class EntityDefinitionMetadata(UniversalBaseModel):
     """
-    Schema for creating a transformer.
+    API response model for entity definitions — excludes internal fields.
     """
 
+    short_name: str
     name: str
     description: typing.Optional[str] = None
-    method_name: str
+    class_name: str
     module_name: str
-    input_entity_definition_ids: typing.List[str]
-    output_entity_definition_ids: typing.List[str]
-    config_schema: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    entity_type: str
+    entity_schema: typing.Dict[str, typing.Optional[typing.Any]]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

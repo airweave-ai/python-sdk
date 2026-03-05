@@ -10,10 +10,13 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 class EntityCountWithDefinition(UniversalBaseModel):
     """
     Entity count with entity definition details.
+
+    After the entity_definition table elimination, name/type/description
+    are populated from the in-memory registry or derived from the short_name.
     """
 
     count: int
-    entity_definition_id: str
+    entity_definition_short_name: str
     entity_definition_name: str
     entity_definition_type: str
     entity_definition_description: typing.Optional[str] = None
