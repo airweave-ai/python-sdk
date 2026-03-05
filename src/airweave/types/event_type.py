@@ -18,6 +18,10 @@ EventType = typing.Union[
         "source_connection.created",
         "source_connection.auth_completed",
         "source_connection.deleted",
+        "organization.created",
+        "organization.deleted",
+        "organization.member_added",
+        "organization.member_removed",
     ],
     typing.Any,
 ]
