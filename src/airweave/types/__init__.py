@@ -78,7 +78,6 @@ if typing.TYPE_CHECKING:
     from .liveness_response import LivenessResponse
     from .member_response import MemberResponse
     from .message_response import MessageResponse
-    from .minute_level_schedule_config import MinuteLevelScheduleConfig
     from .not_found_error_response import NotFoundErrorResponse
     from .o_auth_browser_authentication import OAuthBrowserAuthentication
     from .o_auth_token_authentication import OAuthTokenAuthentication
@@ -95,7 +94,6 @@ if typing.TYPE_CHECKING:
     from .retrieval_strategy import RetrievalStrategy
     from .schedule_config import ScheduleConfig
     from .schedule_details import ScheduleDetails
-    from .schedule_response import ScheduleResponse
     from .search_request import SearchRequest
     from .search_response import SearchResponse
     from .search_status import SearchStatus
@@ -111,15 +109,12 @@ if typing.TYPE_CHECKING:
     from .source_rate_limit_update_request import SourceRateLimitUpdateRequest
     from .status import Status
     from .subscription_info import SubscriptionInfo
-    from .sync import Sync
     from .sync_config import SyncConfig
-    from .sync_create import SyncCreate
     from .sync_details import SyncDetails
     from .sync_job import SyncJob
     from .sync_job_details import SyncJobDetails
     from .sync_job_status import SyncJobStatus
     from .sync_status import SyncStatus
-    from .sync_update import SyncUpdate
     from .update_plan_request import UpdatePlanRequest
     from .usage_dashboard import UsageDashboard
     from .usage_snapshot import UsageSnapshot
@@ -205,7 +200,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LivenessResponse": ".liveness_response",
     "MemberResponse": ".member_response",
     "MessageResponse": ".message_response",
-    "MinuteLevelScheduleConfig": ".minute_level_schedule_config",
     "NotFoundErrorResponse": ".not_found_error_response",
     "OAuthBrowserAuthentication": ".o_auth_browser_authentication",
     "OAuthTokenAuthentication": ".o_auth_token_authentication",
@@ -222,7 +216,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "RetrievalStrategy": ".retrieval_strategy",
     "ScheduleConfig": ".schedule_config",
     "ScheduleDetails": ".schedule_details",
-    "ScheduleResponse": ".schedule_response",
     "SearchRequest": ".search_request",
     "SearchResponse": ".search_response",
     "SearchStatus": ".search_status",
@@ -238,15 +231,12 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SourceRateLimitUpdateRequest": ".source_rate_limit_update_request",
     "Status": ".status",
     "SubscriptionInfo": ".subscription_info",
-    "Sync": ".sync",
     "SyncConfig": ".sync_config",
-    "SyncCreate": ".sync_create",
     "SyncDetails": ".sync_details",
     "SyncJob": ".sync_job",
     "SyncJobDetails": ".sync_job_details",
     "SyncJobStatus": ".sync_job_status",
     "SyncStatus": ".sync_status",
-    "SyncUpdate": ".sync_update",
     "UpdatePlanRequest": ".update_plan_request",
     "UsageDashboard": ".usage_dashboard",
     "UsageSnapshot": ".usage_snapshot",
@@ -356,7 +346,6 @@ __all__ = [
     "LivenessResponse",
     "MemberResponse",
     "MessageResponse",
-    "MinuteLevelScheduleConfig",
     "NotFoundErrorResponse",
     "OAuthBrowserAuthentication",
     "OAuthTokenAuthentication",
@@ -373,7 +362,6 @@ __all__ = [
     "RetrievalStrategy",
     "ScheduleConfig",
     "ScheduleDetails",
-    "ScheduleResponse",
     "SearchRequest",
     "SearchResponse",
     "SearchStatus",
@@ -389,15 +377,12 @@ __all__ = [
     "SourceRateLimitUpdateRequest",
     "Status",
     "SubscriptionInfo",
-    "Sync",
     "SyncConfig",
-    "SyncCreate",
     "SyncDetails",
     "SyncJob",
     "SyncJobDetails",
     "SyncJobStatus",
     "SyncStatus",
-    "SyncUpdate",
     "UpdatePlanRequest",
     "UsageDashboard",
     "UsageSnapshot",
