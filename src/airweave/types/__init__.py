@@ -39,6 +39,9 @@ if typing.TYPE_CHECKING:
     from .billing_plan import BillingPlan
     from .billing_status import BillingStatus
     from .billing_transition import BillingTransition
+    from .body_change_member_role_organizations_organization_id_members_user_id_patch import (
+        BodyChangeMemberRoleOrganizationsOrganizationIdMembersUserIdPatch,
+    )
     from .body_resync_with_execution_config_admin_resync_sync_id_post import (
         BodyResyncWithExecutionConfigAdminResyncSyncIdPost,
     )
@@ -167,6 +170,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BillingPlan": ".billing_plan",
     "BillingStatus": ".billing_status",
     "BillingTransition": ".billing_transition",
+    "BodyChangeMemberRoleOrganizationsOrganizationIdMembersUserIdPatch": ".body_change_member_role_organizations_organization_id_members_user_id_patch",
     "BodyResyncWithExecutionConfigAdminResyncSyncIdPost": ".body_resync_with_execution_config_admin_resync_sync_id_post",
     "CheckStatus": ".check_status",
     "CheckoutSessionRequest": ".checkout_session_request",
@@ -317,6 +321,7 @@ __all__ = [
     "BillingPlan",
     "BillingStatus",
     "BillingTransition",
+    "BodyChangeMemberRoleOrganizationsOrganizationIdMembersUserIdPatch",
     "BodyResyncWithExecutionConfigAdminResyncSyncIdPost",
     "CheckStatus",
     "CheckoutSessionRequest",
