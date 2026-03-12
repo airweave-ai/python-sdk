@@ -71,22 +71,22 @@ class Source(UniversalBaseModel):
 
     supports_continuous: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether this source supports cursor-based continuous syncing for incremental data extraction. Sources with this capability can track their sync position and resume from where they left off.
+    Whether this source supports cursor-based continuous syncing for incremental data extraction.
     """
 
     federated_search: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether this source uses federated search instead of traditional syncing. Federated search sources query data in real-time during searches rather than syncing and indexing all data beforehand.
+    Whether this source uses federated search instead of traditional syncing.
     """
 
     supports_temporal_relevance: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether this source's entities have timestamps that enable recency-based ranking. Sources without file-level timestamps (e.g., code repositories) cannot use temporal relevance for search result weighting.
+    Whether this source's entities have timestamps that enable recency-based ranking.
     """
 
     supports_access_control: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether this source supports document-level access control. Sources with this capability extract ACL information from the source and apply it during search to filter results based on user permissions.
+    Whether this source supports document-level access control.
     """
 
     rate_limit_level: typing.Optional[str] = pydantic.Field(default=None)
@@ -106,17 +106,17 @@ class Source(UniversalBaseModel):
 
     auth_fields: typing.Optional[Fields] = pydantic.Field(default=None)
     """
-    Schema definition for authentication fields required to connect to this source. Only present for sources using DIRECT authentication. OAuth sources handle authentication through browser flows.
+    Schema definition for authentication fields required to connect to this source.
     """
 
     config_fields: Fields = pydantic.Field()
     """
-    Schema definition for configuration fields required to customize this source. Describes field types, validation rules, and user interface hints.
+    Schema definition for configuration fields required to customize this source.
     """
 
     supported_auth_providers: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
-    List of auth provider short names that support this source (e.g., ['composio', 'pipedream']). Computed dynamically for API responses. This field is not stored in the database.
+    List of auth provider short names that support this source.
     """
 
     if IS_PYDANTIC_V2:

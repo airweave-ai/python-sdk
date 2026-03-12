@@ -55,6 +55,10 @@ if typing.TYPE_CHECKING:
     from .config_field import ConfigField
     from .config_values import ConfigValues
     from .conflict_error_response import ConflictErrorResponse
+    from .connect_session_context import ConnectSessionContext
+    from .connect_session_create import ConnectSessionCreate
+    from .connect_session_mode import ConnectSessionMode
+    from .connect_session_response import ConnectSessionResponse
     from .cursor_config import CursorConfig
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
@@ -182,6 +186,10 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConfigField": ".config_field",
     "ConfigValues": ".config_values",
     "ConflictErrorResponse": ".conflict_error_response",
+    "ConnectSessionContext": ".connect_session_context",
+    "ConnectSessionCreate": ".connect_session_create",
+    "ConnectSessionMode": ".connect_session_mode",
+    "ConnectSessionResponse": ".connect_session_response",
     "CursorConfig": ".cursor_config",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
@@ -333,6 +341,10 @@ __all__ = [
     "ConfigField",
     "ConfigValues",
     "ConflictErrorResponse",
+    "ConnectSessionContext",
+    "ConnectSessionCreate",
+    "ConnectSessionMode",
+    "ConnectSessionResponse",
     "CursorConfig",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
