@@ -99,6 +99,11 @@ class Source(UniversalBaseModel):
     Feature flag required to access this source. If set, only organizations with this feature enabled can see/use this source.
     """
 
+    supports_browse_tree: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this source supports lazy-loaded browse tree for selective node syncing.
+    """
+
     auth_fields: typing.Optional[Fields] = pydantic.Field(default=None)
     """
     Schema definition for authentication fields required to connect to this source. Only present for sources using DIRECT authentication. OAuth sources handle authentication through browser flows.

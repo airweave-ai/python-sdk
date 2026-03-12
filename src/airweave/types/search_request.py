@@ -40,6 +40,11 @@ class SearchRequest(UniversalBaseModel):
     Maximum number of results to return (default: 1000)
     """
 
+    source_connection_ids: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Limit search to specific source connections within the collection.
+    """
+
     temporal_relevance: typing.Optional[float] = pydantic.Field(default=None)
     """
     DEPRECATED: This field is accepted for backwards compatibility but ignored. Temporal relevance has been removed.
