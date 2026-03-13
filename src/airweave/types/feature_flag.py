@@ -10,6 +10,7 @@ FeatureFlag = typing.Union[
         "sharepoint_2019_v2",
         "agentic_search",
         "api_key_admin_sync",
+        "connect",
     ],
     typing.Any,
 ]
