@@ -6,6 +6,7 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .collection_status import CollectionStatus
+from .source_connection_summary import SourceConnectionSummary
 from .sync_config import SyncConfig
 
 
@@ -78,6 +79,11 @@ class Collection(UniversalBaseModel):
     embedding_model_name: str = pydantic.Field()
     """
     Name of the embedding model used for this collection (derived from deployment metadata).
+    """
+
+    source_connection_summaries: typing.Optional[typing.List[SourceConnectionSummary]] = pydantic.Field(default=None)
+    """
+    Lightweight list of source connections attached to this collection. Contains only short_name and name, suitable for rendering icons in list views.
     """
 
     if IS_PYDANTIC_V2:

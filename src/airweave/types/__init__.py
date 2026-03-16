@@ -113,6 +113,7 @@ if typing.TYPE_CHECKING:
     from .source_connection_job import SourceConnectionJob
     from .source_connection_list_item import SourceConnectionListItem
     from .source_connection_status import SourceConnectionStatus
+    from .source_connection_summary import SourceConnectionSummary
     from .source_rate_limit import SourceRateLimit
     from .source_rate_limit_response import SourceRateLimitResponse
     from .source_rate_limit_update_request import SourceRateLimitUpdateRequest
@@ -136,6 +137,7 @@ if typing.TYPE_CHECKING:
     from .validation_error_loc_item import ValidationErrorLocItem
     from .validation_error_response import ValidationErrorResponse
     from .value import Value
+    from .verify_o_auth_request import VerifyOAuthRequest
     from .webhook_message import WebhookMessage
     from .webhook_message_with_attempts import WebhookMessageWithAttempts
     from .webhook_subscription import WebhookSubscription
@@ -244,6 +246,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SourceConnectionJob": ".source_connection_job",
     "SourceConnectionListItem": ".source_connection_list_item",
     "SourceConnectionStatus": ".source_connection_status",
+    "SourceConnectionSummary": ".source_connection_summary",
     "SourceRateLimit": ".source_rate_limit",
     "SourceRateLimitResponse": ".source_rate_limit_response",
     "SourceRateLimitUpdateRequest": ".source_rate_limit_update_request",
@@ -267,6 +270,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ValidationErrorLocItem": ".validation_error_loc_item",
     "ValidationErrorResponse": ".validation_error_response",
     "Value": ".value",
+    "VerifyOAuthRequest": ".verify_o_auth_request",
     "WebhookMessage": ".webhook_message",
     "WebhookMessageWithAttempts": ".webhook_message_with_attempts",
     "WebhookSubscription": ".webhook_subscription",
@@ -399,6 +403,7 @@ __all__ = [
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
+    "SourceConnectionSummary",
     "SourceRateLimit",
     "SourceRateLimitResponse",
     "SourceRateLimitUpdateRequest",
@@ -422,6 +427,7 @@ __all__ = [
     "ValidationErrorLocItem",
     "ValidationErrorResponse",
     "Value",
+    "VerifyOAuthRequest",
     "WebhookMessage",
     "WebhookMessageWithAttempts",
     "WebhookSubscription",

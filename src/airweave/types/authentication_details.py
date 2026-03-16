@@ -24,6 +24,11 @@ class AuthenticationDetails(UniversalBaseModel):
 
     auth_url_expires: typing.Optional[dt.datetime] = None
     redirect_url: typing.Optional[str] = None
+    claim_token: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    One-time token to verify OAuth flow ownership. Only returned when creating an OAuth browser connection.
+    """
+
     provider_readable_id: typing.Optional[str] = None
     provider_id: typing.Optional[str] = None
 
