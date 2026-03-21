@@ -4,18 +4,18 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .agentic_search_filter_operator import AgenticSearchFilterOperator
-from .agentic_search_filterable_field import AgenticSearchFilterableField
+from .filter_operator import FilterOperator
+from .filterable_field import FilterableField
 from .value import Value
 
 
-class AgenticSearchFilterCondition(UniversalBaseModel):
+class FilterCondition(UniversalBaseModel):
     """
     A single filter condition.
 
     Pydantic validates that:
-    - ``field`` is a valid AgenticSearchFilterableField enum value
-    - ``operator`` is a valid AgenticSearchFilterOperator enum value
+    - ``field`` is a valid FilterableField enum value
+    - ``operator`` is a valid FilterOperator enum value
     - ``value`` matches the expected types
     - The combination of field + operator + value is semantically valid
 
@@ -29,12 +29,12 @@ class AgenticSearchFilterCondition(UniversalBaseModel):
         {"field": "breadcrumbs.name", "operator": "contains", "value": "Engineering"}
     """
 
-    field: AgenticSearchFilterableField = pydantic.Field()
+    field: FilterableField = pydantic.Field()
     """
     Field to filter on (use dot notation for nested fields).
     """
 
-    operator: AgenticSearchFilterOperator = pydantic.Field()
+    operator: FilterOperator = pydantic.Field()
     """
     The comparison operator to use.
     """

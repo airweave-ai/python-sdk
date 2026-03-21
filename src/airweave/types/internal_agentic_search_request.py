@@ -7,9 +7,9 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .filter_group import FilterGroup
 
 
-class AgenticSearchRequest(UniversalBaseModel):
+class InternalAgenticSearchRequest(UniversalBaseModel):
     """
-    Agentic search request — full agent loop with tool calling.
+    Admin-only agentic search request with model override for evals.
     """
 
     query: str = pydantic.Field()
@@ -30,6 +30,11 @@ class AgenticSearchRequest(UniversalBaseModel):
     limit: typing.Optional[int] = pydantic.Field(default=None)
     """
     Max results. None means agent decides.
+    """
+
+    model: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    LLM model override. Format: 'provider/model' e.g. 'together/zai-glm-5-thinking'. When not set, uses the default model from config.
     """
 
     if IS_PYDANTIC_V2:

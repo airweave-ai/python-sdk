@@ -5,11 +5,12 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .filter_group import FilterGroup
+from .retrieval_strategy import RetrievalStrategy
 
 
-class AgenticSearchRequest(UniversalBaseModel):
+class InstantSearchRequest(UniversalBaseModel):
     """
-    Agentic search request — full agent loop with tool calling.
+    Instant search request — embed query, fire at Vespa, return results.
     """
 
     query: str = pydantic.Field()
@@ -17,9 +18,9 @@ class AgenticSearchRequest(UniversalBaseModel):
     Search query text.
     """
 
-    thinking: typing.Optional[bool] = pydantic.Field(default=None)
+    retrieval_strategy: typing.Optional[RetrievalStrategy] = pydantic.Field(default=None)
     """
-    Enable extended thinking / chain-of-thought.
+    Which retrieval strategy to use.
     """
 
     filter: typing.Optional[typing.List[FilterGroup]] = pydantic.Field(default=None)
@@ -29,7 +30,12 @@ class AgenticSearchRequest(UniversalBaseModel):
 
     limit: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Max results. None means agent decides.
+    Max results to return.
+    """
+
+    offset: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of results to skip.
     """
 
     if IS_PYDANTIC_V2:

@@ -6,14 +6,19 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class AgenticSearchCitation(UniversalBaseModel):
+class SearchAccessControl(UniversalBaseModel):
     """
-    Citation for a source used in the answer.
+    Access control in search result.
     """
 
-    entity_id: str = pydantic.Field()
+    viewers: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
-    The entity ID of a search result used in the answer
+    Principal IDs who can view this entity. None if unknown.
+    """
+
+    is_public: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether this entity is publicly accessible. None if unknown.
     """
 
     if IS_PYDANTIC_V2:

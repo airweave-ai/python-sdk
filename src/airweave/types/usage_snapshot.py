@@ -22,6 +22,11 @@ class UsageSnapshot(UniversalBaseModel):
     Search queries executed
     """
 
+    tokens: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Normalized token usage from agentic search
+    """
+
     source_connections: int = pydantic.Field()
     """
     Source connections configured
@@ -40,6 +45,11 @@ class UsageSnapshot(UniversalBaseModel):
     max_queries: typing.Optional[int] = pydantic.Field(default=None)
     """
     Maximum queries allowed
+    """
+
+    max_tokens: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Maximum normalized tokens allowed
     """
 
     max_source_connections: typing.Optional[int] = pydantic.Field(default=None)

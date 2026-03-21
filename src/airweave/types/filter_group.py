@@ -4,10 +4,10 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .agentic_search_filter_condition import AgenticSearchFilterCondition
+from .filter_condition import FilterCondition
 
 
-class AgenticSearchFilterGroup(UniversalBaseModel):
+class FilterGroup(UniversalBaseModel):
     """
     A group of filter conditions combined with AND.
 
@@ -38,7 +38,7 @@ class AgenticSearchFilterGroup(UniversalBaseModel):
             ]}
     """
 
-    conditions: typing.List[AgenticSearchFilterCondition] = pydantic.Field()
+    conditions: typing.List[FilterCondition] = pydantic.Field()
     """
     Filter conditions within this group, combined with AND
     """

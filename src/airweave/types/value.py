@@ -2,4 +2,4 @@
 
 import typing
 
-Value = typing.Union[str, int, float, bool, typing.List[str], typing.List[int]]
+Value = typing.Union[str, int, bool, typing.List[str], typing.List[int]]

@@ -6,9 +6,9 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class AgenticSearchSystemMetadata(UniversalBaseModel):
+class SearchSystemMetadata(UniversalBaseModel):
     """
-    System metadata in agentic search result.
+    System metadata in search result.
     """
 
     source_name: str = pydantic.Field()
@@ -21,14 +21,14 @@ class AgenticSearchSystemMetadata(UniversalBaseModel):
     Type of the entity this entity represents in the source.
     """
 
-    sync_id: str = pydantic.Field()
+    sync_id: typing.Optional[str] = pydantic.Field(default=None)
     """
-    ID of the sync this entity belongs to.
+    ID of the sync this entity belongs to (None for federated).
     """
 
-    sync_job_id: str = pydantic.Field()
+    sync_job_id: typing.Optional[str] = pydantic.Field(default=None)
     """
-    ID of the sync job this entity belongs to.
+    ID of the sync job this entity belongs to (None for federated).
     """
 
     chunk_index: int = pydantic.Field()

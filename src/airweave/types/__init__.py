@@ -10,19 +10,7 @@ if typing.TYPE_CHECKING:
     from .action_check_response import ActionCheckResponse
     from .admin_search_destination import AdminSearchDestination
     from .admin_sync_info import AdminSyncInfo
-    from .agentic_search_access_control import AgenticSearchAccessControl
-    from .agentic_search_answer import AgenticSearchAnswer
-    from .agentic_search_breadcrumb import AgenticSearchBreadcrumb
-    from .agentic_search_citation import AgenticSearchCitation
-    from .agentic_search_filter_condition import AgenticSearchFilterCondition
-    from .agentic_search_filter_group import AgenticSearchFilterGroup
-    from .agentic_search_filter_operator import AgenticSearchFilterOperator
-    from .agentic_search_filterable_field import AgenticSearchFilterableField
-    from .agentic_search_mode import AgenticSearchMode
     from .agentic_search_request import AgenticSearchRequest
-    from .agentic_search_response import AgenticSearchResponse
-    from .agentic_search_result import AgenticSearchResult
-    from .agentic_search_system_metadata import AgenticSearchSystemMetadata
     from .api_key import ApiKey
     from .api_key_create import ApiKeyCreate
     from .auth_provider_authentication import AuthProviderAuthentication
@@ -50,6 +38,7 @@ if typing.TYPE_CHECKING:
     from .check_status import CheckStatus
     from .checkout_session_request import CheckoutSessionRequest
     from .checkout_session_response import CheckoutSessionResponse
+    from .classic_search_request import ClassicSearchRequest
     from .collection import Collection
     from .collection_status import CollectionStatus
     from .config_field import ConfigField
@@ -73,14 +62,17 @@ if typing.TYPE_CHECKING:
     from .event_type import EventType
     from .feature_flag import FeatureFlag
     from .fields import Fields
+    from .filter_condition import FilterCondition
+    from .filter_group import FilterGroup
+    from .filter_operator import FilterOperator
+    from .filterable_field import FilterableField
     from .handler_config import HandlerConfig
     from .health_status import HealthStatus
     from .http_validation_error import HttpValidationError
+    from .instant_search_request import InstantSearchRequest
+    from .internal_agentic_search_request import InternalAgenticSearchRequest
     from .invitation_create import InvitationCreate
     from .invitation_response import InvitationResponse
-    from .legacy_search_request import LegacySearchRequest
-    from .legacy_search_request_search_method import LegacySearchRequestSearchMethod
-    from .legacy_search_response import LegacySearchResponse
     from .liveness_response import LivenessResponse
     from .member_response import MemberResponse
     from .message_response import MessageResponse
@@ -95,17 +87,19 @@ if typing.TYPE_CHECKING:
     from .organization_create import OrganizationCreate
     from .organization_metrics import OrganizationMetrics
     from .organization_with_role import OrganizationWithRole
-    from .query_expansion_strategy import QueryExpansionStrategy
     from .rate_limit_error_response import RateLimitErrorResponse
     from .readiness_response import ReadinessResponse
     from .recovery_task import RecoveryTask
-    from .response_type import ResponseType
     from .retrieval_strategy import RetrievalStrategy
     from .schedule_config import ScheduleConfig
     from .schedule_details import ScheduleDetails
+    from .search_access_control import SearchAccessControl
+    from .search_breadcrumb import SearchBreadcrumb
     from .search_request import SearchRequest
     from .search_response import SearchResponse
-    from .search_status import SearchStatus
+    from .search_result import SearchResult
+    from .search_system_metadata import SearchSystemMetadata
+    from .search_v_2_response import SearchV2Response
     from .single_action_check_response import SingleActionCheckResponse
     from .single_action_check_response_reason import SingleActionCheckResponseReason
     from .source import Source
@@ -147,19 +141,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ActionCheckResponse": ".action_check_response",
     "AdminSearchDestination": ".admin_search_destination",
     "AdminSyncInfo": ".admin_sync_info",
-    "AgenticSearchAccessControl": ".agentic_search_access_control",
-    "AgenticSearchAnswer": ".agentic_search_answer",
-    "AgenticSearchBreadcrumb": ".agentic_search_breadcrumb",
-    "AgenticSearchCitation": ".agentic_search_citation",
-    "AgenticSearchFilterCondition": ".agentic_search_filter_condition",
-    "AgenticSearchFilterGroup": ".agentic_search_filter_group",
-    "AgenticSearchFilterOperator": ".agentic_search_filter_operator",
-    "AgenticSearchFilterableField": ".agentic_search_filterable_field",
-    "AgenticSearchMode": ".agentic_search_mode",
     "AgenticSearchRequest": ".agentic_search_request",
-    "AgenticSearchResponse": ".agentic_search_response",
-    "AgenticSearchResult": ".agentic_search_result",
-    "AgenticSearchSystemMetadata": ".agentic_search_system_metadata",
     "ApiKey": ".api_key",
     "ApiKeyCreate": ".api_key_create",
     "AuthProviderAuthentication": ".auth_provider_authentication",
@@ -183,6 +165,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "CheckStatus": ".check_status",
     "CheckoutSessionRequest": ".checkout_session_request",
     "CheckoutSessionResponse": ".checkout_session_response",
+    "ClassicSearchRequest": ".classic_search_request",
     "Collection": ".collection",
     "CollectionStatus": ".collection_status",
     "ConfigField": ".config_field",
@@ -206,14 +189,17 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EventType": ".event_type",
     "FeatureFlag": ".feature_flag",
     "Fields": ".fields",
+    "FilterCondition": ".filter_condition",
+    "FilterGroup": ".filter_group",
+    "FilterOperator": ".filter_operator",
+    "FilterableField": ".filterable_field",
     "HandlerConfig": ".handler_config",
     "HealthStatus": ".health_status",
     "HttpValidationError": ".http_validation_error",
+    "InstantSearchRequest": ".instant_search_request",
+    "InternalAgenticSearchRequest": ".internal_agentic_search_request",
     "InvitationCreate": ".invitation_create",
     "InvitationResponse": ".invitation_response",
-    "LegacySearchRequest": ".legacy_search_request",
-    "LegacySearchRequestSearchMethod": ".legacy_search_request_search_method",
-    "LegacySearchResponse": ".legacy_search_response",
     "LivenessResponse": ".liveness_response",
     "MemberResponse": ".member_response",
     "MessageResponse": ".message_response",
@@ -228,17 +214,19 @@ _dynamic_imports: typing.Dict[str, str] = {
     "OrganizationCreate": ".organization_create",
     "OrganizationMetrics": ".organization_metrics",
     "OrganizationWithRole": ".organization_with_role",
-    "QueryExpansionStrategy": ".query_expansion_strategy",
     "RateLimitErrorResponse": ".rate_limit_error_response",
     "ReadinessResponse": ".readiness_response",
     "RecoveryTask": ".recovery_task",
-    "ResponseType": ".response_type",
     "RetrievalStrategy": ".retrieval_strategy",
     "ScheduleConfig": ".schedule_config",
     "ScheduleDetails": ".schedule_details",
+    "SearchAccessControl": ".search_access_control",
+    "SearchBreadcrumb": ".search_breadcrumb",
     "SearchRequest": ".search_request",
     "SearchResponse": ".search_response",
-    "SearchStatus": ".search_status",
+    "SearchResult": ".search_result",
+    "SearchSystemMetadata": ".search_system_metadata",
+    "SearchV2Response": ".search_v_2_response",
     "SingleActionCheckResponse": ".single_action_check_response",
     "SingleActionCheckResponseReason": ".single_action_check_response_reason",
     "Source": ".source",
@@ -304,19 +292,7 @@ __all__ = [
     "ActionCheckResponse",
     "AdminSearchDestination",
     "AdminSyncInfo",
-    "AgenticSearchAccessControl",
-    "AgenticSearchAnswer",
-    "AgenticSearchBreadcrumb",
-    "AgenticSearchCitation",
-    "AgenticSearchFilterCondition",
-    "AgenticSearchFilterGroup",
-    "AgenticSearchFilterOperator",
-    "AgenticSearchFilterableField",
-    "AgenticSearchMode",
     "AgenticSearchRequest",
-    "AgenticSearchResponse",
-    "AgenticSearchResult",
-    "AgenticSearchSystemMetadata",
     "ApiKey",
     "ApiKeyCreate",
     "AuthProviderAuthentication",
@@ -340,6 +316,7 @@ __all__ = [
     "CheckStatus",
     "CheckoutSessionRequest",
     "CheckoutSessionResponse",
+    "ClassicSearchRequest",
     "Collection",
     "CollectionStatus",
     "ConfigField",
@@ -363,14 +340,17 @@ __all__ = [
     "EventType",
     "FeatureFlag",
     "Fields",
+    "FilterCondition",
+    "FilterGroup",
+    "FilterOperator",
+    "FilterableField",
     "HandlerConfig",
     "HealthStatus",
     "HttpValidationError",
+    "InstantSearchRequest",
+    "InternalAgenticSearchRequest",
     "InvitationCreate",
     "InvitationResponse",
-    "LegacySearchRequest",
-    "LegacySearchRequestSearchMethod",
-    "LegacySearchResponse",
     "LivenessResponse",
     "MemberResponse",
     "MessageResponse",
@@ -385,17 +365,19 @@ __all__ = [
     "OrganizationCreate",
     "OrganizationMetrics",
     "OrganizationWithRole",
-    "QueryExpansionStrategy",
     "RateLimitErrorResponse",
     "ReadinessResponse",
     "RecoveryTask",
-    "ResponseType",
     "RetrievalStrategy",
     "ScheduleConfig",
     "ScheduleDetails",
+    "SearchAccessControl",
+    "SearchBreadcrumb",
     "SearchRequest",
     "SearchResponse",
-    "SearchStatus",
+    "SearchResult",
+    "SearchSystemMetadata",
+    "SearchV2Response",
     "SingleActionCheckResponse",
     "SingleActionCheckResponseReason",
     "Source",

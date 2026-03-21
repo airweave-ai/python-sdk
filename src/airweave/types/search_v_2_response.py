@@ -4,21 +4,17 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .search_result import SearchResult
 
 
-class AgenticSearchAccessControl(UniversalBaseModel):
+class SearchV2Response(UniversalBaseModel):
     """
-    Access control in agentic search result.
-    """
-
-    viewers: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
-    """
-    Principal IDs who can view this entity. None if unknown.
+    Unified response for all search tiers.
     """
 
-    is_public: typing.Optional[bool] = pydantic.Field(default=None)
+    results: typing.Optional[typing.List[SearchResult]] = pydantic.Field(default=None)
     """
-    Whether this entity is publicly accessible. None if unknown.
+    Search results ordered by relevance.
     """
 
     if IS_PYDANTIC_V2:

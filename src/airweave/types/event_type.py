@@ -22,6 +22,12 @@ EventType = typing.Union[
         "organization.deleted",
         "organization.member_added",
         "organization.member_removed",
+        "search.started",
+        "search.completed",
+        "search.failed",
+        "search.reranking",
+        "search.thinking",
+        "search.tool_called",
     ],
     typing.Any,
 ]

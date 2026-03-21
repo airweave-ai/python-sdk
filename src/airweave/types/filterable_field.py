@@ -2,7 +2,7 @@
 
 import typing
 
-AgenticSearchFilterableField = typing.Union[
+FilterableField = typing.Union[
     typing.Literal[
         "entity_id",
         "name",

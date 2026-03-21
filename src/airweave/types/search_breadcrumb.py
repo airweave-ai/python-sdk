@@ -4,22 +4,26 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .agentic_search_citation import AgenticSearchCitation
 
 
-class AgenticSearchAnswer(UniversalBaseModel):
+class SearchBreadcrumb(UniversalBaseModel):
     """
-    Answer generated from search results.
-    """
-
-    text: str = pydantic.Field()
-    """
-    The answer text. Should be clear and well-structured.
+    Breadcrumb in search result.
     """
 
-    citations: typing.List[AgenticSearchCitation] = pydantic.Field()
+    entity_id: str = pydantic.Field()
     """
-    List of entity_ids from search results used to compose the answer.
+    ID of the entity in the source.
+    """
+
+    name: str = pydantic.Field()
+    """
+    Display name of the entity.
+    """
+
+    entity_type: str = pydantic.Field()
+    """
+    Entity class name (e.g., 'AsanaProjectEntity').
     """
 
     if IS_PYDANTIC_V2:

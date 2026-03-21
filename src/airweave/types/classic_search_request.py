@@ -7,19 +7,14 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .filter_group import FilterGroup
 
 
-class AgenticSearchRequest(UniversalBaseModel):
+class ClassicSearchRequest(UniversalBaseModel):
     """
-    Agentic search request — full agent loop with tool calling.
+    Classic search request — LLM generates a search plan, execute against Vespa.
     """
 
     query: str = pydantic.Field()
     """
     Search query text.
-    """
-
-    thinking: typing.Optional[bool] = pydantic.Field(default=None)
-    """
-    Enable extended thinking / chain-of-thought.
     """
 
     filter: typing.Optional[typing.List[FilterGroup]] = pydantic.Field(default=None)
@@ -29,7 +24,12 @@ class AgenticSearchRequest(UniversalBaseModel):
 
     limit: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Max results. None means agent decides.
+    Max results to return.
+    """
+
+    offset: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of results to skip.
     """
 
     if IS_PYDANTIC_V2:

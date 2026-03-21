@@ -5,14 +5,14 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .agentic_search_access_control import AgenticSearchAccessControl
-from .agentic_search_breadcrumb import AgenticSearchBreadcrumb
-from .agentic_search_system_metadata import AgenticSearchSystemMetadata
+from .search_access_control import SearchAccessControl
+from .search_breadcrumb import SearchBreadcrumb
+from .search_system_metadata import SearchSystemMetadata
 
 
-class AgenticSearchResult(UniversalBaseModel):
+class SearchResult(UniversalBaseModel):
     """
-    Agentic search result.
+    Search result.
     """
 
     entity_id: str = pydantic.Field()
@@ -30,7 +30,7 @@ class AgenticSearchResult(UniversalBaseModel):
     Relevance score from the search engine.
     """
 
-    breadcrumbs: typing.List[AgenticSearchBreadcrumb] = pydantic.Field()
+    breadcrumbs: typing.List[SearchBreadcrumb] = pydantic.Field()
     """
     Breadcrumbs showing entity hierarchy.
     """
@@ -50,12 +50,12 @@ class AgenticSearchResult(UniversalBaseModel):
     Semantically searchable text content
     """
 
-    airweave_system_metadata: AgenticSearchSystemMetadata = pydantic.Field()
+    airweave_system_metadata: SearchSystemMetadata = pydantic.Field()
     """
     System metadata
     """
 
-    access: AgenticSearchAccessControl = pydantic.Field()
+    access: SearchAccessControl = pydantic.Field()
     """
     Access control
     """

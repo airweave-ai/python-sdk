@@ -2,7 +2,7 @@
 
 import typing
 
-AgenticSearchFilterOperator = typing.Union[
+FilterOperator = typing.Union[
     typing.Literal[
         "equals",
         "not_equals",
