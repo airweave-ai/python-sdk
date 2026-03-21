@@ -3,7 +3,7 @@ name = "airweave-sdk"
 
 [tool.poetry]
 name = "airweave-sdk"
-version = "v0.9.38"
+version = "v0.9.39"
 description = ""
 readme = "README.md"
 authors = []
