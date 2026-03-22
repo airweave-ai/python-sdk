@@ -4,21 +4,17 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .entity_type_stats import EntityTypeStats
 
 
-class EntitySummary(UniversalBaseModel):
+class CountToolStats(UniversalBaseModel):
     """
-    Entity state summary.
+    Stats from a count tool call.
     """
 
-    total_entities: typing.Optional[int] = None
-    by_type: typing.Optional[typing.Dict[str, EntityTypeStats]] = None
-    entity_id: typing.Optional[str] = None
-    name: typing.Optional[str] = None
-    entity_type: typing.Optional[str] = None
-    source_name: typing.Optional[str] = None
-    relevance_score: typing.Optional[float] = None
+    count: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Number of entities matching the filter.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

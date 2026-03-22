@@ -4,21 +4,22 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .entity_type_stats import EntityTypeStats
+from .agentic_search_thinking_event_diagnostics import AgenticSearchThinkingEventDiagnostics
 
 
-class EntitySummary(UniversalBaseModel):
+class AgenticSearchThinkingEvent(UniversalBaseModel):
+    thinking: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Entity state summary.
+    Extended reasoning text from the LLM.
     """
 
-    total_entities: typing.Optional[int] = None
-    by_type: typing.Optional[typing.Dict[str, EntityTypeStats]] = None
-    entity_id: typing.Optional[str] = None
-    name: typing.Optional[str] = None
-    entity_type: typing.Optional[str] = None
-    source_name: typing.Optional[str] = None
-    relevance_score: typing.Optional[float] = None
+    text: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Conversational text output before tool calls.
+    """
+
+    duration_ms: int
+    diagnostics: AgenticSearchThinkingEventDiagnostics
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

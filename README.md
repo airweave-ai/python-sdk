@@ -12,6 +12,7 @@ The Airweave Python library provides convenient access to the Airweave APIs from
 - [Usage](#usage)
 - [Async Client](#async-client)
 - [Exception Handling](#exception-handling)
+- [Streaming](#streaming)
 - [Advanced](#advanced)
   - [Access Raw Response Data](#access-raw-response-data)
   - [Retries](#retries)
@@ -84,6 +85,24 @@ except ApiError as e:
     print(e.body)
 ```
 
+## Streaming
+
+The SDK supports streaming responses, as well, the response will be a generator that you can loop over.
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+response = client.collections.stream_agentic_search(
+    readable_id="readable_id",
+    query="query",
+)
+for chunk in response.data:
+    yield chunk
+```
+
 ## Advanced
 
 ### Access Raw Response Data
@@ -100,6 +119,12 @@ client = AirweaveSDK(
 response = client.collections.with_raw_response.create(...)
 print(response.headers)  # access the response headers
 print(response.data)  # access the underlying object
+with client.collections.with_raw_response.stream_agentic_search(
+    ...
+) as response:
+    print(response.headers)  # access the response headers
+    for chunk in response.data:
+        print(chunk)  # access the underlying object(s)
 ```
 
 ### Retries

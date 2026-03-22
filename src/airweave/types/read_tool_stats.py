@@ -4,21 +4,26 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .entity_type_stats import EntityTypeStats
+from .entity_summary import EntitySummary
 
 
-class EntitySummary(UniversalBaseModel):
+class ReadToolStats(UniversalBaseModel):
     """
-    Entity state summary.
+    Stats from a read tool call.
     """
 
-    total_entities: typing.Optional[int] = None
-    by_type: typing.Optional[typing.Dict[str, EntityTypeStats]] = None
-    entity_id: typing.Optional[str] = None
-    name: typing.Optional[str] = None
-    entity_type: typing.Optional[str] = None
-    source_name: typing.Optional[str] = None
-    relevance_score: typing.Optional[float] = None
+    found: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Entities successfully read.
+    """
+
+    not_found: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Entity IDs that weren't found.
+    """
+
+    entities: typing.Optional[typing.List[EntitySummary]] = None
+    context_label: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

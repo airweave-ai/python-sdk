@@ -4,7 +4,11 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
+from ..types.agentic_search_event import AgenticSearchEvent
 from ..types.collection import Collection
+from ..types.filter_group import FilterGroup
+from ..types.retrieval_strategy import RetrievalStrategy
+from ..types.search_v_2_response import SearchV2Response
 from ..types.sync_config import SyncConfig
 from .raw_client import AsyncRawCollectionsClient, RawCollectionsClient
 
@@ -262,6 +266,234 @@ class CollectionsClient:
             readable_id, name=name, sync_config=sync_config, request_options=request_options
         )
         return _response.data
+
+    def instant_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        retrieval_strategy: typing.Optional[RetrievalStrategy] = OMIT,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchV2Response:
+        """
+        Direct vector search.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        retrieval_strategy : typing.Optional[RetrievalStrategy]
+            Which retrieval strategy to use.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results to return.
+
+        offset : typing.Optional[int]
+            Number of results to skip.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchV2Response
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.collections.instant_search(
+            readable_id="readable_id",
+            query="query",
+        )
+        """
+        _response = self._raw_client.instant_search(
+            readable_id,
+            query=query,
+            retrieval_strategy=retrieval_strategy,
+            filter=filter,
+            limit=limit,
+            offset=offset,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def classic_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchV2Response:
+        """
+        AI-optimized search.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results to return.
+
+        offset : typing.Optional[int]
+            Number of results to skip.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchV2Response
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.collections.classic_search(
+            readable_id="readable_id",
+            query="query",
+        )
+        """
+        _response = self._raw_client.classic_search(
+            readable_id, query=query, filter=filter, limit=limit, offset=offset, request_options=request_options
+        )
+        return _response.data
+
+    def agentic_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        thinking: typing.Optional[bool] = OMIT,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchV2Response:
+        """
+        Agent that iteratively searches, reads, navigates hierarchies, and collects results.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        thinking : typing.Optional[bool]
+            Enable extended thinking / chain-of-thought.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results. None means agent decides.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchV2Response
+            Successful Response
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        client.collections.agentic_search(
+            readable_id="readable_id",
+            query="query",
+        )
+        """
+        _response = self._raw_client.agentic_search(
+            readable_id, query=query, thinking=thinking, filter=filter, limit=limit, request_options=request_options
+        )
+        return _response.data
+
+    def stream_agentic_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        thinking: typing.Optional[bool] = OMIT,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[AgenticSearchEvent]:
+        """
+        Streaming agentic search via Server-Sent Events. Returns real-time events as the agent searches.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        thinking : typing.Optional[bool]
+            Enable extended thinking / chain-of-thought.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results. None means agent decides.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Yields
+        ------
+        typing.Iterator[AgenticSearchEvent]
+            SSE stream of agentic search events.
+
+        Examples
+        --------
+        from airweave import AirweaveSDK
+
+        client = AirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+        response = client.collections.stream_agentic_search(
+            readable_id="readable_id",
+            query="query",
+        )
+        for chunk in response:
+            yield chunk
+        """
+        with self._raw_client.stream_agentic_search(
+            readable_id, query=query, thinking=thinking, filter=filter, limit=limit, request_options=request_options
+        ) as r:
+            yield from r.data
 
 
 class AsyncCollectionsClient:
@@ -554,3 +786,264 @@ class AsyncCollectionsClient:
             readable_id, name=name, sync_config=sync_config, request_options=request_options
         )
         return _response.data
+
+    async def instant_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        retrieval_strategy: typing.Optional[RetrievalStrategy] = OMIT,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchV2Response:
+        """
+        Direct vector search.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        retrieval_strategy : typing.Optional[RetrievalStrategy]
+            Which retrieval strategy to use.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results to return.
+
+        offset : typing.Optional[int]
+            Number of results to skip.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchV2Response
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.collections.instant_search(
+                readable_id="readable_id",
+                query="query",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.instant_search(
+            readable_id,
+            query=query,
+            retrieval_strategy=retrieval_strategy,
+            filter=filter,
+            limit=limit,
+            offset=offset,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def classic_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        offset: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchV2Response:
+        """
+        AI-optimized search.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results to return.
+
+        offset : typing.Optional[int]
+            Number of results to skip.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchV2Response
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.collections.classic_search(
+                readable_id="readable_id",
+                query="query",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.classic_search(
+            readable_id, query=query, filter=filter, limit=limit, offset=offset, request_options=request_options
+        )
+        return _response.data
+
+    async def agentic_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        thinking: typing.Optional[bool] = OMIT,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchV2Response:
+        """
+        Agent that iteratively searches, reads, navigates hierarchies, and collects results.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        thinking : typing.Optional[bool]
+            Enable extended thinking / chain-of-thought.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results. None means agent decides.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchV2Response
+            Successful Response
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.collections.agentic_search(
+                readable_id="readable_id",
+                query="query",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.agentic_search(
+            readable_id, query=query, thinking=thinking, filter=filter, limit=limit, request_options=request_options
+        )
+        return _response.data
+
+    async def stream_agentic_search(
+        self,
+        readable_id: str,
+        *,
+        query: str,
+        thinking: typing.Optional[bool] = OMIT,
+        filter: typing.Optional[typing.Sequence[FilterGroup]] = OMIT,
+        limit: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[AgenticSearchEvent]:
+        """
+        Streaming agentic search via Server-Sent Events. Returns real-time events as the agent searches.
+
+        Parameters
+        ----------
+        readable_id : str
+
+        query : str
+            Search query text.
+
+        thinking : typing.Optional[bool]
+            Enable extended thinking / chain-of-thought.
+
+        filter : typing.Optional[typing.Sequence[FilterGroup]]
+            Filter groups (combined with OR).
+
+        limit : typing.Optional[int]
+            Max results. None means agent decides.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Yields
+        ------
+        typing.AsyncIterator[AgenticSearchEvent]
+            SSE stream of agentic search events.
+
+        Examples
+        --------
+        import asyncio
+
+        from airweave import AsyncAirweaveSDK
+
+        client = AsyncAirweaveSDK(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            response = await client.collections.stream_agentic_search(
+                readable_id="readable_id",
+                query="query",
+            )
+            async for chunk in response:
+                yield chunk
+
+
+        asyncio.run(main())
+        """
+        async with self._raw_client.stream_agentic_search(
+            readable_id, query=query, thinking=thinking, filter=filter, limit=limit, request_options=request_options
+        ) as r:
+            async for _chunk in r.data:
+                yield _chunk

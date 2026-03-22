@@ -10,7 +10,28 @@ if typing.TYPE_CHECKING:
     from .action_check_response import ActionCheckResponse
     from .admin_search_destination import AdminSearchDestination
     from .admin_sync_info import AdminSyncInfo
+    from .agentic_search_done_event import AgenticSearchDoneEvent
+    from .agentic_search_done_event_diagnostics import AgenticSearchDoneEventDiagnostics
+    from .agentic_search_error_event import AgenticSearchErrorEvent
+    from .agentic_search_event import (
+        AgenticSearchEvent,
+        AgenticSearchEvent_Done,
+        AgenticSearchEvent_Error,
+        AgenticSearchEvent_Reranking,
+        AgenticSearchEvent_Started,
+        AgenticSearchEvent_Thinking,
+        AgenticSearchEvent_ToolCall,
+    )
     from .agentic_search_request import AgenticSearchRequest
+    from .agentic_search_reranking_event import AgenticSearchRerankingEvent
+    from .agentic_search_reranking_event_diagnostics import AgenticSearchRerankingEventDiagnostics
+    from .agentic_search_started_event import AgenticSearchStartedEvent
+    from .agentic_search_thinking_event import AgenticSearchThinkingEvent
+    from .agentic_search_thinking_event_diagnostics import AgenticSearchThinkingEventDiagnostics
+    from .agentic_search_tool_call_event import AgenticSearchToolCallEvent
+    from .agentic_search_tool_call_event_diagnostics import AgenticSearchToolCallEventDiagnostics
+    from .agentic_search_tool_call_event_diagnostics_stats import AgenticSearchToolCallEventDiagnosticsStats
+    from .agentic_search_tool_call_event_tool_name import AgenticSearchToolCallEventToolName
     from .api_key import ApiKey
     from .api_key_create import ApiKeyCreate
     from .auth_provider_authentication import AuthProviderAuthentication
@@ -38,7 +59,7 @@ if typing.TYPE_CHECKING:
     from .check_status import CheckStatus
     from .checkout_session_request import CheckoutSessionRequest
     from .checkout_session_response import CheckoutSessionResponse
-    from .classic_search_request import ClassicSearchRequest
+    from .collect_tool_stats import CollectToolStats
     from .collection import Collection
     from .collection_status import CollectionStatus
     from .config_field import ConfigField
@@ -48,6 +69,7 @@ if typing.TYPE_CHECKING:
     from .connect_session_create import ConnectSessionCreate
     from .connect_session_mode import ConnectSessionMode
     from .connect_session_response import ConnectSessionResponse
+    from .count_tool_stats import CountToolStats
     from .cursor_config import CursorConfig
     from .customer_portal_request import CustomerPortalRequest
     from .customer_portal_response import CustomerPortalResponse
@@ -59,6 +81,7 @@ if typing.TYPE_CHECKING:
     from .entity_definition_metadata import EntityDefinitionMetadata
     from .entity_summary import EntitySummary
     from .entity_type_stats import EntityTypeStats
+    from .error_tool_stats import ErrorToolStats
     from .event_type import EventType
     from .feature_flag import FeatureFlag
     from .fields import Fields
@@ -66,16 +89,17 @@ if typing.TYPE_CHECKING:
     from .filter_group import FilterGroup
     from .filter_operator import FilterOperator
     from .filterable_field import FilterableField
+    from .finish_tool_stats import FinishToolStats
     from .handler_config import HandlerConfig
     from .health_status import HealthStatus
     from .http_validation_error import HttpValidationError
-    from .instant_search_request import InstantSearchRequest
     from .internal_agentic_search_request import InternalAgenticSearchRequest
     from .invitation_create import InvitationCreate
     from .invitation_response import InvitationResponse
     from .liveness_response import LivenessResponse
     from .member_response import MemberResponse
     from .message_response import MessageResponse
+    from .navigate_tool_stats import NavigateToolStats
     from .node_selection_data import NodeSelectionData
     from .node_selection_request import NodeSelectionRequest
     from .node_selection_response import NodeSelectionResponse
@@ -88,9 +112,11 @@ if typing.TYPE_CHECKING:
     from .organization_metrics import OrganizationMetrics
     from .organization_with_role import OrganizationWithRole
     from .rate_limit_error_response import RateLimitErrorResponse
+    from .read_tool_stats import ReadToolStats
     from .readiness_response import ReadinessResponse
     from .recovery_task import RecoveryTask
     from .retrieval_strategy import RetrievalStrategy
+    from .review_tool_stats import ReviewToolStats
     from .schedule_config import ScheduleConfig
     from .schedule_details import ScheduleDetails
     from .search_access_control import SearchAccessControl
@@ -99,6 +125,7 @@ if typing.TYPE_CHECKING:
     from .search_response import SearchResponse
     from .search_result import SearchResult
     from .search_system_metadata import SearchSystemMetadata
+    from .search_tool_stats import SearchToolStats
     from .search_v_2_response import SearchV2Response
     from .single_action_check_response import SingleActionCheckResponse
     from .single_action_check_response_reason import SingleActionCheckResponseReason
@@ -141,7 +168,26 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ActionCheckResponse": ".action_check_response",
     "AdminSearchDestination": ".admin_search_destination",
     "AdminSyncInfo": ".admin_sync_info",
+    "AgenticSearchDoneEvent": ".agentic_search_done_event",
+    "AgenticSearchDoneEventDiagnostics": ".agentic_search_done_event_diagnostics",
+    "AgenticSearchErrorEvent": ".agentic_search_error_event",
+    "AgenticSearchEvent": ".agentic_search_event",
+    "AgenticSearchEvent_Done": ".agentic_search_event",
+    "AgenticSearchEvent_Error": ".agentic_search_event",
+    "AgenticSearchEvent_Reranking": ".agentic_search_event",
+    "AgenticSearchEvent_Started": ".agentic_search_event",
+    "AgenticSearchEvent_Thinking": ".agentic_search_event",
+    "AgenticSearchEvent_ToolCall": ".agentic_search_event",
     "AgenticSearchRequest": ".agentic_search_request",
+    "AgenticSearchRerankingEvent": ".agentic_search_reranking_event",
+    "AgenticSearchRerankingEventDiagnostics": ".agentic_search_reranking_event_diagnostics",
+    "AgenticSearchStartedEvent": ".agentic_search_started_event",
+    "AgenticSearchThinkingEvent": ".agentic_search_thinking_event",
+    "AgenticSearchThinkingEventDiagnostics": ".agentic_search_thinking_event_diagnostics",
+    "AgenticSearchToolCallEvent": ".agentic_search_tool_call_event",
+    "AgenticSearchToolCallEventDiagnostics": ".agentic_search_tool_call_event_diagnostics",
+    "AgenticSearchToolCallEventDiagnosticsStats": ".agentic_search_tool_call_event_diagnostics_stats",
+    "AgenticSearchToolCallEventToolName": ".agentic_search_tool_call_event_tool_name",
     "ApiKey": ".api_key",
     "ApiKeyCreate": ".api_key_create",
     "AuthProviderAuthentication": ".auth_provider_authentication",
@@ -165,7 +211,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "CheckStatus": ".check_status",
     "CheckoutSessionRequest": ".checkout_session_request",
     "CheckoutSessionResponse": ".checkout_session_response",
-    "ClassicSearchRequest": ".classic_search_request",
+    "CollectToolStats": ".collect_tool_stats",
     "Collection": ".collection",
     "CollectionStatus": ".collection_status",
     "ConfigField": ".config_field",
@@ -175,6 +221,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ConnectSessionCreate": ".connect_session_create",
     "ConnectSessionMode": ".connect_session_mode",
     "ConnectSessionResponse": ".connect_session_response",
+    "CountToolStats": ".count_tool_stats",
     "CursorConfig": ".cursor_config",
     "CustomerPortalRequest": ".customer_portal_request",
     "CustomerPortalResponse": ".customer_portal_response",
@@ -186,6 +233,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntityDefinitionMetadata": ".entity_definition_metadata",
     "EntitySummary": ".entity_summary",
     "EntityTypeStats": ".entity_type_stats",
+    "ErrorToolStats": ".error_tool_stats",
     "EventType": ".event_type",
     "FeatureFlag": ".feature_flag",
     "Fields": ".fields",
@@ -193,16 +241,17 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FilterGroup": ".filter_group",
     "FilterOperator": ".filter_operator",
     "FilterableField": ".filterable_field",
+    "FinishToolStats": ".finish_tool_stats",
     "HandlerConfig": ".handler_config",
     "HealthStatus": ".health_status",
     "HttpValidationError": ".http_validation_error",
-    "InstantSearchRequest": ".instant_search_request",
     "InternalAgenticSearchRequest": ".internal_agentic_search_request",
     "InvitationCreate": ".invitation_create",
     "InvitationResponse": ".invitation_response",
     "LivenessResponse": ".liveness_response",
     "MemberResponse": ".member_response",
     "MessageResponse": ".message_response",
+    "NavigateToolStats": ".navigate_tool_stats",
     "NodeSelectionData": ".node_selection_data",
     "NodeSelectionRequest": ".node_selection_request",
     "NodeSelectionResponse": ".node_selection_response",
@@ -215,9 +264,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "OrganizationMetrics": ".organization_metrics",
     "OrganizationWithRole": ".organization_with_role",
     "RateLimitErrorResponse": ".rate_limit_error_response",
+    "ReadToolStats": ".read_tool_stats",
     "ReadinessResponse": ".readiness_response",
     "RecoveryTask": ".recovery_task",
     "RetrievalStrategy": ".retrieval_strategy",
+    "ReviewToolStats": ".review_tool_stats",
     "ScheduleConfig": ".schedule_config",
     "ScheduleDetails": ".schedule_details",
     "SearchAccessControl": ".search_access_control",
@@ -226,6 +277,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SearchResponse": ".search_response",
     "SearchResult": ".search_result",
     "SearchSystemMetadata": ".search_system_metadata",
+    "SearchToolStats": ".search_tool_stats",
     "SearchV2Response": ".search_v_2_response",
     "SingleActionCheckResponse": ".single_action_check_response",
     "SingleActionCheckResponseReason": ".single_action_check_response_reason",
@@ -292,7 +344,26 @@ __all__ = [
     "ActionCheckResponse",
     "AdminSearchDestination",
     "AdminSyncInfo",
+    "AgenticSearchDoneEvent",
+    "AgenticSearchDoneEventDiagnostics",
+    "AgenticSearchErrorEvent",
+    "AgenticSearchEvent",
+    "AgenticSearchEvent_Done",
+    "AgenticSearchEvent_Error",
+    "AgenticSearchEvent_Reranking",
+    "AgenticSearchEvent_Started",
+    "AgenticSearchEvent_Thinking",
+    "AgenticSearchEvent_ToolCall",
     "AgenticSearchRequest",
+    "AgenticSearchRerankingEvent",
+    "AgenticSearchRerankingEventDiagnostics",
+    "AgenticSearchStartedEvent",
+    "AgenticSearchThinkingEvent",
+    "AgenticSearchThinkingEventDiagnostics",
+    "AgenticSearchToolCallEvent",
+    "AgenticSearchToolCallEventDiagnostics",
+    "AgenticSearchToolCallEventDiagnosticsStats",
+    "AgenticSearchToolCallEventToolName",
     "ApiKey",
     "ApiKeyCreate",
     "AuthProviderAuthentication",
@@ -316,7 +387,7 @@ __all__ = [
     "CheckStatus",
     "CheckoutSessionRequest",
     "CheckoutSessionResponse",
-    "ClassicSearchRequest",
+    "CollectToolStats",
     "Collection",
     "CollectionStatus",
     "ConfigField",
@@ -326,6 +397,7 @@ __all__ = [
     "ConnectSessionCreate",
     "ConnectSessionMode",
     "ConnectSessionResponse",
+    "CountToolStats",
     "CursorConfig",
     "CustomerPortalRequest",
     "CustomerPortalResponse",
@@ -337,6 +409,7 @@ __all__ = [
     "EntityDefinitionMetadata",
     "EntitySummary",
     "EntityTypeStats",
+    "ErrorToolStats",
     "EventType",
     "FeatureFlag",
     "Fields",
@@ -344,16 +417,17 @@ __all__ = [
     "FilterGroup",
     "FilterOperator",
     "FilterableField",
+    "FinishToolStats",
     "HandlerConfig",
     "HealthStatus",
     "HttpValidationError",
-    "InstantSearchRequest",
     "InternalAgenticSearchRequest",
     "InvitationCreate",
     "InvitationResponse",
     "LivenessResponse",
     "MemberResponse",
     "MessageResponse",
+    "NavigateToolStats",
     "NodeSelectionData",
     "NodeSelectionRequest",
     "NodeSelectionResponse",
@@ -366,9 +440,11 @@ __all__ = [
     "OrganizationMetrics",
     "OrganizationWithRole",
     "RateLimitErrorResponse",
+    "ReadToolStats",
     "ReadinessResponse",
     "RecoveryTask",
     "RetrievalStrategy",
+    "ReviewToolStats",
     "ScheduleConfig",
     "ScheduleDetails",
     "SearchAccessControl",
@@ -377,6 +453,7 @@ __all__ = [
     "SearchResponse",
     "SearchResult",
     "SearchSystemMetadata",
+    "SearchToolStats",
     "SearchV2Response",
     "SingleActionCheckResponse",
     "SingleActionCheckResponseReason",

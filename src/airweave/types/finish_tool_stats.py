@@ -4,21 +4,23 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .entity_type_stats import EntityTypeStats
 
 
-class EntitySummary(UniversalBaseModel):
+class FinishToolStats(UniversalBaseModel):
     """
-    Entity state summary.
+    Stats from return_results_to_user.
     """
 
-    total_entities: typing.Optional[int] = None
-    by_type: typing.Optional[typing.Dict[str, EntityTypeStats]] = None
-    entity_id: typing.Optional[str] = None
-    name: typing.Optional[str] = None
-    entity_type: typing.Optional[str] = None
-    source_name: typing.Optional[str] = None
-    relevance_score: typing.Optional[float] = None
+    accepted: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether the agent accepted the result set.
+    """
+
+    total_collected: typing.Optional[int] = None
+    warning: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Warning if very few results collected relative to seen.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

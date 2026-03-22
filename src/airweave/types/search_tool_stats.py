@@ -4,21 +4,25 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .entity_type_stats import EntityTypeStats
+from .entity_summary import EntitySummary
 
 
-class EntitySummary(UniversalBaseModel):
+class SearchToolStats(UniversalBaseModel):
     """
-    Entity state summary.
+    Stats from a search tool call.
     """
 
-    total_entities: typing.Optional[int] = None
-    by_type: typing.Optional[typing.Dict[str, EntityTypeStats]] = None
-    entity_id: typing.Optional[str] = None
-    name: typing.Optional[str] = None
-    entity_type: typing.Optional[str] = None
-    source_name: typing.Optional[str] = None
-    relevance_score: typing.Optional[float] = None
+    result_count: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Total results returned.
+    """
+
+    new_results: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Results not seen in previous searches.
+    """
+
+    first_results: typing.Optional[typing.List[EntitySummary]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
