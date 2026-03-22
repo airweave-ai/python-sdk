@@ -2,4 +2,4 @@
 
 import typing
 
-RetrievalStrategy = typing.Union[typing.Literal["hybrid", "neural", "keyword"], typing.Any]
+RetrievalStrategy = typing.Union[typing.Literal["semantic", "keyword", "hybrid"], typing.Any]
