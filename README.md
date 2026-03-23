@@ -95,7 +95,7 @@ from airweave import AirweaveSDK
 client = AirweaveSDK(
     api_key="YOUR_API_KEY",
 )
-response = client.collections.stream_agentic_search(
+response = client.collections.search.stream_agentic(
     readable_id="readable_id",
     query="query",
 )
@@ -119,7 +119,7 @@ client = AirweaveSDK(
 response = client.collections.with_raw_response.create(...)
 print(response.headers)  # access the response headers
 print(response.data)  # access the underlying object
-with client.collections.with_raw_response.stream_agentic_search(
+with client.collections.search.with_raw_response.stream_agentic(
     ...
 ) as response:
     print(response.headers)  # access the response headers

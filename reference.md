@@ -586,428 +586,6 @@ client.collections.update(
 </dl>
 </details>
 
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">instant_search</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Direct vector search.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.collections.instant_search(
-    readable_id="readable_id",
-    query="query",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**readable_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**query:** `str` — Search query text.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**retrieval_strategy:** `typing.Optional[RetrievalStrategy]` — Which retrieval strategy to use.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `typing.Optional[int]` — Max results to return.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**offset:** `typing.Optional[int]` — Number of results to skip.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">classic_search</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-AI-optimized search.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.collections.classic_search(
-    readable_id="readable_id",
-    query="query",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**readable_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**query:** `str` — Search query text.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `typing.Optional[int]` — Max results to return.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**offset:** `typing.Optional[int]` — Number of results to skip.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">agentic_search</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Agent that iteratively searches, reads, navigates hierarchies, and collects results.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-client.collections.agentic_search(
-    readable_id="readable_id",
-    query="query",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**readable_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**query:** `str` — Search query text.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**thinking:** `typing.Optional[bool]` — Enable extended thinking / chain-of-thought.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `typing.Optional[int]` — Max results. None means agent decides.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.collections.<a href="src/airweave/collections/client.py">stream_agentic_search</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Streaming agentic search via Server-Sent Events. Returns real-time events as the agent searches.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from airweave import AirweaveSDK
-
-client = AirweaveSDK(
-    api_key="YOUR_API_KEY",
-)
-response = client.collections.stream_agentic_search(
-    readable_id="readable_id",
-    query="query",
-)
-for chunk in response.data:
-    yield chunk
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**readable_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**query:** `str` — Search query text.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**thinking:** `typing.Optional[bool]` — Enable extended thinking / chain-of-thought.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `typing.Optional[int]` — Max results. None means agent decides.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 ## source-connections
 <details><summary><code>client.source_connections.<a href="src/airweave/source_connections/client.py">list</a>(...)</code></summary>
 <dl>
@@ -2482,6 +2060,433 @@ client.webhooks.recover_failed_messages(
 <dd>
 
 **until:** `typing.Optional[dt.datetime]` — End of the recovery time window (exclusive). If not specified, recovers all failed messages up to now.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Collections Search
+<details><summary><code>client.collections.search.<a href="src/airweave/collections/search/client.py">instant</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Direct vector search.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.collections.search.instant(
+    readable_id="customer-support-tickets-x7k9m",
+    query="How do I reset my password?",
+    retrieval_strategy="hybrid",
+    limit=10,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — Search query text.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**retrieval_strategy:** `typing.Optional[RetrievalStrategy]` — Which retrieval strategy to use.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Max results to return.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**offset:** `typing.Optional[int]` — Number of results to skip.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.collections.search.<a href="src/airweave/collections/search/client.py">classic</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+AI-optimized search.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.collections.search.classic(
+    readable_id="customer-support-tickets-x7k9m",
+    query="quarterly revenue report",
+    limit=10,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — Search query text.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Max results to return.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**offset:** `typing.Optional[int]` — Number of results to skip.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.collections.search.<a href="src/airweave/collections/search/client.py">agentic</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Agent that iteratively searches, reads, navigates hierarchies, and collects results.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+client.collections.search.agentic(
+    readable_id="customer-support-tickets-x7k9m",
+    query="find all deployment-related docs from last month",
+    thinking=True,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — Search query text.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**thinking:** `typing.Optional[bool]` — Enable extended thinking / chain-of-thought.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Max results. None means agent decides.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.collections.search.<a href="src/airweave/collections/search/client.py">stream_agentic</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Streaming agentic search via Server-Sent Events. Returns real-time events as the agent searches.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from airweave import AirweaveSDK
+
+client = AirweaveSDK(
+    api_key="YOUR_API_KEY",
+)
+response = client.collections.search.stream_agentic(
+    readable_id="readable_id",
+    query="query",
+)
+for chunk in response.data:
+    yield chunk
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**readable_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `str` — Search query text.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**thinking:** `typing.Optional[bool]` — Enable extended thinking / chain-of-thought.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[typing.Sequence[FilterGroup]]` — Filter groups (combined with OR).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Max results. None means agent decides.
     
 </dd>
 </dl>
