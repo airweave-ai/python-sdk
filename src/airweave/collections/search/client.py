@@ -251,7 +251,8 @@ class SearchClient:
         )
         response = client.collections.search.stream_agentic(
             readable_id="readable_id",
-            query="query",
+            query="find all deployment-related docs from last month",
+            thinking=True,
         )
         for chunk in response:
             yield chunk
@@ -528,7 +529,8 @@ class AsyncSearchClient:
         async def main() -> None:
             response = await client.collections.search.stream_agentic(
                 readable_id="readable_id",
-                query="query",
+                query="find all deployment-related docs from last month",
+                thinking=True,
             )
             async for chunk in response:
                 yield chunk

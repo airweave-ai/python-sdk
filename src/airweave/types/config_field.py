@@ -19,6 +19,7 @@ class ConfigField(UniversalBaseModel):
     items_type: typing.Optional[str] = None
     feature_flag: typing.Optional[str] = None
     is_secret: typing.Optional[bool] = None
+    enum_values: typing.Optional[typing.List[str]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
