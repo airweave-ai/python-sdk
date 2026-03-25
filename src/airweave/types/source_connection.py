@@ -8,6 +8,7 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from .authentication_details import AuthenticationDetails
 from .entity_summary import EntitySummary
 from .schedule_details import ScheduleDetails
+from .source_connection_error_category import SourceConnectionErrorCategory
 from .source_connection_status import SourceConnectionStatus
 from .sync_details import SyncDetails
 
@@ -93,6 +94,26 @@ class SourceConnection(UniversalBaseModel):
     entities: typing.Optional[EntitySummary] = pydantic.Field(default=None)
     """
     Summary of synced entities by type
+    """
+
+    error_category: typing.Optional[SourceConnectionErrorCategory] = pydantic.Field(default=None)
+    """
+    Error category when status is needs_reauth (e.g. oauth_credentials_expired)
+    """
+
+    error_message: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Human-readable error message when status is needs_reauth
+    """
+
+    provider_settings_url: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    URL to the auth provider's settings dashboard (for auth_provider errors)
+    """
+
+    provider_short_name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Auth provider short_name (e.g. 'composio', 'pipedream') for display
     """
 
     federated_search: typing.Optional[bool] = pydantic.Field(default=None)

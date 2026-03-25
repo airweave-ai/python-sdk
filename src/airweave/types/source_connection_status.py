@@ -3,5 +3,5 @@
 import typing
 
 SourceConnectionStatus = typing.Union[
-    typing.Literal["active", "pending_auth", "syncing", "error", "inactive", "pending_sync"], typing.Any
+    typing.Literal["active", "pending_auth", "syncing", "error", "needs_reauth", "inactive", "pending_sync"], typing.Any
 ]

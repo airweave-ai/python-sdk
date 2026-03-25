@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .source_connection_error_category import SourceConnectionErrorCategory
 from .sync_job_status import SyncJobStatus
 
 
@@ -69,6 +70,11 @@ class SourceConnectionJob(UniversalBaseModel):
     error: typing.Optional[str] = pydantic.Field(default=None)
     """
     Error message if the job failed
+    """
+
+    error_category: typing.Optional[SourceConnectionErrorCategory] = pydantic.Field(default=None)
+    """
+    Error category for credential errors (e.g. oauth_credentials_expired)
     """
 
     error_details: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)

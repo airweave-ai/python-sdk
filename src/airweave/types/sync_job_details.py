@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .source_connection_error_category import SourceConnectionErrorCategory
 from .sync_job_status import SyncJobStatus
 
 
@@ -23,6 +24,7 @@ class SyncJobDetails(UniversalBaseModel):
     entities_deleted: typing.Optional[int] = None
     entities_failed: typing.Optional[int] = None
     error: typing.Optional[str] = None
+    error_category: typing.Optional[SourceConnectionErrorCategory] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

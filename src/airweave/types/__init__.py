@@ -74,6 +74,7 @@ if typing.TYPE_CHECKING:
     from .search_v_2_response import SearchV2Response
     from .source import Source
     from .source_connection import SourceConnection
+    from .source_connection_error_category import SourceConnectionErrorCategory
     from .source_connection_job import SourceConnectionJob
     from .source_connection_list_item import SourceConnectionListItem
     from .source_connection_status import SourceConnectionStatus
@@ -158,6 +159,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SearchV2Response": ".search_v_2_response",
     "Source": ".source",
     "SourceConnection": ".source_connection",
+    "SourceConnectionErrorCategory": ".source_connection_error_category",
     "SourceConnectionJob": ".source_connection_job",
     "SourceConnectionListItem": ".source_connection_list_item",
     "SourceConnectionStatus": ".source_connection_status",
@@ -266,6 +268,7 @@ __all__ = [
     "SearchV2Response",
     "Source",
     "SourceConnection",
+    "SourceConnectionErrorCategory",
     "SourceConnectionJob",
     "SourceConnectionListItem",
     "SourceConnectionStatus",
