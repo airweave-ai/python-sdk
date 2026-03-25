@@ -6,6 +6,7 @@ EventType = typing.Union[
     typing.Literal[
         "sync.pending",
         "sync.running",
+        "sync.cancelling",
         "sync.completed",
         "sync.failed",
         "sync.cancelled",
